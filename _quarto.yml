@@ -1,0 +1,34 @@
+project:
+  type: book
+
+book:
+  title: "Quantitative Methods 2"
+  author: "Ollie Ballinger"
+  date: "10/10/2022"
+  chapters:
+    - index.qmd
+    - ./notebooks/W01. Python Recap.ipynb
+    - ./notebooks/W02. Pandas.ipynb
+    - ./notebooks/W03. Spatial Data.ipynb
+    - ./notebooks/W04. Natural Language Processing.ipynb
+    - ./notebooks/W05. Merging and Joining.ipynb
+    - Week 6.qmd
+    - ./notebooks/W07. Distributions and Basic Statistics.ipynb
+    - Week 8.qmd
+    - ./notebooks/W09. Machine Learning.ipynb
+    - ./notebooks/W10. Choropleth Maps and Polygons.ipynb
+  repo-url: https://github.com/oballinger/QM2/
+  repo-actions: [edit]
+  downloads: [pdf, epub]
+  sharing: [twitter, facebook]
+  logo: BASc.png
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+
+
