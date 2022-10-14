@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Quantitative Methods 2 - Spatial Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../notebooks/W04. Natural Language Processing.html" rel="next">
+<link href="../notebooks/W02. Pandas.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Spatial Data</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../" class="sidebar-logo-link">
+      <img src="../BASc.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Quantitative Methods 2</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/oballinger/QM2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Download" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-download"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="../Quantitative-Methods-2.pdf">
+            <i class="bi bi-bi-file-pdf pe-1"></i>
+          Download PDF
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="../Quantitative-Methods-2.epub">
+            <i class="bi bi-bi-journal pe-1"></i>
+          Download ePub
+          </a>
+        </li>
+    </ul>
+    <a href="" title="Share" id="sidebar-tool-dropdown-1" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-1">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+    </ul>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Welcome</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W01. Python Recap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Python Recap</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W02. Pandas.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Intro to Pandas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W03. Spatial Data.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Spatial Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W04. Natural Language Processing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W05. Merging and Joining.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging and Joining</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Week 6.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Group Presentations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W07. Distributions and Basic Statistics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Distributions and Basic Statistics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Week 8.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W09. Machine Learning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Machine Learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W10. Advanced Visualization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Advanced Visualization</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#workshop-3-open-in-colab" id="toc-workshop-3-open-in-colab" class="nav-link active" data-scroll-target="#workshop-3-open-in-colab"><em>Workshop 3</em> [<img src="../colab-badge.png" class="img-fluid" alt="Open In Colab">]</a>
+  <ul class="collapse">
+  <li><a href="#aims" id="toc-aims" class="nav-link" data-scroll-target="#aims">Aims:</a></li>
+  </ul></li>
+  <li><a href="#downloading-the-data" id="toc-downloading-the-data" class="nav-link" data-scroll-target="#downloading-the-data">Downloading the Data</a></li>
+  <li><a href="#point-and-areal-data" id="toc-point-and-areal-data" class="nav-link" data-scroll-target="#point-and-areal-data">Point and Areal Data</a></li>
+  <li><a href="#the-birds-sing-a-pretty-song" id="toc-the-birds-sing-a-pretty-song" class="nav-link" data-scroll-target="#the-birds-sing-a-pretty-song">The birds sing a pretty song</a></li>
+  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
+  <li><a href="#working-with-datetime-data" id="toc-working-with-datetime-data" class="nav-link" data-scroll-target="#working-with-datetime-data">Working with datetime data</a></li>
+  <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1">Exercise</a></li>
+  <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2">Exercise</a></li>
+  <li><a href="#my-first-map" id="toc-my-first-map" class="nav-link" data-scroll-target="#my-first-map">My First Map</a></li>
+  <li><a href="#exercise-3" id="toc-exercise-3" class="nav-link" data-scroll-target="#exercise-3">Exercise</a></li>
+  <li><a href="#the-naivest-projection" id="toc-the-naivest-projection" class="nav-link" data-scroll-target="#the-naivest-projection">The Naivest Projection</a></li>
+  <li><a href="#extension-not-so-great-circles" id="toc-extension-not-so-great-circles" class="nav-link" data-scroll-target="#extension-not-so-great-circles">Extension: Not-so-great circles</a></li>
+  <li><a href="#british-values" id="toc-british-values" class="nav-link" data-scroll-target="#british-values">British Values</a></li>
+  <li><a href="#exercise-describing-the-data" id="toc-exercise-describing-the-data" class="nav-link" data-scroll-target="#exercise-describing-the-data">Exercise: Describing the Data</a></li>
+  <li><a href="#exercise-4" id="toc-exercise-4" class="nav-link" data-scroll-target="#exercise-4">Exercise</a></li>
+  <li><a href="#working-in-2d" id="toc-working-in-2d" class="nav-link" data-scroll-target="#working-in-2d">Working in 2D</a></li>
+  <li><a href="#hexbinning" id="toc-hexbinning" class="nav-link" data-scroll-target="#hexbinning">Hexbinning</a></li>
+  <li><a href="#extension-splitting-mapping-data-by-time" id="toc-extension-splitting-mapping-data-by-time" class="nav-link" data-scroll-target="#extension-splitting-mapping-data-by-time">Extension: Splitting Mapping Data by Time</a></li>
+  <li><a href="#exercise-5" id="toc-exercise-5" class="nav-link" data-scroll-target="#exercise-5">Exercise</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W03. Spatial Data.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Spatial Data</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="workshop-3-open-in-colab" class="level2">
+<h2 class="anchored" data-anchor-id="workshop-3-open-in-colab"><em>Workshop 3</em> [<img src="../colab-badge.png" class="img-fluid" alt="Open In Colab">]</h2>
+<p>In this workshop, we will work with data that information about space and time, and show different ways of presenting this data, with the goal of producing fully-fledged maps.</p>
+<section id="aims" class="level3">
+<h3 class="anchored" data-anchor-id="aims">Aims:</h3>
+<ul>
+<li>Plot and summarise spatial data</li>
+<li>Create simple point maps</li>
+<li>Understand the basics of projection</li>
+</ul>
+</section>
+</section>
+<section id="downloading-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="downloading-the-data">Downloading the Data</h2>
+<p>Let’s grab the data we will need this week from our course website and save it into our data folder. If you’ve not already created a data folder then do so using the following command.</p>
+<p>Don’t worry if it generates an error, that means you’ve already got a data folder.</p>
+<div class="cell" data-execution_count="82">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>mkdir: data: File exists</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="83">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data<span class="op">/</span>wk3</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>s3.eu<span class="op">-</span>west<span class="op">-</span><span class="fl">2.</span><span class="er">amazonaws</span>.com<span class="op">/</span>qm2<span class="op">/</span>wk8<span class="op">/</span>tweet_data.csv <span class="op">-</span>o .<span class="op">/</span>data<span class="op">/</span>wk3<span class="op">/</span>tweet_data.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>mkdir: data/wk3: File exists
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  156k  100  156k    0     0   256k      0 --:--:-- --:--:-- --:--:--  257k</code></pre>
+</div>
+</div>
+<p><code>------------------------------</code></p>
+<div class="cell" data-execution_count="84">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pylab</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>pylab.rcParams[<span class="st">'figure.figsize'</span>] <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="point-and-areal-data" class="level2">
+<h2 class="anchored" data-anchor-id="point-and-areal-data">Point and Areal Data</h2>
+<p>We’re going to look at some <em>point data</em>, data which has a spatial location but not an extent - this can be contrasted with <em>areal data</em>, where data is reported or represented as covering, or relating to, a specific region geography. An example of this second category would be the released census geography - which, as we saw earlier in the term, is reported on a bespoke areal unit called the Output Area.</p>
+<p>Today we will look at point data. For the purpose, we’ll be looking at some data from twitter - data which has detailed spatial position as well as time and date.</p>
+</section>
+<section id="the-birds-sing-a-pretty-song" class="level2">
+<h2 class="anchored" data-anchor-id="the-birds-sing-a-pretty-song">The birds sing a pretty song</h2>
+<p>Let’s start by loading in the twitter data and running head() to take a look at what the dataset contains. The dataset has information about tweeters but not the content of the tweets:</p>
+<div class="cell" data-execution_count="85">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"./data/wk8/tweet_data.csv"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>tweets <span class="op">=</span> pandas.read_csv(data_path, parse_dates<span class="op">=</span>[<span class="dv">1</span>], infer_datetime_format<span class="op">=</span><span class="va">True</span>, encoding <span class="op">=</span> <span class="st">'latin1'</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>tweets.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="85">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>id</th>
+      <th>dateT</th>
+      <th>name</th>
+      <th>Lat</th>
+      <th>Lon</th>
+      <th>OSGB_Lon</th>
+      <th>OSGB_Lat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>15</td>
+      <td>2010-04-28 15:03:00</td>
+      <td>MrFlexDot (Felix Tekyi)</td>
+      <td>51.682488</td>
+      <td>-0.045406</td>
+      <td>535225.835914</td>
+      <td>200000.009703</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>19</td>
+      <td>2010-04-28 15:03:00</td>
+      <td>genyfrmdablck (geny )</td>
+      <td>51.539869</td>
+      <td>-0.135413</td>
+      <td>529408.436064</td>
+      <td>183977.283107</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>26</td>
+      <td>2010-04-28 15:03:00</td>
+      <td>makapala (Dave Woodford)</td>
+      <td>51.459499</td>
+      <td>-0.036607</td>
+      <td>536499.925360</td>
+      <td>175219.249296</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>31</td>
+      <td>2010-04-28 15:03:00</td>
+      <td>JayVades (JayVades)</td>
+      <td>51.518075</td>
+      <td>0.024400</td>
+      <td>540557.757933</td>
+      <td>181848.336146</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>38</td>
+      <td>2010-04-28 15:03:00</td>
+      <td>CatchAChoo (Jimmy Choo)</td>
+      <td>51.510000</td>
+      <td>-0.217000</td>
+      <td>523831.617422</td>
+      <td>180514.655542</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="exercise" class="level2">
+<h2 class="anchored" data-anchor-id="exercise">Exercise</h2>
+<p>What does each data column represent?</p>
+</section>
+<section id="working-with-datetime-data" class="level2">
+<h2 class="anchored" data-anchor-id="working-with-datetime-data">Working with datetime data</h2>
+<p>Datetime data is a little trickier to work with - it has structure which allows the extraction of hours, minutes, seconds, and so on. For example, we can just take the time part:</p>
+<div class="cell" data-execution_count="86">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>tweets[<span class="st">'dateT'</span>].dt.time.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="86">
+<pre><code>0    15:03:00
+1    15:03:00
+2    15:03:00
+3    15:03:00
+4    15:03:00
+Name: dateT, dtype: object</code></pre>
+</div>
+</div>
+</section>
+<section id="exercise-1" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-1">Exercise</h2>
+<p>What temporal extent does the data cover? How do we need to structure our approach?</p>
+</section>
+<section id="exercise-2" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-2">Exercise</h2>
+<p>Create a new column in the dataframe which stores the “minute” component of the timestamp, and use it to create a histogram of the data over the course of an hour in five minute intervals. Make sure that your graph includes a title and labelled axes.</p>
+<p>You can also execuate this code in one line if you don’t mind seeing a lot of dots - I’ve not included the parameters to give this some polish - we will leave that as an exercise.</p>
+<div class="cell" data-execution_count="87">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tweets[<span class="st">'dateT'</span>].dt.minute.hist()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="87">
+<pre><code>&lt;AxesSubplot:&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W03.%20Spatial%20Data_files/figure-html/cell-8-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="my-first-map" class="level2">
+<h2 class="anchored" data-anchor-id="my-first-map">My First Map</h2>
+<p>The beauty of this data is that the data points have x and y values, so plotting them as a scatter graph will give us out first approximation (with caveats) of a map of the data:</p>
+<div class="cell" data-execution_count="88">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tweets.plot(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    kind<span class="op">=</span><span class="st">'scatter'</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'Lon'</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'Lat'</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Location of Tweets"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Longitude [degrees]"</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Latitude [degrees]"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="88">
+<pre><code>Text(0, 0.5, 'Latitude [degrees]')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W03.%20Spatial%20Data_files/figure-html/cell-9-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Notice that we’ve laid out the code so it’s easier to see the multiple arguments in plot() - this is just the same as:</p>
+<div class="cell" data-execution_count="89">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>tweets.plot(kind<span class="op">=</span><span class="st">'scatter'</span>,x<span class="op">=</span><span class="st">'Lon'</span>,y<span class="op">=</span><span class="st">'Lat'</span>, title<span class="op">=</span><span class="st">"Location of Tweets"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Longitude [degrees]"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Latitude [degrees]"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="89">
+<pre><code>Text(0, 0.5, 'Latitude [degrees]')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W03.%20Spatial%20Data_files/figure-html/cell-10-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="90">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> folium</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exercise-3" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-3">Exercise</h2>
+<p>Change the style of the above map using the optional arguments:</p>
+<ul>
+<li><em>alpha = </em>: to set the opacity - 1 being opaque and 0 being transparent. Set the transparecny so that you can see busy areas <em>and</em> individual points</li>
+<li><em>color=</em>: to set the colo<em>u</em>r to ‘red’</li>
+<li><em>s=</em>: so set the point size to 50</li>
+</ul>
+<p>So we have something that looks a bit like a heat map, and even looks a bit Gaussian. Let’s see what a histogram of this data looks like:</p>
+<div class="cell" data-execution_count="91">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>tweets[<span class="st">'Lat'</span>].hist(bins <span class="op">=</span> <span class="dv">50</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Latitude [degrees]"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of Tweets"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="91">
+<pre><code>Text(0, 0.5, 'Number of Tweets')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W03.%20Spatial%20Data_files/figure-html/cell-12-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="92">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> tweets[<span class="st">'Lon'</span>].hist(bins<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Longitude [degrees]"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Number of Tweets"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="92">
+<pre><code>Text(0, 0.5, 'Number of Tweets')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W03.%20Spatial%20Data_files/figure-html/cell-13-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="the-naivest-projection" class="level2">
+<h2 class="anchored" data-anchor-id="the-naivest-projection">The Naivest Projection</h2>
+<p>The above tweet plot implicitly uses the <em>equirectangular</em> projection, which maps longitude onto the x axis, and latitude onto the y axis. What is the problem with this ?</p>
+<p>Projection is hugely complex and mathematically fiddly - luckily, we’ll be working with packages which mostly do the heavy lifting for us. It’s still worth thinking about projection a bit, as the process of taking points on a sphere and translating that to a flat surface is never a perfect one.</p>
+<p>If we look at the picture below, then clearly the distance between <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> is the length of the curve on the sphere rather than the straight line between them. The closer <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> are the more the distance is like a straight line, and we can use a <em>linear mapping</em> - i.e.&nbsp;the x coordinate is a linear function of lon, and the y axis is a linear function of latitude.</p>
+</section>
+<section id="extension-not-so-great-circles" class="level2">
+<h2 class="anchored" data-anchor-id="extension-not-so-great-circles">Extension: Not-so-great circles</h2>
+<p>Calculating great circle distances is the “real” way of figuring out the distance between two points on a sphere is fairly complex. Thankfully, there’s a small angle approximation.</p>
+<p>If the two points (1 and 2) have latitudes <span class="math inline">\(\phi_1\)</span> and <span class="math inline">\(\phi_2\)</span> and longitudes <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span>, then let <span class="math inline">\(\Delta\phi = \phi_1 - \phi_2\)</span> and <span class="math inline">\(\Delta\lambda = \lambda_1 - \lambda_2\)</span> , where <span class="math inline">\((\phi_1,\lambda_1) ,(\phi_2,\lambda_2)\)</span> are two points given in (latitude, longitude).</p>
+<p>If <span class="math inline">\(\Delta\phi\)</span> and <span class="math inline">\(\Delta\lambda\)</span> are small enough, you can calculate the distance <span class="math inline">\(D\)</span> with :</p>
+<p><span class="math display">\[D = R \sqrt{(\Delta\phi)^2+(cos(\bar{\phi})\Delta\lambda)^2}\]</span></p>
+<p>where <span class="math inline">\(\bar{\phi}\)</span> is the mean latitude of the two points, <span class="math inline">\(\frac{1}{2}(\phi_1+\phi_2)\)</span>, and R is the radius of the earth.</p>
+<p>How small is small enough if we want to use this approximation? Well, it depends on how much error you want to incur. But generally if the angles are much less than one radian, you’ll incur small errors. Radians, you say? Yes, everything in the above equations assumes angles are expressed in radians. 1 radian is about 57 degrees, but there are more precise definitions, and python has a utility function for converting between the two.</p>
+<p>For reference, the errors accumulated over the size of London are tens of metres.</p>
+</section>
+<section id="british-values" class="level2">
+<h2 class="anchored" data-anchor-id="british-values">British Values</h2>
+<p>The British National Grid provides projected values in metres, so we can get by without doing projections “on the fly” just yet. If we plot these values, it will look pretty similar, for the reasons outlined above - over the few km of London, most projection methods are quite close to the linear mapping we’ve done.</p>
+<div class="cell" data-execution_count="93">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> tweets.plot(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    kind<span class="op">=</span><span class="st">'scatter'</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'OSGB_Lon'</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'OSGB_Lat'</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Location of Tweets"</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"projected Longitude"</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"projected Latitude"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="93">
+<pre><code>Text(0, 0.5, 'projected Latitude')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W03.%20Spatial%20Data_files/figure-html/cell-15-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="exercise-describing-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-describing-the-data">Exercise: Describing the Data</h2>
+<ol type="1">
+<li><p>Find the data centroid (lat, lon)</p></li>
+<li><p>Calculate the x, y and total extent of the data, in km (or miles). (Use the projected [OSGB] data for that.)</p></li>
+</ol>
+<p>Hint: use commands which capture the maximum, minimum and mean of the data - describe() is a useful one here.</p>
+</section>
+<section id="exercise-4" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-4">Exercise</h2>
+<p>How might we go about calculating the geographical extent which contained 95% of tweets? Assuming the distribution is Gaussian in both variables, estimate a) the latitude the limits which contain 95% of tweets, b) the longitude limits which contain 95% of tweets. Then c) and add lines showing these limits to the tweet graph and d) save the figure as an image using plt.savefig(<em>filename</em>).</p>
+<p>What proportion of tweets is held within this box?</p>
+<p>How do you think the following elements influence the above result?</p>
+<ul>
+<li><p>The 2D nature of the data</p></li>
+<li><p>Asymmetry of the Gaussian (i.e.&nbsp;if <span class="math inline">\(\sigma_x \neq \sigma_y\)</span>)</p></li>
+<li><p>Whether the data is Gaussian!</p></li>
+<li><p>What other approaches could you take with this data?</p></li>
+</ul>
+</section>
+<section id="working-in-2d" class="level2">
+<h2 class="anchored" data-anchor-id="working-in-2d">Working in 2D</h2>
+<p>It’s clear that we can learn from 1D about how we can approach 2D data. But there are limitations, and treating 2D as two sets of 1D data doesn’t work for everything. We need to find ways to carry out histograms and other aggregations in 2D - and the first of these is hexbinning.</p>
+</section>
+<section id="hexbinning" class="level2">
+<h2 class="anchored" data-anchor-id="hexbinning">Hexbinning</h2>
+<p>We can also use a <a href="http://pandas-docs.github.io/pandas-docs-travis/visualization.html#hexagonal-bin-plot">hexbin clustering</a> method, which is similar to binning in a histogram, the more points we have in hexbin the warmer the color. Here, we count the number data points in each hexagons, in the same way that we count the number of data in each bin for 1D data</p>
+<p>Luckily, the code is very easy to execute, and requires only small changes:</p>
+<div class="cell" data-execution_count="94">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> tweets.plot(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    kind<span class="op">=</span><span class="st">'hexbin'</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'OSGB_Lon'</span>, y<span class="op">=</span><span class="st">'OSGB_Lat'</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    gridsize<span class="op">=</span><span class="dv">50</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Tweet Density (Hex Bin)"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">'coolwarm'</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"projected Longitude"</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"projected Latitude"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="94">
+<pre><code>Text(0, 0.5, 'projected Latitude')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W03.%20Spatial%20Data_files/figure-html/cell-18-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Possible values are: Spectral, summer, coolwarm, Wistia_r, pink_r, Set1, Set2, Set3, brg_r, Dark2, prism, PuOr_r, afmhot_r, terrain_r, PuBuGn_r, RdPu, gist_ncar_r, gist_yarg_r, Dark2_r, YlGnBu, RdYlBu, hot_r, gist_rainbow_r, gist_stern, PuBu_r, cool_r, cool, gray, copper_r, Greens_r, GnBu, gist_ncar, spring_r, gist_rainbow, gist_heat_r, Wistia, OrRd_r, CMRmap, bone, gist_stern_r, RdYlGn, Pastel2_r, spring, terrain, YlOrRd_r, Set2_r, winter_r, PuBu, RdGy_r, spectral, rainbow, flag_r, jet_r, RdPu_r, gist_yarg, BuGn, Paired_r, hsv_r, bwr, cubehelix, Greens, PRGn, gist_heat, spectral_r, Paired, hsv, Oranges_r, prism_r, Pastel2, Pastel1_r, Pastel1, gray_r, jet, Spectral_r, gnuplot2_r, gist_earth, YlGnBu_r, copper, gist_earth_r, Set3_r, OrRd, gnuplot_r, ocean_r, brg, gnuplot2, PuRd_r, bone_r, BuPu, Oranges, RdYlGn_r, PiYG, CMRmap_r, YlGn, binary_r, gist_gray_r, Accent, BuPu_r, gist_gray, flag, bwr_r, RdBu_r, BrBG, Reds, Set1_r, summer_r, GnBu_r, BrBG_r, Reds_r, RdGy, PuRd, Accent_r, Blues, autumn_r, autumn, cubehelix_r, nipy_spectral_r, ocean, PRGn_r, Greys_r, pink, binary, winter, gnuplot, RdYlBu_r, hot, YlOrBr, coolwarm_r, rainbow_r, Purples_r, PiYG_r, YlGn_r, Blues_r, YlOrBr_r, seismic, Purples, seismic_r, RdBu, Greys, BuGn_r, YlOrRd, PuOr, PuBuGn, nipy_spectral, afmhot</p>
+</section>
+<section id="extension-splitting-mapping-data-by-time" class="level2">
+<h2 class="anchored" data-anchor-id="extension-splitting-mapping-data-by-time">Extension: Splitting Mapping Data by Time</h2>
+<p>In the next section, we use both space and time to show different geographical distributions at different times. We’ll select on index, splitting the dataset in two.</p>
+<div class="cell" data-execution_count="95">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>early <span class="op">=</span> tweets[:<span class="dv">750</span>]</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>late <span class="op">=</span> tweets[<span class="dv">750</span>:<span class="bu">len</span>(tweets)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="96">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>early.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="96">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>id</th>
+      <th>dateT</th>
+      <th>name</th>
+      <th>Lat</th>
+      <th>Lon</th>
+      <th>OSGB_Lon</th>
+      <th>OSGB_Lat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>15</td>
+      <td>2010-04-28 15:03:00</td>
+      <td>MrFlexDot (Felix Tekyi)</td>
+      <td>51.682488</td>
+      <td>-0.045406</td>
+      <td>535225.835914</td>
+      <td>200000.009703</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>19</td>
+      <td>2010-04-28 15:03:00</td>
+      <td>genyfrmdablck (geny )</td>
+      <td>51.539869</td>
+      <td>-0.135413</td>
+      <td>529408.436064</td>
+      <td>183977.283107</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>26</td>
+      <td>2010-04-28 15:03:00</td>
+      <td>makapala (Dave Woodford)</td>
+      <td>51.459499</td>
+      <td>-0.036607</td>
+      <td>536499.925360</td>
+      <td>175219.249296</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>31</td>
+      <td>2010-04-28 15:03:00</td>
+      <td>JayVades (JayVades)</td>
+      <td>51.518075</td>
+      <td>0.024400</td>
+      <td>540557.757933</td>
+      <td>181848.336146</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>38</td>
+      <td>2010-04-28 15:03:00</td>
+      <td>CatchAChoo (Jimmy Choo)</td>
+      <td>51.510000</td>
+      <td>-0.217000</td>
+      <td>523831.617422</td>
+      <td>180514.655542</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="97">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>late.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="97">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>id</th>
+      <th>dateT</th>
+      <th>name</th>
+      <th>Lat</th>
+      <th>Lon</th>
+      <th>OSGB_Lon</th>
+      <th>OSGB_Lat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>750</th>
+      <td>4535</td>
+      <td>2010-04-28 15:23:00</td>
+      <td>nadyavr (Nadya Valenza R)</td>
+      <td>51.520975</td>
+      <td>-0.049123</td>
+      <td>535448.286382</td>
+      <td>182032.267058</td>
+    </tr>
+    <tr>
+      <th>751</th>
+      <td>4539</td>
+      <td>2010-04-28 15:23:00</td>
+      <td>janasanchez (Jana Sanchez)</td>
+      <td>51.481550</td>
+      <td>-0.188767</td>
+      <td>525869.039823</td>
+      <td>177399.005684</td>
+    </tr>
+    <tr>
+      <th>752</th>
+      <td>4543</td>
+      <td>2010-04-28 15:23:00</td>
+      <td>BUMSHA (Bunmi Olowoporoku?)</td>
+      <td>51.663310</td>
+      <td>-0.068944</td>
+      <td>533655.100907</td>
+      <td>197824.013895</td>
+    </tr>
+    <tr>
+      <th>753</th>
+      <td>4556</td>
+      <td>2010-04-28 15:23:00</td>
+      <td>MrBell74 (Colin Bell)</td>
+      <td>51.467061</td>
+      <td>0.201290</td>
+      <td>553000.411504</td>
+      <td>176530.046180</td>
+    </tr>
+    <tr>
+      <th>754</th>
+      <td>4569</td>
+      <td>2010-04-28 15:23:00</td>
+      <td>DineHard (Neil Davey)</td>
+      <td>51.470925</td>
+      <td>-0.237811</td>
+      <td>522492.091850</td>
+      <td>176134.358324</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="exercise-5" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-5">Exercise</h2>
+<p>Plot both sets of tweets onto the same axes so they can be compared. Try and make your plot look like the image below.</p>
+<p>We can visually inspect the spatial plots of the two time frames using hexbin plots; in this case there’s not much to see…</p>
+<div class="cell" data-execution_count="98">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> early.plot(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    kind<span class="op">=</span><span class="st">'hexbin'</span>,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'OSGB_Lon'</span>, </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'OSGB_Lat'</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    gridsize<span class="op">=</span><span class="dv">50</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Tweet Density (Hex Bin)"</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">'coolwarm'</span>,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"projected Longitude"</span>)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"projected Latitude"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="98">
+<pre><code>Text(0, 0.5, 'projected Latitude')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W03.%20Spatial%20Data_files/figure-html/cell-24-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="99">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> late.plot(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    kind<span class="op">=</span><span class="st">'hexbin'</span>,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'OSGB_Lon'</span>, </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'OSGB_Lat'</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    gridsize<span class="op">=</span><span class="dv">50</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Tweet Density (Hex Bin)"</span>,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">'coolwarm'</span>,</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"projected Longitude"</span>)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"projected Latitude"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="99">
+<pre><code>Text(0, 0.5, 'projected Latitude')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W03.%20Spatial%20Data_files/figure-html/cell-25-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../notebooks/W02. Pandas.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Intro to Pandas</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../notebooks/W04. Natural Language Processing.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

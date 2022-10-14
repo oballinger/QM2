@@ -1,5 +1,6 @@
 project:
   type: book
+  output-dir: docs
 
 book:
   title: "Quantitative Methods 2"
@@ -16,7 +17,7 @@ book:
     - ./notebooks/W07. Distributions and Basic Statistics.ipynb
     - Week 8.qmd
     - ./notebooks/W09. Machine Learning.ipynb
-    - ./notebooks/W10. Choropleth Maps and Polygons.ipynb
+    - ./notebooks/W10. Advanced Visualization.ipynb
   repo-url: https://github.com/oballinger/QM2/
   repo-actions: [edit]
   downloads: [pdf, epub]
