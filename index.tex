@@ -190,7 +190,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, borderline west={3pt}{0pt}{shadecolor}, breakable, enhanced, boxrule=0pt, interior hidden, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, interior hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners, boxrule=0pt, frame hidden]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -220,6 +220,9 @@ statistics) and visualisation (graphing, mapping and other forms of
 visualisation). They will engage with literatures around a topic and
 connect their datasets and analyses to explore and decide wider
 arguments, and link their results to these contextual considerations.
+Below is an outline of the course:
+
+\includegraphics{./outline.png}
 
 \bookmarksetup{startatroot}
 
@@ -621,7 +624,7 @@ learning data science, so making an account may not be a bad idea!
 
 \hypertarget{workshop-2-open-in-colab}{%
 \section[\emph{Workshop 2} ]{\texorpdfstring{\emph{Workshop 2}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W03.\%20Spatial\%20Data.ipynb}{\protect\includegraphics{notebooks/../colab-badge.png}}}{Workshop 2 Open In Colab}}\label{workshop-2-open-in-colab}}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W02.\%20Pandas.ipynb}{\protect\includegraphics{notebooks/../colab-badge.png}}}{Workshop 2 Open In Colab}}\label{workshop-2-open-in-colab}}
 
 In this workshop, our aim is to get used to working with more complex
 data that we've imported from external files. We'll start to graph it,
@@ -699,7 +702,7 @@ mkdir: data: File exists
 \begin{Shaded}
 \begin{Highlighting}[]
 \OperatorTok{!}\NormalTok{mkdir data}\OperatorTok{/}\NormalTok{wk2}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk2}\OperatorTok{/}\NormalTok{incomes.csv }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk2}\OperatorTok{/}\NormalTok{incomes.csv}
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{github.com}\OperatorTok{/}\NormalTok{oballinger}\OperatorTok{/}\NormalTok{QM2}\OperatorTok{/}\NormalTok{blob}\OperatorTok{/}\NormalTok{main}\OperatorTok{/}\NormalTok{notebooks}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk2}\OperatorTok{/}\NormalTok{incomes.csv }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk2}\OperatorTok{/}\NormalTok{incomes.csv}
 \end{Highlighting}
 \end{Shaded}
 
@@ -707,7 +710,7 @@ mkdir: data: File exists
 mkdir: data/wk2: File exists
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 15154  100 15154    0     0   149k      0 --:--:-- --:--:-- --:--:--  155k
+100 15154  100 15154    0     0   135k      0 --:--:-- --:--:-- --:--:--  143k
 \end{verbatim}
 
 \begin{Shaded}
@@ -722,11 +725,6 @@ mkdir: data/wk2: File exists
 \NormalTok{pylab.rcParams[}\StringTok{\textquotesingle{}figure.figsize\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ (}\FloatTok{10.}\NormalTok{, }\FloatTok{8.}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-/Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages/pandas/compat/__init__.py:97: UserWarning: Could not import the lzma module. Your installed Python is incomplete. Attempting to use lzma compression will result in a RuntimeError.
-  warnings.warn(msg)
-\end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1118,6 +1116,14 @@ data in a text editor, like I've done here:
 \end{Highlighting}
 \end{Shaded}
 
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W02. Pandas_files/figure-pdf/cell-15-output-1.png}
+
+}
+
+\end{figure}
+
 That's a screenshot of our datafile, opened up in a text editor. As we
 can see, these numbers are separated by commas and surrounded by
 quotation marks - this is normal, and what .csv files are supposed to
@@ -1139,6 +1145,20 @@ do that by creating a new dataframe:
 \end{Highlighting}
 \end{Shaded}
 
+\begin{longtable}[]{@{}lll@{}}
+\toprule()
+& Childless couple, annual income & Couple, two children under 14 \\
+Percentile Point & & \\
+\midrule()
+\endhead
+1 & 1,746.92 & 2,445.69 \\
+2 & 5,141.01 & 7,197.41 \\
+3 & 6,703.11 & 9,384.36 \\
+4 & 7,875.75 & 11,026.05 \\
+5 & 8,671.91 & 12,140.68 \\
+\bottomrule()
+\end{longtable}
+
 We see those pesky commas. Now we can get on with cleaning up the data:
 
 \begin{Shaded}
@@ -1151,6 +1171,20 @@ We see those pesky commas. Now we can get on with cleaning up the data:
 \NormalTok{clean.head()}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule()
+& Childless couple, annual income & Couple, two children under 14 \\
+Percentile Point & & \\
+\midrule()
+\endhead
+1 & 1746.92 & 2445.69 \\
+2 & 5141.01 & 7197.41 \\
+3 & 6703.11 & 9384.36 \\
+4 & 7875.75 & 11026.05 \\
+5 & 8671.91 & 12140.68 \\
+\bottomrule()
+\end{longtable}
 
 \textbf{Extension}: ``\textbf{Regex}'' refers to ``\textbf{Reg}ular
 \textbf{Ex}pression'', which is a way of replacing and cleaning text.
@@ -1172,7 +1206,7 @@ these?
 \item
   If the top 20\% of income shows such a sharp increase, how do we know
   that there isn't a similar uptick \emph{within} the 1\%? We've already
-  seen that the meaan of the dataset as a whole is much less than the
+  seen that the mean of the dataset as a whole is much less than the
   half the maximum category (it's 25\% of the maximum). What if that's
   true within the 1\%, and £2,000/week as a fraction of the 0.1\%, or
   the 0.01\%?
@@ -1194,6 +1228,18 @@ these?
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+Text(0, 0.5, 'Income Per Week [GBP]')
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W02. Pandas_files/figure-pdf/cell-18-output-2.png}
+
+}
+
+\end{figure}
+
 \hypertarget{exercise-1}{%
 \section{Exercise:}\label{exercise-1}}
 
@@ -1213,9 +1259,6 @@ childless couples. Reflect and comment on the differences.
 \NormalTok{Add your reflection here.}
 \end{Highlighting}
 \end{Shaded}
-
-\hypertarget{homework-selecting-data}{%
-\section{Homework: Selecting data}\label{homework-selecting-data}}
 
 So far, we've dealt with selecting data in a particular row of column by
 index or label. What if we now want to filter the data by \emph{value}?
@@ -1320,10 +1363,148 @@ function: read\_html
 \end{Shaded}
 
 \begin{verbatim}
-ImportError: lxml not found, please install it
+[    #  \
+0   1   
+1   2   
+2   3   
+3   4   
+4   5   
+5   6   
+6   7   
+7   8   
+8   9   
+9  10   
+
+  .css-ld8rqy-container{position:relative;box-sizing:border-box;min-width:0;}.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}.css-3zcu7z-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;background-color:hsl(0, 0%, 100%);border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-shadow:none;cursor:pointer;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:0rem;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;box-sizing:border-box;background:transparent;border:none;padding:0px 3px;margin-left:-5px;}.css-3zcu7z-control:hover{border-color:rgba(255,255,255,0.9);}.css-zl2g27{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;padding:0;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;box-sizing:border-box;}.css-hlu0h4-singleValue{color:white;grid-area:1/1/2/3;margin-left:2px;margin-right:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-sizing:border-box;}Films (English).css-1a9ai41{margin:0;padding-bottom:2px;padding-top:2px;visibility:visible;color:hsl(0, 0%, 20%);-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;box-sizing:border-box;padding:0;}.css-1a9ai41:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}.css-1hyfx7x{display:none;}.css-xhbtlw-indicatorContainer{color:hsl(0, 0%, 80%);display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;padding:8px;-webkit-transition:color 150ms;transition:color 150ms;box-sizing:border-box;-webkit-transform:scale(0.8);-moz-transform:scale(0.8);-ms-transform:scale(0.8);transform:scale(0.8);}.css-xhbtlw-indicatorContainer:hover{color:hsl(0, 0%, 60%);}.css-xhbtlw-indicatorContainer:hover{-webkit-transform:scale(1);-moz-transform:scale(1);-ms-transform:scale(1);transform:scale(1);}  \
+0                                Luckiest Girl Alive                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+1                               Mr. Harrigan's Phone                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+2                                    Last Seen Alive                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+3                                             Blonde                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+4                                                Lou                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+5                                      The Boss Baby                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+6                                               Sing                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+7                                          Marauders                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+8                                    The Redeem Team                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+9                            Minions & More Volume 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+
+   Weeks in Top 10  Hours viewed  
+0                1      43080000  
+1                1      35420000  
+2                2      18810000  
+3                2      17410000  
+4                3      12600000  
+5                1       8510000  
+6                1       8420000  
+7                2       8350000  
+8                1       7850000  
+9                3       7090000  ,     #  \
+0   1   
+1   2   
+2   3   
+3   4   
+4   5   
+5   6   
+6   7   
+7   8   
+8   9   
+9  10   
+
+  .css-ld8rqy-container{position:relative;box-sizing:border-box;min-width:0;}.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}.css-3zcu7z-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;background-color:hsl(0, 0%, 100%);border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-shadow:none;cursor:pointer;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:0rem;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;box-sizing:border-box;background:transparent;border:none;padding:0px 3px;margin-left:-5px;}.css-3zcu7z-control:hover{border-color:rgba(255,255,255,0.9);}.css-zl2g27{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;padding:0;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;box-sizing:border-box;}.css-hlu0h4-singleValue{color:white;grid-area:1/1/2/3;margin-left:2px;margin-right:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-sizing:border-box;}Films (English).css-1a9ai41{margin:0;padding-bottom:2px;padding-top:2px;visibility:visible;color:hsl(0, 0%, 20%);-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;box-sizing:border-box;padding:0;}.css-1a9ai41:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}.css-1hyfx7x{display:none;}.css-xhbtlw-indicatorContainer{color:hsl(0, 0%, 80%);display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;padding:8px;-webkit-transition:color 150ms;transition:color 150ms;box-sizing:border-box;-webkit-transform:scale(0.8);-moz-transform:scale(0.8);-ms-transform:scale(0.8);transform:scale(0.8);}.css-xhbtlw-indicatorContainer:hover{color:hsl(0, 0%, 60%);}.css-xhbtlw-indicatorContainer:hover{-webkit-transform:scale(1);-moz-transform:scale(1);-ms-transform:scale(1);transform:scale(1);}  \
+0                                         Red Notice                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+1                                      Don't Look Up                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+2                                           Bird Box                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+3                                       The Gray Man                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+4                                   The Adam Project                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+5                                         Extraction                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+6                                      Purple Hearts                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+7                                   The Unforgivable                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+8                                       The Irishman                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+9                                The Kissing Booth 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+
+   Hours viewed in first 28 days  
+0                      364020000  
+1                      359790000  
+2                      282020000  
+3                      253870000  
+4                      233160000  
+5                      231340000  
+6                      228690000  
+7                      214700000  
+8                      214570000  
+9                      209250000  ]
 \end{verbatim}
 
-When we print the results of what was scraped, it's pretty ugly
+When we print the results of what was scraped, it's pretty ugly. One of
+the reasons is that the \texttt{tables} variable is actually a
+\emph{list} of dataframes. Because there were two tables on our website,
+\texttt{read\_html} has returned both of those tables and put them in a
+list. let's save the first table as a new dataframe called
+\texttt{top10} and have a closer look.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{top10}\OperatorTok{=}\NormalTok{tables[}\DecValTok{0}\NormalTok{]}
+\NormalTok{top10}
+\end{Highlighting}
+\end{Shaded}
+
+This looks more like the dataframes we were looking at earlier. There's
+a big chunk of text (this is HTML code, the language websites are built
+with) where the name of the second column should be. \texttt{read\_html}
+is usually pretty smart, and can actually read the column names from the
+tables on the website. It seems to have gotten confused for this one
+column. If we print the columns from the We can rename that column using
+the \texttt{rename} function. Since we know it's the second column, we
+can select it with \texttt{top10.columns{[}1{]}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{top10.rename(columns}\OperatorTok{=}\NormalTok{\{top10.columns[}\DecValTok{1}\NormalTok{]: }\StringTok{"Title"}\NormalTok{ \}, inplace }\OperatorTok{=} \VariableTok{True}\NormalTok{)}
+\NormalTok{top10}
+\end{Highlighting}
+\end{Shaded}
+
+And there we have it; a nicely formatted dataframe ready for analysis,
+straight from a website.
+
+\hypertarget{exercise-3}{%
+\section{Exercise}\label{exercise-3}}
+
+Using the following URL
+https://en.wikipedia.org/wiki/List\_of\_Nobel\_laureates\_in\_Chemistry
+create a plot of the top 10 countries in terms of nobel laureates.
+First, follow the steps below:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# scrape the table of Nobel Laureates in Chemistry using read\_html. remember, this gives us a LIST of dataframes! lets call this list chem\_tables}
+
+\CommentTok{\# select the first dataframe from this list and call it chem}
+\end{Highlighting}
+\end{Shaded}
+
+I'll help you out with this next bit. We'll be using the
+\texttt{groupby} function in pandas to group our dataframe such that
+each row is a country (rather than a person, as it currently is). We do
+this by using
+\texttt{\textless{}dataframe\textgreater{}.groupby(\textquotesingle{}\textless{}column\ name\textgreater{}\textquotesingle{})}.
+Since we're aggregating, we need to tell python how we want it to
+aggregate our values. In this case, we just want to count the number of
+rows for each country; we can do this using \texttt{.size()}. You can
+use many different aggregation functions, e.g.~\texttt{.mean()} if you
+wanted to calculate the average of a specific column.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# here, we\textquotesingle{}re creating a new dataframe called \textquotesingle{}country\textquotesingle{} in which each row is a country, and the values represent the number of nobel laureates. }
+\NormalTok{countries}\OperatorTok{=}\NormalTok{chem.groupby(}\StringTok{\textquotesingle{}Country[B]\textquotesingle{}}\NormalTok{).size()}
+
+\CommentTok{\#now let\textquotesingle{}s sort it in descending order}
+\NormalTok{countries.sort\_values(ascending}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+
+\CommentTok{\# finally, plot the top 10 countries }
+\end{Highlighting}
+\end{Shaded}
 
 \bookmarksetup{startatroot}
 
@@ -1448,8 +1629,8 @@ tweeters but not the content of the tweets:
 \bottomrule()
 \end{longtable}
 
-\hypertarget{exercise-3}{%
-\section{Exercise}\label{exercise-3}}
+\hypertarget{exercise-4}{%
+\section{Exercise}\label{exercise-4}}
 
 What does each data column represent?
 
@@ -1475,14 +1656,14 @@ example, we can just take the time part:
 Name: dateT, dtype: object
 \end{verbatim}
 
-\hypertarget{exercise-4}{%
-\section{Exercise}\label{exercise-4}}
+\hypertarget{exercise-5}{%
+\section{Exercise}\label{exercise-5}}
 
 What temporal extent does the data cover? How do we need to structure
 our approach?
 
-\hypertarget{exercise-5}{%
-\section{Exercise}\label{exercise-5}}
+\hypertarget{exercise-6}{%
+\section{Exercise}\label{exercise-6}}
 
 Create a new column in the dataframe which stores the ``minute''
 component of the timestamp, and use it to create a histogram of the data
@@ -1571,8 +1752,8 @@ Text(0, 0.5, 'Latitude [degrees]')
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{exercise-6}{%
-\section{Exercise}\label{exercise-6}}
+\hypertarget{exercise-7}{%
+\section{Exercise}\label{exercise-7}}
 
 Change the style of the above map using the optional arguments:
 
@@ -1734,8 +1915,8 @@ Data}\label{exercise-describing-the-data}}
 Hint: use commands which capture the maximum, minimum and mean of the
 data - describe() is a useful one here.
 
-\hypertarget{exercise-7}{%
-\section{Exercise}\label{exercise-7}}
+\hypertarget{exercise-8}{%
+\section{Exercise}\label{exercise-8}}
 
 How might we go about calculating the geographical extent which
 contained 95\% of tweets? Assuming the distribution is Gaussian in both
@@ -1891,8 +2072,8 @@ splitting the dataset in two.
 \bottomrule()
 \end{longtable}
 
-\hypertarget{exercise-8}{%
-\section{Exercise}\label{exercise-8}}
+\hypertarget{exercise-9}{%
+\section{Exercise}\label{exercise-9}}
 
 Plot both sets of tweets onto the same axes so they can be compared. Try
 and make your plot look like the image below.
@@ -2657,8 +2838,8 @@ students of the public role of the university might start to wonder
 about the distinctions between \emph{communication} and
 \emph{engagement}.
 
-\hypertarget{exercise-9}{%
-\section{Exercise}\label{exercise-9}}
+\hypertarget{exercise-10}{%
+\section{Exercise}\label{exercise-10}}
 
 Repeat this for the examples from Panels B, C and D - what trends and
 keywords appear? What use do the collocations have? What do different
@@ -2937,14 +3118,14 @@ select the most common 50 words.
 
 \end{figure}
 
-\hypertarget{exercise-10}{%
-\section{Exercise}\label{exercise-10}}
+\hypertarget{exercise-11}{%
+\section{Exercise}\label{exercise-11}}
 
 What is the percentage of words that appear exactly once in the entire
 text? (Hint : FreqDist objects have a method called `hapaxes')
 
-\hypertarget{exercise-11}{%
-\section{Exercise}\label{exercise-11}}
+\hypertarget{exercise-12}{%
+\section{Exercise}\label{exercise-12}}
 
 The words of our ex Prime Minister, David Cameron:
 
@@ -3546,8 +3727,8 @@ Glasgow & 5.830768 & 3.804848 & 4.211793 \\
 \bottomrule()
 \end{longtable}
 
-\hypertarget{exercise-12}{%
-\section{Exercise:}\label{exercise-12}}
+\hypertarget{exercise-13}{%
+\section{Exercise:}\label{exercise-13}}
 
 How many cities appear in: - both dataframes - only df1 - only df5 -
 neither df1 nor df5?
@@ -3710,8 +3891,8 @@ NaN & NaN & NaN \\
 
 As we see, the missing data appears as \textbf{NaN} - Not a Number.
 
-\hypertarget{exercise-13}{%
-\section{Exercise:}\label{exercise-13}}
+\hypertarget{exercise-14}{%
+\section{Exercise:}\label{exercise-14}}
 
 Carry out \emph{right} and \emph{outer} joins on the dataframes df1 and
 df5 and explain how they're filtering and joining the data.
@@ -3773,8 +3954,8 @@ Final figure, complete & 2013 & 5408.0 & NaN \\
 \bottomrule()
 \end{longtable}
 
-\hypertarget{exercise-14}{%
-\section{Exercise}\label{exercise-14}}
+\hypertarget{exercise-15}{%
+\section{Exercise}\label{exercise-15}}
 
 There is a another datafile we downloaded called
 \emph{UN\_Cities\_1214\_country.csv}. This is saved to
@@ -3882,8 +4063,8 @@ http://data.un.org/Data.aspx?d=WDI\&f=Indicator\_Code\%3ASP.DYN.LE00.IN
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{exercise-15}{%
-\section{Exercise:}\label{exercise-15}}
+\hypertarget{exercise-16}{%
+\section{Exercise:}\label{exercise-16}}
 
 In a new cell, clean up the above dataframe by
 
@@ -3912,8 +4093,8 @@ column. This is one way to do that:
 
 \bookmarksetup{startatroot}
 
-\hypertarget{exercise-16}{%
-\chapter{Exercise}\label{exercise-16}}
+\hypertarget{exercise-17}{%
+\chapter{Exercise}\label{exercise-17}}
 
 Now, merge this data with the cities data to show life expectancy for
 each city (based on the country it is in), and show the first 5 rows.
@@ -4762,15 +4943,15 @@ of the top lower half and the lower top half, so the median of C is
 (hint: consider area under curve and what it means)? What about
 quartiles? What about deciles? What are these quantities?
 
-\hypertarget{exercise-17}{%
-\section{Exercise}\label{exercise-17}}
+\hypertarget{exercise-18}{%
+\section{Exercise}\label{exercise-18}}
 
 Under which conditions is the median equal to the mean? (hint: look at
 the normal distribution - but think more broadly abouting how
 ``counting'' and ``area under curve'' are related in histograms).
 
-\hypertarget{exercise-18}{%
-\section{Exercise}\label{exercise-18}}
+\hypertarget{exercise-19}{%
+\section{Exercise}\label{exercise-19}}
 
 Construct a set of 5 numbers such that the median is half the value of
 the mean.
@@ -4848,8 +5029,8 @@ Text(0, 0.5, 'Frequency')
 
 \end{figure}
 
-\hypertarget{exercise-19}{%
-\section{Exercise:}\label{exercise-19}}
+\hypertarget{exercise-20}{%
+\section{Exercise:}\label{exercise-20}}
 
 Add lines showing the mean, mode and median to the above graph, and
 comment on this with a box of markdown.
@@ -4917,8 +5098,8 @@ Text(0, 0.5, 'Frequency')
 
 \end{figure}
 
-\hypertarget{exercise-20}{%
-\section{Exercise:}\label{exercise-20}}
+\hypertarget{exercise-21}{%
+\section{Exercise:}\label{exercise-21}}
 
 Plot the mean and median for the above graph. What might be better
 statistics? How might you find them?
@@ -5915,8 +6096,8 @@ numerical columns.
 Name: All Ages, dtype: float64
 \end{verbatim}
 
-\hypertarget{exercise-21}{%
-\section{Exercise}\label{exercise-21}}
+\hypertarget{exercise-22}{%
+\section{Exercise}\label{exercise-22}}
 
 Using the Ward Code, \textbf{merge} the \emph{persons} geodataframe with
 the \emph{londonWards} dataframe to create a new geodataframe called
@@ -5988,8 +6169,8 @@ And let's project this into a new geodataframe:
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{exercise-22}{%
-\section{Exercise}\label{exercise-22}}
+\hypertarget{exercise-23}{%
+\section{Exercise}\label{exercise-23}}
 
 Create a choropleth map of the population of each ward using
 \emph{projected\_geopeople.plot()} and save it as an image file. Use the
