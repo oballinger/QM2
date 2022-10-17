@@ -25,6 +25,15 @@ book:
   logo: ./logo2.png
 bibliography: references.bib
 
+website:
+  favicon: logo2.png
+  twitter-card: true
+    creator: "@oballinger"
+    image: logo2.png
+  open-graph: true
+  google-analytics: UA-154866877-2
+
+
 format:
   html:
     theme: cosmo
