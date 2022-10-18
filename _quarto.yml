@@ -28,8 +28,6 @@ bibliography: references.bib
 website:
   favicon: logo2.png
   twitter-card: true
-    creator: "@oballinger"
-    image: logo2.png
   open-graph: true
   google-analytics: UA-154866877-2
 
