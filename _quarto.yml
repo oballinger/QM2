@@ -6,6 +6,7 @@ book:
   title: "Quantitative Methods 2"
   author: "Ollie Ballinger"
   date: "10/10/2022"
+  google-analytics: UA-154866877-2
   chapters:
     - index.qmd
     - ./notebooks/W01. Python Recap.ipynb
@@ -24,13 +25,6 @@ book:
   sharing: [twitter, facebook]
   logo: ./logo2.png
 bibliography: references.bib
-
-website:
-  favicon: logo2.png
-  twitter-card: true
-  open-graph: true
-  google-analytics: UA-154866877-2
-
 
 format:
   html:
