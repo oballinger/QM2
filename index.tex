@@ -190,7 +190,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, breakable, sharp corners, interior hidden, frame hidden, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, frame hidden, sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -2491,12 +2491,14 @@ provide
 \href{https://corporate.exxonmobil.com/Investors/Investor-relations/Investor-materials-archive\#Quarterlyearningsmaterials}{transcripts}
 on their website.
 
-These transcripts provide an intimate window into the company's . We can
-see how much pressure investors are putting on the company to tackle
-climate change, and how the company responds.
+These transcripts provide an intimate window into the company's
+dealings. We can see how much pressure investors are putting on the
+company to tackle climate change, and how the company responds.
 
 We'll be working with transcripts spanning nealry 20 years and over 10
 million words; that's like reading the Harry Potter series 10 times.
+Then, we'll look at a sample of 100,000 tweets that use the \#ExxonKnew
+hashtag, and analyze public pressure on the company.
 
 \includegraphics{https://haha.business/business.jpg}
 
@@ -2514,23 +2516,30 @@ data folder.
 \begin{Highlighting}[]
 \OperatorTok{\%\%}\NormalTok{capture}
 \OperatorTok{!}\NormalTok{pip install spacy}
-\OperatorTok{!}\NormalTok{pip install textacy}
-\OperatorTok{!}\NormalTok{pip install nltk}
 \OperatorTok{!}\NormalTok{pip install scattertext}
 \OperatorTok{!}\NormalTok{pip install tika}
+\OperatorTok{!}\NormalTok{pip install spacytextblob}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#Make a ./data/wk4 directory}
+\OperatorTok{!}\NormalTok{mkdir data}
 \OperatorTok{!}\NormalTok{mkdir data}\OperatorTok{/}\NormalTok{wk4}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk4}\OperatorTok{/}\NormalTok{Exxon.json }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk4}\OperatorTok{/}\NormalTok{Exxon.json}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-mkdir: cannot create directory ‘data/wk4’: File exists
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 10.5M  100 10.5M    0     0  42.5M      0 --:--:-- --:--:-- --:--:-- 42.6M
 \end{verbatim}
 
 \begin{Shaded}
@@ -2540,23 +2549,26 @@ mkdir: cannot create directory ‘data/wk4’: File exists
 \ImportTok{import}\NormalTok{ pylab}
 \ImportTok{from}\NormalTok{ IPython.core.display }\ImportTok{import}\NormalTok{ display, HTML}
 \ImportTok{import}\NormalTok{ nltk}
-\ImportTok{import}\NormalTok{ tika }
+\ImportTok{from}\NormalTok{ tika }\ImportTok{import}\NormalTok{ parser}
 \ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
 \ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
 \ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
+\ImportTok{from}\NormalTok{ spacytextblob.spacytextblob }\ImportTok{import}\NormalTok{ SpacyTextBlob}
 
 \OperatorTok{\%}\NormalTok{matplotlib inline}
-
-\NormalTok{nltk.download(}\StringTok{\textquotesingle{}stopwords\textquotesingle{}}\NormalTok{)}
 \NormalTok{pylab.rcParams[}\StringTok{\textquotesingle{}figure.figsize\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ (}\FloatTok{10.}\NormalTok{, }\FloatTok{8.}\NormalTok{)}
 \NormalTok{nlp }\OperatorTok{=}\NormalTok{ spacy.load(}\StringTok{"en\_core\_web\_sm"}\NormalTok{)}
+\NormalTok{nlp.add\_pipe(}\StringTok{\textquotesingle{}spacytextblob\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-[nltk_data] Downloading package stopwords to /root/nltk_data...
-[nltk_data]   Package stopwords is already up-to-date!
+<spacytextblob.spacytextblob.SpacyTextBlob at 0x7f7d85f62650>
 \end{verbatim}
+
+\hypertarget{downloading-and-reading-one-earnings-call}{%
+\section{Downloading and reading one earnings
+call}\label{downloading-and-reading-one-earnings-call}}
 
 Exxon host earnings calls on their website in PDF form. Usually, working
 with PDFs is a real pain as they are not machine-readable. Using a
@@ -2568,15 +2580,22 @@ we can ``parse'' a pdf, turning it into machine-readable text:
 \begin{Highlighting}[]
 \CommentTok{\# define the URL where your PDF lives. You could also upload your own pdf.}
 \NormalTok{url}\OperatorTok{=}\StringTok{\textquotesingle{}https://corporate.exxonmobil.com/{-}/media/Global/Files/investor{-}relations/quarterly{-}earnings/earnings{-}transcripts/2022{-}earnings{-}transcripts/1Q22{-}XOM{-}Earnings{-}Call{-}Transcript{-}4{-}29{-}22.pdf\textquotesingle{}}
-
 \CommentTok{\# parse the pdf by feeding tika the URL and store the text in an object called "raw" }
 \NormalTok{raw }\OperatorTok{=}\NormalTok{ parser.from\_file(url)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-2022-10-20 12:45:27,036 [MainThread  ] [INFO ]  Retrieving https://corporate.exxonmobil.com/-/media/Global/Files/investor-relations/quarterly-earnings/earnings-transcripts/2022-earnings-transcripts/1Q22-XOM-Earnings-Call-Transcript-4-29-22.pdf to /tmp/media-global-files-investor-relations-quarterly-earnings-earnings-transcripts-2022-earnings-transcripts-1q22-xom-earnings-call-transcript-4-29-22.pdf.
+2022-10-27 08:18:46,398 [MainThread  ] [INFO ]  Retrieving https://corporate.exxonmobil.com/-/media/Global/Files/investor-relations/quarterly-earnings/earnings-transcripts/2022-earnings-transcripts/1Q22-XOM-Earnings-Call-Transcript-4-29-22.pdf to /tmp/media-global-files-investor-relations-quarterly-earnings-earnings-transcripts-2022-earnings-transcripts-1q22-xom-earnings-call-transcript-4-29-22.pdf.
 INFO:tika.tika:Retrieving https://corporate.exxonmobil.com/-/media/Global/Files/investor-relations/quarterly-earnings/earnings-transcripts/2022-earnings-transcripts/1Q22-XOM-Earnings-Call-Transcript-4-29-22.pdf to /tmp/media-global-files-investor-relations-quarterly-earnings-earnings-transcripts-2022-earnings-transcripts-1q22-xom-earnings-call-transcript-4-29-22.pdf.
+2022-10-27 08:18:46,901 [MainThread  ] [INFO ]  Retrieving http://search.maven.org/remotecontent?filepath=org/apache/tika/tika-server/1.24/tika-server-1.24.jar to /tmp/tika-server.jar.
+INFO:tika.tika:Retrieving http://search.maven.org/remotecontent?filepath=org/apache/tika/tika-server/1.24/tika-server-1.24.jar to /tmp/tika-server.jar.
+2022-10-27 08:18:47,623 [MainThread  ] [INFO ]  Retrieving http://search.maven.org/remotecontent?filepath=org/apache/tika/tika-server/1.24/tika-server-1.24.jar.md5 to /tmp/tika-server.jar.md5.
+INFO:tika.tika:Retrieving http://search.maven.org/remotecontent?filepath=org/apache/tika/tika-server/1.24/tika-server-1.24.jar.md5 to /tmp/tika-server.jar.md5.
+2022-10-27 08:18:48,084 [MainThread  ] [WARNI]  Failed to see startup log message; retrying...
+WARNING:tika.tika:Failed to see startup log message; retrying...
+2022-10-27 08:18:53,099 [MainThread  ] [WARNI]  Failed to see startup log message; retrying...
+WARNING:tika.tika:Failed to see startup log message; retrying...
 \end{verbatim}
 
 Now, we have an object called ``raw'' that contains some useful
@@ -2787,33 +2806,186 @@ times ``climate change'' is mentioned in this earnings call using the
 \end{Shaded}
 
 \begin{verbatim}
-51
+11
 \end{verbatim}
 
-Looks like climate change is mentioned 51 times.
+Looks like climate change is mentioned 51 times in this earnings call.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercise-9}{%
+\subsection{Exercise}\label{exercise-9}}
+
+how many times is the phrase ``global warming'' mentioned?
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+But we have 182 earnings calls in this sample-- suppose we want to count
+the number of times climate change is mentioned in each one, so we can
+see the salience of this topic over time.
+
+\hypertarget{applying-a-lambda-function-to-a-dataframe}{%
+\subsection{Applying a lambda function to a
+dataframe}\label{applying-a-lambda-function-to-a-dataframe}}
+
+Because each row of our dataframe \texttt{df} is an earnings call (the
+text of which is contained in
+\texttt{df{[}\textquotesingle{}Text\textquotesingle{}{]}}, we want to
+apply the analysis we did for the single earnings call above to each row
+of \texttt{df}.
+
+We can accomplish this using a
+\href{https://www.w3schools.com/python/python_lambda.asp}{\textbf{lambda
+function}}. This allows us to iterate over each value in a dataframe
+column, and apply a function to it. In the simple example below, I use a
+lambda function to create a new column that is takes the values from a
+different column and multiplies them by 2:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\# create a dataframe called "example" with one column called "numbers" which contains numbers 0{-}5}
+\NormalTok{example}\OperatorTok{=}\NormalTok{ pd.DataFrame(\{}\StringTok{\textquotesingle{}numbers\textquotesingle{}}\NormalTok{:[}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{5}\NormalTok{]\})}
+
+\CommentTok{\# print the dataframe }
+\BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{ Before applying lambda function: }\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, example)}
+
+\CommentTok{\# create a new column called "doubled numbers"}
+\CommentTok{\# apply a lambda function that iterates over each row in the "numbers" column}
+\CommentTok{\# call each row "x", and multiply it by 2}
+\NormalTok{example[}\StringTok{\textquotesingle{}doubled numbers\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{ example[}\StringTok{\textquotesingle{}numbers\textquotesingle{}}\NormalTok{].}\BuiltInTok{apply}\NormalTok{(}\KeywordTok{lambda}\NormalTok{ x: x}\OperatorTok{*}\DecValTok{2}\NormalTok{)}
+
+\CommentTok{\# print the dataframe, which now contains the new column}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{ }\CharTok{\textbackslash{}n}\StringTok{ After applying lambda function: }\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, example)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+ Before applying lambda function: 
+    numbers
+0        0
+1        1
+2        2
+3        3
+4        4
+5        5
+
+ 
+ After applying lambda function: 
+    numbers  doubled numbers
+0        0                0
+1        1                2
+2        2                4
+3        3                6
+4        4                8
+5        5               10
+\end{verbatim}
+
+There were simpler ways of doing this (namely,
+\texttt{example{[}doubled\ numbers{]}=example{[}\textquotesingle{}numbers\textquotesingle{}{]}*2}).
+But if we want to do something more complex, lambda functions are very
+useful. Remember, we used
+\texttt{re.findall(r\textquotesingle{}climate\ change\textquotesingle{},\ call{[}\textquotesingle{}Text\textquotesingle{}{]},\ re.IGNORECASE)}
+to get a list of mentions of climate change in the text of one earnings
+call, and measured the length of the list using \texttt{len()} to count
+the number of mentions. We can turn this into a lambda function as
+follows:
+
+\texttt{df{[}\textquotesingle{}Text\textquotesingle{}{]}.apply(lambda\ x:\ len(re.findall(r\textquotesingle{}climate\ change\textquotesingle{},\ x,\ re.IGNORECASE)))}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{df{[}\textquotesingle{}Text\textquotesingle{}{]}}: the column
+  we want to iterate over.
+\item
+  \texttt{.apply(lambda\ x:}: iterate over each row in the column, and
+  call each value in that column x. In other words, x will represent the
+  text of each earnings call.
+\item
+  \texttt{len(re.findall(r\textquotesingle{}climate\ change\textquotesingle{},\ x,\ re.IGNORECASE)}
+  this is exactly the same as what did previously to find the number of
+  mentions of climate change in the one earnings call, except that we
+  swapped \texttt{call{[}\textquotesingle{}Text\textquotesingle{}{]}}
+  with \texttt{x}, since we want to do this for the text of every
+  earnings call.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# create a column called "climate change" that contains the count of mentions of this keyword}
 \NormalTok{df[}\StringTok{\textquotesingle{}climate change\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{].}\BuiltInTok{apply}\NormalTok{(}\KeywordTok{lambda}\NormalTok{ x: }\BuiltInTok{len}\NormalTok{(re.findall(}\VerbatimStringTok{r\textquotesingle{}climate change\textquotesingle{}}\NormalTok{, x, re.IGNORECASE)))}
+
+\CommentTok{\# print the title of each earnings call, along with the number of mentions of climate change.}
+\BuiltInTok{print}\NormalTok{(df[[}\StringTok{\textquotesingle{}Title\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}climate change\textquotesingle{}}\NormalTok{]])}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df[}\StringTok{\textquotesingle{}global warming\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{].}\BuiltInTok{apply}\NormalTok{(}\KeywordTok{lambda}\NormalTok{ x: }\BuiltInTok{len}\NormalTok{(re.findall(}\VerbatimStringTok{r\textquotesingle{}global warming\textquotesingle{}}\NormalTok{, x, re.IGNORECASE)))}
-\end{Highlighting}
-\end{Shaded}
+\begin{verbatim}
+                                                 Title  climate change
+0    Exxon  Mobil Corp at Barclays CEO EnergyPower ...        0.000045
+1     Q2 2019  Exxon  Mobil Corp Earnings Call - Final        0.000000
+2    Event Brief of Q2 2019  Exxon  Mobil Corp Earn...        0.000000
+3    Exxon  Mobil Corp at JPMorgan Energy Conferenc...        0.000000
+4    Exxon  Mobil Corp Annual Shareholders Meeting ...        0.000360
+..                                                 ...             ...
+177  Event Brief of Q3 2002  Exxon  Mobil Corporati...        0.000000
+178  Q3 2002  Exxon  Mobil Corporation Earnings Con...        0.000000
+179  Q2 2002  Exxon  Mobil Corporation Earnings Con...        0.000000
+180  Abstract of Q2 2002  Exxon  Mobil Corporation ...        0.000000
+181  Exxon  Mobil Corporation First Quarter 2002 Re...        0.000000
+
+[182 rows x 2 columns]
+\end{verbatim}
+
+Amazing! We've now got a column indicating how many times ``climate
+change'' was mentioned in each earnings call.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercise-10}{%
+\subsection{Exercise}\label{exercise-10}}
+
+Create three new columns that count the frequency of the terms ``global
+warming'', ``carbon capture'', and another phrase or word of your
+choosing. When you've done this, edit the code below so that it not only
+shows the frequency of ``climate change'' mentions, but also the three
+additional columns you created.
+
+Advanced: Our current measure of the number of mentions of keywords
+might be biased: if one earnings call mentions climate change 10 times
+more than another, but that earnings call has 10 times more words, then
+the \emph{rate} of keyword mentions hasn't actually increased; people
+are just talking more. You can get the word count of each earnings call
+in the lambda function above using \texttt{len(x)} (using \texttt{len()}
+on a string will get you a word count). Edit the lambda function above
+such that we don't get a \emph{count} of the number of mentions of
+climate change, but the \emph{rate} of mentions (i.e., count of
+``climate change'' divided by total word count per call).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+Let's plot the frequency of these mentions over time to analyze temporal
+trends in the salience of climate change and other keywords in these
+calls. We'll accomplish this using
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\# extract the year from the date column }
 \NormalTok{df[}\StringTok{\textquotesingle{}Year\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}Date\textquotesingle{}}\NormalTok{].dt.year}
-\NormalTok{yearly}\OperatorTok{=}\NormalTok{df[[}\StringTok{\textquotesingle{}greenhouse gas\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}climate change\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}emissions\textquotesingle{}}\NormalTok{]]}
+
+\CommentTok{\# group the dataframe by year, calculating the sum of the "climate change" column}
+\CommentTok{\# save it as a new dataframe called "yearly"}
+\NormalTok{yearly}\OperatorTok{=}\NormalTok{df.groupby(}\StringTok{\textquotesingle{}Year\textquotesingle{}}\NormalTok{)[}\StringTok{\textquotesingle{}climate change\textquotesingle{}}\NormalTok{].}\BuiltInTok{sum}\NormalTok{()}
+
+\CommentTok{\# plot yearly}
 \NormalTok{yearly.plot()}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-<matplotlib.axes._subplots.AxesSubplot at 0x7fd483032290>
+<matplotlib.axes._subplots.AxesSubplot at 0x7f7d77456890>
 \end{verbatim}
 
 \begin{figure}[H]
@@ -2824,270 +2996,123 @@ Looks like climate change is mentioned 51 times.
 
 \end{figure}
 
-Regex can be pretty confusing, but it's also a very powerful tool.
-Before moving on, let's familiarize ourselves a bit more with regex.
+Do you notice any patterns in the salience of these topics over time?
 
-Back to climate change. Now we know the
+\hypertarget{intermediate-regex}{%
+\section{Intermediate Regex}\label{intermediate-regex}}
+
+Great. We can see how frequently climate related keywords come up in
+earnings calls between shareholders and Exxon Mobil representatives over
+time. But what if we want to look at what they're actually saying?
+
+We can get a bit fancier with Regex to look at the content of these
+discussions. Regex can be pretty confusing, but it's also a very
+powerful tool. Before moving on, let's familiarize ourselves a bit more
+with regex.
+
+Let's try to extract all \emph{sentences} containing the phrase
+``climate change''; the regex would look like this:
+
+\texttt{({[}\^{}.{]}*climate\ change{[}\^{}.{]}*)}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{()} indicates that we want to match a group of characters, not
+  just the characters themselves. In this case, the group is a sentence,
+  not just the word climate change. But how do we
+\item
+  \texttt{{[}\^{}.{]}*} we want to match all characters except periods.
+  This will break the text up into sentences
+\item
+  \texttt{climate\ change} the phrase we want our sentence to contain.
+\end{enumerate}
+
+when you put it all together, the regex will search for groups of
+characters (1.) bounded by periods (2.) that contain the phrase
+``climate change'' (3.)
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{re.findall(}\VerbatimStringTok{r"([\^{}.]*climate change[\^{}.]*)"}\NormalTok{,}\StringTok{" "}\NormalTok{.join(df[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{]) )}
+\CommentTok{\# create a list called "climate\_sentences" that contains the results of this query}
+\NormalTok{climate\_sentences}\OperatorTok{=}\NormalTok{re.findall(}\VerbatimStringTok{r"([\^{}.]*climate change[\^{}.]*)"}\NormalTok{,}\StringTok{" "}\NormalTok{.join(df[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{]))}
+
+\BuiltInTok{print}\NormalTok{(}\BuiltInTok{len}\NormalTok{(climate\_sentences))}
+\CommentTok{\# print the first 10 sentences in the list}
+\ControlFlowTok{for}\NormalTok{ sentence }\KeywordTok{in}\NormalTok{ climate\_sentences[:}\DecValTok{10}\NormalTok{]:}
+  \BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}}\CharTok{\textbackslash{}n}\StringTok{\textquotesingle{}}\NormalTok{, sentence)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-[' However, as the world looks to lower their carbon emissions and respond to the risk of climate change, there is a desire to better understand how robust our plans are to evolving policies and changing market trends',
- ' Meeting the growing need for energy and addressing the risk of climate change are not mutually exclusive',
- " Over the past year, I've met with policymakers from both sides of the aisle: NGOs, academia, and participated in a climate change dialogue at the Vatican",
- '\n\nOur approach to climate change has 4 components',
- " We don't believe that society has to choose between economic prosperity and reducing the risk of climate change",
- '\n\nRecent steps the company has made in the last month to start to make arrangements for dialogue with the Climate Action 100+ group at independent director level are welcome, but the fact that it has taken so long to get to this point reflects how painfully slow progress has been to date with Exxon on climate change',
- ' I would tell you that we understand the concerns and share your desire to meaningfully address climate change, and I think ExxonMobil plays a pretty important role in that both today and in the future',
- " The Board's been engaged, and I would tell you, too, that we've had many, many discussions not only with your organization, but with many groups outside who have this concern, and I think are making very good progress in addressing some of the fundamental challenges associated with the risk of climate change",
- "\n\nMembers of the Board, this week's Economist describes ExxonMobil as a notable laggard on climate change",
- '\n\nThe next shareholder proposal calls for a specific Board climate change committee, and I understand that Natasha Lamb will present this proposal',
- ' Investor capital is at substantial risk in the face of climate change policy, competition from renewables, peak oil demand and unburnable fossil fuel reserves',
- ' This proposal seeks contractual clarity to ensure that the existential threats of climate change are being addressed in depth by the Board',
- ' Business strategy based on this assumption is unlikely to redirect company finances and innovative capacities to meet the formidable challenges posed by climate change and temperature containment goals',
- ' Establishing a Board committee with delineated duties can ensure that climate change is given adequate rather than tangential focus',
- ' A climate change committee can better inform and strengthen the entire Board, making it more climate-competent',
- ' A committee is a straightforward way for a Board to create clear lines of responsibility, a contractual level of clarity about who is responsible for overseeing and setting policy on climate change, and a delineation of liability for failure of care',
- ' We have a comprehensive framework to assess our business risk including the change and the risk associated with climate change',
- ' The proposal requests a report assessing the public health risks of expanding petrochemical operations in areas increasingly prone to climate change-induced storms, flooding and sea level rise',
- " It will further provide more transparent analysis to shareholders who must assess the strength of management's actions to mitigate risks from petrochemical investments in areas increasingly prone to climate change-induced storm, flooding and sea level rise",
- " We believe that more robust disclosure is needed to demonstrate leadership on corporate governance, and to mitigate reputational risks at a time of growing shareholder concern about misalignment between company's stated values and positions and their political activity, particularly on climate change issues",
- '\n\nThere are also concerns about the trade groups lobbying against responsible climate change policies',
- ' Recently, investors in Europe urged over 50 companies to ensure all lobbying related to climate change was consistent with the goals of the Paris accord',
- '\n\nOn the resolution concerning a climate change board committee, approximately 7',
- ' Texans are no strangers to the impacts of climate change',
- ' Meanwhile, communities on the Gulf Coast are still rebuilding their homes, and we know that more storms are on the way as climate change caused by your product makes extreme weather events more likely',
- ' I think if we step back and look at the risk associated with climate change, it comes back to emissions and the level of emissions globally emitted from energy sources',
- ' It says, "Wouldn\'t a board committee focused on climate change help assure that this broad societal risk impact on the company is regularly considered and assure shareholders that this issue is properly considered -- or is considered appropriately?" And then the concern is that failure to reassure the investing community, that this might have a negative impact on TSR',
- '\n\nSo maybe first of all, let me reiterate that the company recognizes that there are risks from climate change',
- ' Again, the company takes serious the risk from climate change and we are addressing that in many ways',
- "\n\nIt says regarding climate change, absent a committee focused on climate change, would the company be able to disclose information concerning each board member's knowledge on the subject?\n\nAgain, I think we mentioned, one of the enhancements we made in the proxy this year was to better identify the skills and the competencies that are important to the Board of Directors, and then to align or link those skills and competencies to the biographies of each director to ensure we appropriately address what skills are important to us and how the directors represent those skills and competencies",
- "\n\nAnd importantly, additional information about the risks associated with climate change, OIMS, process safety and environmental performance can be found already in ExxonMobil's energy and carbon summary, sustainability report and other publications, blogs and news releases",
- ' It says, "Wouldn\'t a board committee focused on climate change help assure that this broad societal risk impact on the company is regularly considered and assure shareholders that this issue is properly considered -- or is considered appropriately?" And then the concern is that failure to reassure the investing community, that this might have a negative impact on TSR',
- '\n\nSo maybe first of all, let me reiterate that the company recognizes that there are risks from climate change',
- ' Again, the company takes serious the risk from climate change and we are addressing that in many ways',
- "\n\nIt says regarding climate change, absent a committee focused on climate change, would the company be able to disclose information concerning each board member's knowledge on the subject?\n\nAgain, I think we mentioned, one of the enhancements we made in the proxy this year was to better identify the skills and the competencies that are important to the Board of Directors, and then to align or link those skills and competencies to the biographies of each director to ensure we appropriately address what skills are important to us and how the directors represent those skills and competencies",
- " We're also committed to being part of the solution in addressing the risk of climate change and other pressing societal challenges",
- '\n\nToday, many in society are looking for solutions that address the risk of climate change',
- " This disclosure addresses feedback from our shareholders, including the 2017 shareholder proposal, which received majority support at last year's shareholder meeting, that being the report on impacts of climate change policies",
- ' Pete Trelenberg is an expert in the climate change field; and Dr',
- " And they'll describe how we look at, how we evaluate and how we address the demand for energy and the risk of climate change",
- " That demand for energy and risk for climate change is what I have referred to in a number of the things that I've written, conversations [today]",
- " So I wondered whether you could talk a little bit more, sort of characterize where you are with that? And I say that because it was very clear that one of your peers sort of put out a view of energy not dissimilar to yours and was almost accused of being a climate change denier because the scenario they were showing, which is a practical one, didn't accord with what people wanted to see",
- "\n\nIn the afternoon, we'll then talk about climate change and how we're positioning ourselves for lower carbon energy future and the work that we're doing to address the risk of climate change",
- '\n\nLet me now turn to our mission, supplying energy for modern life, improving living standards around the world while minimizing the impact on the environment, including the risk of climate change',
- '\n\nFinally, we engage in public policy discussions on the best way to manage the risk of climate change',
- '\n\nWhile policy will play an enabling role, technology will be the key to addressing the risk of climate change and the growing need for energy',
- " It's also key to supplying the world's energy needs while mitigating the risk of climate change",
- ' We have a fundamental research program aimed at providing affordable and reliable energy for society, which will continue to underpin the research required to meet the dual challenge of delivering affordable and reliable energy while addressing the risks of climate change',
- ' For decades, we have provided technical depth and insights to complex energy issues including climate change and the safe use of fuels and chemicals',
- ' We face the challenge in meeting the needs of the growing population while mitigating the risk of climate change',
- '\n\nContinuing to grow high-cost fossil fuel reserve in the face of global climate change, disruptive technology development and the Paris climate agreement is no longer prudent',
- ' The Board agrees with the proponent that the risk of climate change is important to our business, but we do not agree with this approach',
- '\n\nThe next shareholder proposal calls for report on the impacts of climate change policies',
- ' At this meeting last year, I proposed a resolution asking ExxonMobil to undertake and disclose climate change scenario analysis',
- '\n\nMembers of the board, in your other roles, you have made clear that you recognize the significance of the agreed international goals on climate change',
- " Frazier, Merck's climate change position statement says Merck supports science-based international and national actions to address the challenges presented by climate change",
- '"\n\nMembers of the board, do you leave your understanding of climate change at the door when you attend ExxonMobil board meeting?\n\nExxonMobil said in its 2014 climate risk report to shareholders, "The 2 degrees is not a scenario worth considering',
- '\n\nWe believe the risks of climate change are serious and warrant action, thoughtful action',
- ' The board believes methane merits particular attention due to potential impacts on climate change',
- '\n\nOn the resolution concerning a report on impact of climate change policies, approximately 62',
- " Meeting society's need for energy while addressing risk of climate change",
- ' Acknowledges that risks of climate change are serious and warrant thoughtful action',
- ' Supporting long-range R&D to address climate change:\n\n1',
- ' Engaging on climate change:\n\n1',
- '\n\nI ask that you consider this information with regards to shareholder proposal Item #12, which is a report on impacts on climate change policies',
- " First, I'll note the dual challenge, that is, meeting society's need for energy while addressing the risk of climate change",
- "\n\nNext we state Exxon Mobil's position on climate change, which you can find on our website",
- ' We acknowledge that the risks of climate change are serious and they warrant our full action',
- "\n\nNext, I'll highlight our support for long life -- long-range research and development to address climate change",
- ' We support continued dialogue across all these venues to promote sound climate policy that provides for affordable energy solutions while also addressing the risk of climate change',
- ' Technology is also helping us to address the risk posed by climate change',
- ' We are in early days, but making carbon capture economic could lead to large-scale applications around the world, reducing emissions and mitigating the risk of climate change',
- ' Nowhere is this comprehensive cooperative approach more important than addressing the risk of climate change',
- '\n\nFor many years now, Exxon Mobil has held the view that the risks of climate change are serious, and they do warrant thoughtful action',
- ' We have long worked collaboratively with academic and institutional efforts to support research, improve climate models and advance the scientific understanding of climate change',
- " Our scientists have been participating with the UN's intergovernmental panel on climate change from its founding and have produced hundreds of publicly available papers including more than 50-peer-reviewed publications",
- '\n\nOn the policy front, we believe that addressing the risk of climate change is a global issue, which will require the involvement of governments, companies and all energy consumers',
- " We've taken thoughtful consistent action to protect the environment and to help understand and reduce the risk of climate change",
- " Because accountability and transparency are the key tenets of good governance, CalPERS has also been actively soliciting with The New York City Comptroller's office for Proposal Number seven concerning proxy access and Proposal Number 12 to improve the company's risk reporting concerning climate change risk",
- " We're asking for a person with climate change expertise to be on the Board for two main reasons",
- " Maybe if we would have had a climate change expert on the Board, she or he would not have allowed Exxon to act in the way they did when we first filed our shareholder resolution in 1997 on climate change or maybe they wouldn't have denied it for the first 10 years after we did file it",
- "\n\nEven as I speak today, the company is still supporting efforts, it seems, by some to undermine state's efforts to ensure the health of their people by having some kind of mitigation around climate change",
- "\n\nToday, at the meeting, we heard from CalPERS and CalPERS just issued a statement that from now on, they're going to be asking all companies to have somebody with climate change on their board",
- " If that's going to be for all companies, how much more for a company where almost 100% of our product and our efforts and production is related to climate change",
- " I think it's the first time, and you know I've been here quite a bit, where you begin with the problem of climate change and acknowledged it",
- ' Exxon presents a false choice between providing reliable and affordable energy and addressing climate change',
- '\n\nWe question whether lives will actually be improved in low-income communities if they are regularly suffering from the impacts of drought, extreme weather, geopolitical upheaval due to climate change and other factors',
- "\n\nThe proposed bylaw is intended to give substantial long-term shareowners a meaningful voice in electing the directors responsible for overseeing the company's long-term strategy and risks, including risks related to climate change",
- '\n\nIllustrating the deep international concern about lobbying and climate change, AP7, a Swedish pension fund, which owns over 3',
- ' Transparency and accountability in corporate spending to influence public policy are the best -- are in the best interest of ExxonMobil shareholders, and a high profile investigation into whether our company mislead investors on climate change only underscores the importance of full disclosure',
- ' ALEC has attracted negative attention for its role in promoting bills on anti-immigration policies, and also blocking EPA regulation on climate change',
- ' Continuing to grow high cost fossil fuel reserves in the face of global climate change disruptive agreement is no longer prudent',
- ' Every day, new reports and incidents demonstrate the importance of the 2-degree target for the sake of our planet for future generations and vulnerable communities, communities hit hardest by climate change',
- " Decades have been lost in the fight against climate change due in part to our company's deliberate campaign of disinformation",
- '\n\nThe next shareholder proposal calls for a report on impacts of climate change policies and is shown on Pages 69 and 70 of the proxy statement',
- '\n\nChairman, as you have acknowledged this morning, climate change is real',
- '\n\nChairman, the board is losing the confidence of its investors on climate change',
- '\n\nRecognizing the urgency facing businesses to respond to climate change, this proposal seeks to provide a means by which our company can move beyond the current business model, begin to respond to new opportunities and consider becoming an energy company for the future',
- '\n\nExxon publicly supports a carbon tax and acknowledges the realities of climate change, but its lobbying practices appear to conflict with his positions',
- " We believe that ExxonMobil shareholders deserve to understand the process by which the company contributes to organizations whose positions contradict Exxon's stated principles, blocking progress on climate change",
- " I've been a climate change scientist for nearly 50 years, and I'm here on behalf of Mercy Investment Services, speaking with respect to the items raised in Proposals 11 and 12",
- "\n\nOn the first point, in DOE's major, widely peer-reviewed 1985 climate change assessment that preceded IPCC, Exxon's leading climate change scientist for the past several decades, Dr",
- ' Brian Flannery, coauthored the chapter on projecting climate change',
- " But the reason I'm here kind of is this interest -- they used to call it global warming, but now it's called climate change",
- " Needless to say, my feeling is that the effects of climate change are real and are happening now, not something that's abstract and in the future, not something that's just been affecting indigenous populations, even though that's really heartbreaking as well",
- " I think from today's meeting, I know what your position is and whether Exxon should be held legally liable for damages from climate change",
- ' How is Exxon calculating the financial risks it would face if fossil fuel companies have to pay for damage from climate change, like the tobacco companies who, for many decades, said cigarettes were not an unhealthy thing to take part in',
- " So as state Attorneys General investigate whether ExxonMobil misled investors and the public about the realities and risks of climate change, people are increasingly making comparisons to the tobacco industry's misconduct and measures taken to address it",
- ' ExxonMobil now claims that quote, "We do not fund or support those who deny the reality of climate change',
- ' ExxonMobil is represented on the board of the American Petroleum Institute, API, which continues to claim that the science of climate change is unsettled, while attempting to block efforts to limit carbon pollution',
- ' And the fact that people have different opinions on climate change, they have every right to their opinion',
- " If we're not going to admit to climate change and admit that fossil fuels are causing -- are a part of climate change, so at least let's look at the health effects from the things that are coming out of the plants",
- '\n\nI do appreciate your admitting that there is climate change',
- "\n\nIn 1977, he briefed the company's top executives on the scientific realities of climate change",
- "\n\nMy question was going to be, will you withdraw funding from ALEC because they're known to spread misinformation about climate change, but it sounds like your answer on that is a resounding no",
- " So since you won't be doing that, will Exxon be taking action to, at all, refute or counteract the negative impacts they're making by funding an organization that says that climate change is a scam?\n\nREX TILLERSON: We will continue to engage in the policy discussions, as we currently do, with a number of broad-based groups on all sides of these issues and we'll continue to be active in the discussions legislatively in Washington and elsewhere, including through the IPCC on what we think are thoughtful, sensible policy actions that accommodate both our need for economic growth as well as addressing these risks, which are going to be very, very daunting",
- '\n\nOn the resolution concerning a report on impacts of climate change policies, approximately 38',
- ' All directors must possess capabilities to address full range of business risks, including those associated with risk of climate change',
- ' takes risk of climate change seriously',
- ' Long-term objective of climate change policy should be to reduce risk of harm at minimal societal cost, while providing reliable and affordable energy to improve global living standards',
- ' Report on impacts of climate change policies',
- ' Further, all Directors must possess the capabilities to address the full range of business risks, including those associated with the risk of climate change',
- '\n\nFirst among several climate-related proposals is one that seeks to increase capital distributions, meaning dividends and share purchases in light of climate change-related risks',
- ' To address questions raised on the topics of global energy demand and supply, climate change policy and carbon asset risk, the Company previously published a comprehensive report entitled, Energy and Carbon -- Managing the Risks',
- ' First, you should know that the Company takes the risk of climate change seriously and this risk requires thoughtful action',
- ' The long-term objective of climate change policy should be to reduce the risk of harm at minimal societal cost while also providing reliable and affordable energy to improve global living standards',
- '\n\nThe next climate policy is on a report on impacts of climate change policies',
- '\n\nAt ExxonMobil, we do take the risk of climate change seriously',
- ' We have studied climate change for almost 40 years, and we consistently collaborate and share our research with leading scientific institutions, top universities, the United Nations and other public stakeholders',
- ' We also engage in constructive dialogue on climate change policy options with NGOs, industry and policymakers',
- ' ExxonMobil received this proposal due to its exposure to risk related to climate change',
- '\n\nAs [Leward Brown], the former CEO of DP, warned in a speech last year, extractive industries need to take climate change more seriously or face an existential threat to their business',
- ' And I suspect -- put in context of my remarks, what we just heard -- not one word about climate change',
- ' Tillerson, you at least addressed the topic of climate change and alternatives',
- ' And silence speaks volumes on this, which means this Company is continuing business as usual when its competitors are at least giving lip service to the reality of climate change and the need',
- ' And so we wrote a shareholder resolution asking for somebody on the Board to have expertise on climate change',
- " But we've been -- the members of the Interfaith Centre on Corporate Responsibility started working on climate change in the late '80s",
- '\n\nJust in the last few weeks, the board of three of Exxon Mobil peers; BP, Shell, and Statoil, the board Members endorsed the shareholder resolution on climate change and carbon acid risk, underscoring just how material this issues is to the long-term future of the industry',
- "\n\nWe've spoken for many years about the urgency of climate change",
- ' And at the meeting at the Vatican last month, faith leaders noticed that human-induced climate change is a scientific reality and that decisive mitigation is a moral and religious imperative in humanity',
- "\n\nAnd I think one of the points I'd like to make about being in my first meeting is more and more treasurers and institutional investors are concerned about climate change and getting involved in this",
- '\n\nThe threats resulting from climate change are acute',
- ' We look forward to working with these various constituencies to realize our sustainability goals related to climate change while providing for the retirement security for the 48,000 [active investors] and retired members of the Vermont pension system',
- '\n\nIn the state of Vermont, the impacts of climate change are real, specifically our maple syrup industry, skiing industry, and the quality of our rivers, streams, and lakes are at risk with rising temperatures and increasingly volatile weather patterns',
- "\n\nTwo years ago in a speech that you were making in Cleveland, you brought up the issue of what happens if we can't stop climate change, if we can't address some of the issues that we've been talking about",
- " What's plan B?\n\nOur plan B has always been grounded in our beliefs around the continued evolution of technology and engineered solutions to address and react to whatever the climate system and its outcomes present to us, whether that be in the form of rises in sea level which we think you can address through different engineering accommodations along coastal areas, to changing agricultural production due to changes in weather patterns that may or may not be induced by climate change",
- ' We are very good in informative meeting in New York with executives around the issue of climate change and other issues',
- " And you all know we've been here before, that are ongoing issue is that the company isn't doing enough to address the crisis around climate change, now that was December",
- " In March the inter-government panel on climate change which this company has a part in it, said in effect first paragraph, climate change is already having sweeping effects on every continent and throughout the world's oceans, scientists just reported Monday",
- ' The effects of human induced climate change are being felt in every corner of the United States, scientists reported Tuesday',
- ' But our company continues to rely on a bet that the nations of the world will do nothing about climate change for the next 30 years',
- ' Channon], there was a [reward] and the topic was climate change',
- " My name is [Frank Rocher] a senior principal to Climate Associate (inaudible) Dallas, I'm here on behalf of the [Crystal Reynold's Foundation], the foundation with (inaudible) important climate change assumptions, here's for strategic planning following constructive discussions of Corporate Secretary, David Rosenthal and its calling December 17, 2013",
- ' Tillerson, you will require that if you talk to the council in formulations to during 2012, you said we have to be efficient and we have to manage climate change',
- " I view climate change as a risk management problem, what am I going to do about it the terms (inaudible) mitigation steps really different, that's plan B",
- " As you know, this include part of the international panel and the climate change, the US climate change assessment and we're seeing the military advisory board report on national security and the accelerated risk of climate change",
- "\n\nAnd by Mobil we'll also see for the nexus of energy in climate change as important",
- " Tillerson, what are the steps that you and the CEO of Exxon are doing to mitigate the risk of climate change? If these steps are not sufficient, what is your Plan B which we observed that the Cleveland requires steps now, how is Exxon Mobil using its resources to address the world's biggest energy challenge, how to meet global energy demand while addressing the potential disasters impact to climate on a global economy and or generally the whole global community?\n\nThe world's climate and energy requirements is a good beginning dialogue but didn't answer all these questions, I look forward to continuing dialogue which we have agreed upon with your colleagues on issues energy climate issues",
- "\n\nSo we all -- we do support and engage in and we'll continue to engage in active of dialogue and we're going to continue our active engagement with the UN's inter-governmental panel on climate change",
- "\n\nWe [now] look at that, and then look at other data, I see that according to the [few centers], the majority of Republicans don't believe that there is climate change, 90 percent of this company's political contributions are going to Republicans",
- " So on the one hand in this place, we hear you saying there is climate change, the burning of fossil fuels are human factor contributing to it, and yet you're going to support those very entities that are undermining the reality",
- '\n\nNow, what if this campaign said, Exxon Mobil says there is climate change, there is global warming, the burning of human fossil fuels are contributing to it and we got to do something because the world is at the door, everybody in the United States would know that we got to do something',
- ' It is interesting to note that the term global warming is now called climate change',
- ' Our think-tank once received contributions from the company, these contributions ended after the company told us it would not continue to contribute unless we adopted more alarm disposition on climate change',
- '\n\nAs a largest publically traded Energy Company with a mission of becoming the premier global energy company, I see it is our challenge and our duty to address greenhouse gas emissions and climate change, which faces our societies',
- '\n\nJust as we have taken on the challenge to discover new energy sources to drive modern societies, I think we also should be taking on the challenge of greenhouse gas and climate change and therefore I would highly recommend our shareholders to vote for resolution number 11 so that our company can also be one of those leaders',
- '\n\nREX TILLERSON: I think our views on climate change and the risk of climate change have been fairly well described both in public forums where I and others have spoken as well, as in publications in which we have expressed we view climate change as a serious issue, it does present serious risk',
- ' Over next 15 years, coal is expected to lose significant share as a result of climate change policies and a shift that favors a cleaner and diverse mix including more gas, nuclear and renewables',
- '\n\nWe have a report from the World Bank suggesting that if we continue with business as usual, and this is very much a business-as-usual kind of report, that by 2040 we will cross the two-degree threshold at which we have runaway climate change',
- ' Although there were references to emissions, there was no reference to the threat of runaway climate change',
- ' I wanted to ask another climate change question',
- ' Over the next 15 years, coal is expected to lose significant share as a result of climate change policies, and a shift that favors a cleaner and diverse mix, including more gas, nuclear, and renewables',
- '\n\nWe have a report from the World Bank suggesting that if we continue with business as usual, and this is very much a business-as-usual kind of report, that by 2040 we will cross the two-degree threshold at which we have runaway climate change',
- ' Although there were references to emissions, there was no reference to the threat of runaway climate change',
- ' I wanted to ask another climate change question',
- '\n\nFinally, t he industry is faced with risk of climate change and the resulting effect of government policies and impact on global markets',
- " I'm a filmmaker and an author and as part of a group that has traveled around the world looking at different communities and how they've been affected by the impacts of human cause climate change",
- '\n\nNow ExxonMobil , I believe, it was around 2008 made a commitment to stop funding denialist organizations and scientists whose purpose was to cast doubt on the reality of climate change and yet, in very recent news coming out of the United Kingdom, investigators showed that ExxonMobil was still funding some of these denialist organizations',
- ' Tillerson, in this now 2011 when there is consensus among the international scientific community that human cause climate change is a real threat that needs to be remedied, an action needs to be taken, will you make a personal promise on behalf of ExxonMobil to do what you can to stop funding denialist organizations and admit once and for all that human cause climate change is real and ExxonMobil is going to lead the way to do something about it',
- " That we view the risk from climate change as serious and it's a risk that does need to be managed in a very broad and global way",
- "\n\nWe do contribute to the broad based understand of the science underlying climate change and we have funded efforts on all sides of that issue at both the academic level and at private institutions because we think it's important on a policy that has such far reaching and dramatic impacts on society and our economic performance not just in this country but for the world, that we have the most fulsome discussion of what we understand bout this very complicated issue",
- '\n\nMICHAEL CROSBY: I just want to thank you very, very sincerely for what I heard in the remarks that you made about climate change',
- " We said climate change exists, we've said human factors are contributing",
- "\n\nJust a quick comment on your reaction to my remarks on climate change, they're not new",
- ' Tillerson, for the Company to actually step up and take leaderships instead of kind of hiding behind these positions in some way, yes you articulate it here, but you only talk really about climate change here in any kind of more forceful or clear way or when it comes to policy, how many times have you met with senators and congressmen on the Hill about a carbon tax',
- " I think we are a leader in these areas -- both in the climate change discussion and articulating for others our views and our position in trying to be a positive participant in very serious policy discussions, I could not count for you the number of discussions I've had with people on the Hill about carbon tax",
- " How the climate change issue is evolving from one year to the next it is looked at every year so that we get an update on is there anything new that's emerged in the science",
- '\n\nIn the context of these economic conditions, government policies that will influence climate change continue to be developed',
- '\n\nFinally, the industry is faced with risk of climate change and the resulting effect of government policies and impact on global markets',
- ' At ExxonMobil , we are taking a proactive approach to managing long-term risk of climate change',
- " On this very same issue of Exxon making really substantive, concrete progress on dealing with climate change and setting a comprehensive business strategy and plan for dealing with increased emissions from the Company and how you're going to get those down",
- ' It is undeniable that the rapid rate of climate change and carbon emission levels are a serious threat to humanity',
- ' And it asks for a report to share owners on the financial risks resulting from climate change and its impact on share owner value over time, as well as actions that the Board deems necessary to provide long-term protection of business interests in share owner value',
- '\n\nAnd so he felt that, with the Securities and Exchange Commission rules that were issued on February 8, 2010, interprets his guidance regarding disclosure related to climate change, that that will help',
- '\n\nAnd he felt that greater transparency on financial risk related to climate change is a very important issue both to ExxonMobil  and to all of the share owners',
- " Switching gears, I'd like to suggest that climate change is entirely natural",
- " According to Newsweek Magazine's March 1st edition, a Rasmussen poll last summer stated that 47% of all Americans believe that climate change was caused by man and only 33% believed it was caused by nature",
- '\n\nA new poll last winter showed that these numbers have flipped and now 47% of all Americans believe that climate change is completely natural',
- ' As time goes on, more and more American will realize that climate change is entirely natural and that these alarmists are promoting a scam and they continue to blow smoke up your pants every year',
- ' So, why believe they can project anything years ahead?\n\nThere is zero science to show that C02 in our biosphere is the cause of climate change up or down',
- ' And to the extent that climate change legislation creates advantages or disadvantages for fuel choices, natural gas clearly is a competitive fuel as a price for carbon might be put in place',
- ' And to the extent that climate change legislation creates advantages or disadvantages for fuel choices, natural gas clearly is a competitive fuel as a price for carbon might be put in place',
- " Clearly in the last ten years of our conversations around climate change, we now see it's another whole world, I would say, since even we were here last year",
- " To have constructive dialogue with Professor Boskin on climate change, and the implication for sustaining our company's stellar performance out into the future",
- "   \n\nNow climate change may be about our planet's future, but it's also about the financial implication to company's such as  ExxonMobil",
- ' Tillerson, you made no mention of issues of climate change or impact that that might have on the profitability over a company that is a multi-decade investor in the area',
- " Why has our company seemingly put so much effort into making itself into public enemy number one on climate change? How have we gotten to this point, where an otherwise great company who has acquired such a dismal reputation, and has become more known more for its funding of climate skeptics than for its technological leadership, which is quite profound?   \n\nIt just seemed irrational to me, you're an energy company, your job is to deliver returns to shareholders which you're quite good at, your job is not to be public philosophers on science, though I did enjoy your lecture last year in this meeting on the philosophical impossibility of scientific consensus",
- "   \n\nI guess perhaps you could claim that you've benefited shareholders by delaying the day of reckoning for  ExxonMobil on climate change, but I don't see that",
- '   \n\nYou can turn climate change into an opportunity if you want to, but instead you continue to fund groups like the Heartland Institute that question the science of climate change, and all you can really manage to say on the issue is that the risk from rising greenhouse gas emissions could prove to be significant',
- '   \n\nWhen you compare that to what some of your peers have said, the head of  ConocoPhillips a few weeks ago said that, "The science on climate change is quite compelling, human activity including the burning of fossil fuel is contributing to climate change',
- ' Now is the time for a national mandated framework to deal with climate change',
- '" And this is a clear statement, and this is a company that certainly understands the urgency of climate change',
- '   \n\nAnd you complain that your position on climate change is misunderstood, but with legalistic statements like the one I quoted, it just seems like you almost want to be misunderstood',
- " As you and I talked last year, I said that there is much we know and can agree on around the climate change issue, and there's much that we just don't believe we do know",
- ' The position that you described of others is not that different from our position on climate change',
- "   \n\nLast year Exxon gave $11 million to combat malaria, and educate girls and women in Africa, but what was in the news? It was the funding of think tanks and organizations that deny the science which is unequivocal, we've heard it, we've heard it before, enter governmental panel on climate change, 2,500 scientists",
- '   \n\nAnd as you know, many Bills are now presently being considered in Congress regarding climate change, some of which go by the name of Carbon Taxes, others by Cap and Trade Systems',
- ' All of which have really the same goal which is to reduce the amount of carbon that we are emitting into the atmosphere and to mitigate the worst effects of climate change',
- ' The strongest applause that you got today were for comments on your dedication to the difficult challenge of climate change',
- ' There is no more difficult challenge than climate change',
- "  \n\nThe company's strategy on climate change, as example filed by the recent report that was prepared with his committees explicit approval, demonstrates a startling and willful ignorance of an issue that we believe has the ability to dramatically reshape a landscape of the energy industry",
- "  \n\nOne of which the risk is great that we're actually increasing evidence of climate change by sharply curbing greenhouse gas emissions",
- ' And yet our company has produced an entire report on climate change that completely ignores the issue of whether rising greenhouse gas emissions will in anyway impact the market for energy',
- '  \n\nOur competitors are increasingly understanding that climate change poses a fundamental threat to where they do business? And the competitors are reported to drive under virtually any future scenario',
- '  \n\nWhile our companies prepare only for one, the rather unlikely scenario of the climate change is a myth and business as usual continues for the next several decades',
- " They are concerned about Exxon strategy for climate change and they're very much interested in the company taking a leading role in developing renewable energy for our country in the global market",
- "  \n\nInstitutional investors are also increasingly concerned about the company's position on climate change, including some of the largest public pension in the US",
- ' Your position on climate changes completely obscured your progress in other areas of corporate transparency and responsibility and therefore does no service to this company and its shareholders',
- " I'd like to know what provisions you have made on the financial statements for damage caused by climate change? Climate change is the potential liability and I wonder if you have reserved for it on the balance sheet?  \n\nRICHARD PATTERSON, EXXON MOBIL CORPORATION: The responsibility for provisions in the financial statement are those of management and I am not sure that I am the appropriate person to respond to that question",
- " Have -- what provisions have you made on the financial statement for the damages caused by climate change and the potential liability there and have you reserved for it?  \n\nRICHARD PATTERSON: It's neither likely nor could it be estimated",
- ' We were happy to see or to hear about a report that was going to be published by our company on climate change',
- ' The climate change and the policy to be listed, or have the potential for dramatically reshape the economic landscape of our energy industries',
- "  \n\nAs subjects on Mobil strategy with respect to climate change, is a key to company's long-term health, as a company",
- ' For this company is sticked out a position of willful ignorance on climate change',
- " The Company's policy on climate change is so tied up with you",
- ' Chairman our resolution, ask the company to report the data it uses to develop its position on the science of climate change',
- " Second, global warming has become a drag on a company's reputation the problem go beyond the global boycott they continue to hamper sales over the last years state pension funds and main stream equity analyst have joined the course of those asking for our company to be more accountable on the risks of climate change",
- '  \n\nYour existing statements on global climate change as well as your significant financial commitment to Stanford University and other institutions are evidence that you take this responsibility seriously',
- ' I want to strongly support, the request for greater disclosure on climate change',
- " I'm concerned of the shareholder and I have represented other shareholders that we are increasingly being left behind by our key competitors preparing to deal with issue of climate change",
- ' Our competitors are frequently demonstrating that they understand the climate change process is a fundamental threat to way - that they do business',
- ' No one has still questioned the science on climate change',
- "  \n\nAll even have publicly agreed with the consensus of word scientist, the climate change is a real threat it's caused by human activity",
- ' BP and Shell are investing in renewables to hedge the risk of climate change',
- ' Howell Fitz, has pledged the shareholders available to disclose sometime this year, the actual financial impact of climate change on the company going-forward',
- ' The Boards would bubble said the proposals state - quote " Our scientists have authored nearly 60 papers in scientific and technical publications on climate change with over 30 published and peer reviewed journals" -- unquote',
- " If you wanted to do more, you will give the names of the scientists who'd be nominated to serve in a numerous review board, listing their names and listing the review boards including those acting as legal authors with the intergovernmental panel and climate change",
- " All those, would verifiably prove Exxon Mobil's interest in climate change beyond any shadow of a doubt",
- ' Nowhere in this resolution does it say that Exxon Mobil has to agree with us on the science of climate change',
- ' And so, here we are to propose this resolution, which is intended to begin a dialogue with the company, with its management and with its Board of Directors about the science of climate change and whether this company has engaged in a real historical process to determine its own position',
- ' Right now, we have the information for our side the Intergovernmental Panel on climate changes has provided a great set of reports']
+251
+
+  However, as the world looks to lower their carbon emissions and respond to the risk of climate change, there is a desire to better understand how robust our plans are to evolving policies and changing market trends
+
+  Meeting the growing need for energy and addressing the risk of climate change are not mutually exclusive
+
+  Over the past year, I've met with policymakers from both sides of the aisle: NGOs, academia, and participated in a climate change dialogue at the Vatican
+
+ 
+
+Our approach to climate change has 4 components
+
+  We don't believe that society has to choose between economic prosperity and reducing the risk of climate change
+
+ 
+
+Recent steps the company has made in the last month to start to make arrangements for dialogue with the Climate Action 100+ group at independent director level are welcome, but the fact that it has taken so long to get to this point reflects how painfully slow progress has been to date with Exxon on climate change
+
+  I would tell you that we understand the concerns and share your desire to meaningfully address climate change, and I think ExxonMobil plays a pretty important role in that both today and in the future
+
+  The Board's been engaged, and I would tell you, too, that we've had many, many discussions not only with your organization, but with many groups outside who have this concern, and I think are making very good progress in addressing some of the fundamental challenges associated with the risk of climate change
+
+ 
+
+Members of the Board, this week's Economist describes ExxonMobil as a notable laggard on climate change
+
+ 
+
+The next shareholder proposal calls for a specific Board climate change committee, and I understand that Natasha Lamb will present this proposal
 \end{verbatim}
+
+\hypertarget{semantic-analysis}{%
+\subsection{Semantic Analysis}\label{semantic-analysis}}
+
+Now we can see the \emph{sentences} which mention climate change, which
+helps us understand a bit about the context. We can perform semantic
+analysis on some of these sentences to take a close look at the grammar
+of some of these sentences; I've isolated the 9th sentence and produced
+a dependency tree, like the ones we've seen in class.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ spacy }\ImportTok{import}\NormalTok{ displacy}
+
+\CommentTok{\#run the NLP pipeline on the 9th sentence from our list of sentences about climate change.}
+\NormalTok{doc }\OperatorTok{=}\NormalTok{ nlp(climate\_sentences[}\DecValTok{8}\NormalTok{].lstrip())}
+
+\CommentTok{\#print out the dependency tree}
+\NormalTok{displacy.render(doc, jupyter}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+<IPython.core.display.HTML object>
+\end{verbatim}
+
+The root of this dependency tree is the verb ``describes''. The main
+subject is the Economist, and the object is Exxon. But we're still
+missing one vital piece of information: who is speaking? It makes a big
+difference to our understanding of whats going on. Are mentions of
+climate change increasing over time because shareholders are asking more
+questions? Or did CEO Rex Tillerson have a spiritual awakening in which
+all he wants to do is talk about climate change? For that, we need to
+figure out who's talking, and resturcture our dataframe.
+
+\hypertarget{advanced-regex}{%
+\section{Advanced Regex}\label{advanced-regex}}
 
 The earnings call transcript is structured in such a way that it should
 be possible to separate speakers based on regular expressions. Every
@@ -3105,1019 +3130,449 @@ In terms of when we'll see significant production growth out of the unconvention
 
 Now, we can't simply split by new line (\texttt{\textbackslash{}n});
 David Rosenthal has two paragraphs. We also can't just split using
-\texttt{:}, since this may appear in the text. Let's describe the
-features of the names we're looking to split out:
+\texttt{:}, since this may appear in the text other than to indicate
+speakers. Let's describe the features of the characters we're looking to
+split out:
+
+\texttt{({[}A-Z{]}+.+{[}A-Z{]}+:)}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  It's a single or group of words * regex: \texttt{(\textbackslash{}w)}
+  It's a group of characters * regex: \texttt{()}
 \item
   The words are all caps, and can contain any characters *
-  regex:\texttt{(\textbackslash{}w{[}A-Z{]})}
+  regex:\texttt{({[}A-Z{]})}
 \item
-  There are multiple words, and they can be separated by anything *
-  regex:
-  \texttt{(\textbackslash{}w{[}A-Z{]}+.+\textbackslash{}w{[}A-Z{]})}
+  There can be multiple words, and they can be separated by anything *
+  regex: \texttt{({[}A-Z{]}+.+{[}A-Z{]})}
 \item
   The sequence always ends in a colon * regex:
-  \texttt{(\textbackslash{}w{[}A-Z{]}+.+\textbackslash{}w{[}A-Z{]}+:)}
+  \texttt{({[}A-Z{]}+.+{[}A-Z{]}+:)}
 \end{enumerate}
 
-If we plug this into
+Let's use this regex in \texttt{re.findall()} to get a list of the
+speakers on this call:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{re.findall(}\VerbatimStringTok{r\textquotesingle{}([A{-}Z]+.+[A{-}Z]+:)\textquotesingle{}}\NormalTok{, call[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{])}
+\CommentTok{\# create a list of all the speakers by searching text of the earnings call for the above regex. }
+\NormalTok{speakers }\OperatorTok{=}\NormalTok{ re.findall(}\VerbatimStringTok{r\textquotesingle{}([A{-}Z]+.+[A{-}Z]+: )\textquotesingle{}}\NormalTok{, call[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{])}
+
+\CommentTok{\# because they don\textquotesingle{}t introduce the speaker in the opening statement, insert a placeholder at the beginning of this list.}
+\NormalTok{speakers.insert(}\DecValTok{0}\NormalTok{,}\StringTok{\textquotesingle{}INTRODUCTION\textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# using set(list) will give you the unique values in a list}
+\CommentTok{\# the length of set(list) gives us the number of unique speakers }
+\BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}There are\textquotesingle{}}\NormalTok{, }\BuiltInTok{len}\NormalTok{(}\BuiltInTok{set}\NormalTok{(speakers)),}\StringTok{\textquotesingle{}speakers on this call:\textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# let\textquotesingle{}s print out the first 10 speakers: }
+\ControlFlowTok{for}\NormalTok{ speaker }\KeywordTok{in}\NormalTok{ speakers[:}\DecValTok{10}\NormalTok{]:}
+  \BuiltInTok{print}\NormalTok{(speaker)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-['JEFF WOODBURY, VP OF INVESTOR RELATIONS, CORPORATE SECRETARY, EXXONMOBIL CORPORATION:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'BETH RICHTMAN, INVESTMENT MANAGER, CALPERS:',
- 'REX TILLERSON:',
- 'MICHAEL CROSBY, CAPUCHIN FRANCISCAN FRIAR:',
- 'REX TILLERSON:',
- 'TRACEY REMBERT, SHAREHOLDER, CHRISTIAN BROTHERS INVESTMENT SERVICES:',
- 'REX TILLERSON:',
- 'MICHAEL GARLAND, ASSISTANT COMPTROLLER FOR CORPORATE GOVERNANCE AND RESPONSIBLE INVESTMENT, OFFICE OF NEW YORK CITY COMPTROLLER:',
- 'REX TILLERSON:',
- 'TOM SIFFERMAN, REPRESENTATIVE, MOBIL OIL:',
- 'REX TILLERSON:',
- 'HUGHES JENKINS, EMPLOYEE, UNITED STEELWORKERS:',
- 'REX TILLERSON:',
- 'NATASHA LAMB, DIRECTOR OF EQUITY RESEARCH, ARJUNA CAPITAL AND BALDWIN BROTHERS:',
- 'REX TILLERSON:',
- 'PATRICIA DALY, SISTERS OF ST. DOMINIC OF CALDWELL NEW JERSEY:',
- 'REX TILLERSON:',
- 'PATRICIA DALY:',
- 'REX TILLERSON:',
- 'EDWARD MASON, SHAREHOLDER, CHURCH COMMISSIONERS FOR ENGLAND:',
- 'REX TILLERSON:',
- 'DANIELLE FUGERE:',
- 'REX TILLERSON:',
- 'DANIELLE FUGERE:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'DAVID RIESMAN, SHAREHOLDER:',
- 'REX TILLERSON:',
- 'DAVID RIESMAN:',
- 'REX TILLERSON:',
- 'MICHAEL MACCRACKEN, CHIEF SCIENTIST, CLIMATE CHANGE SCIENTIST, MERCY INVESTMENT SERVICES:',
- 'REX TILLERSON:',
- 'MICHAEL MACCRACKEN:',
- 'REX TILLERSON:',
- 'DAVID MARTINEAU, GEOLOGIST:',
- 'REX TILLERSON:',
- 'RENEE BOUCHARD:',
- 'REX TILLERSON:',
- 'KATHY MULVEY, ACCOUNTABILITY CAMPAIGN MANAGER, UNION OF CONCERNED SCIENTISTS:',
- 'REX TILLERSON:',
- 'KATHY MULVEY:',
- 'REX TILLERSON:',
- 'CHARLOTTE RAWLS, SHAREHOLDER:',
- 'REX TILLERSON:',
- 'CHARLOTTE RAWLS:',
- 'REX TILLERSON:',
- "ROBERT FORE, REPRESENTATIVE, PRESBYTERIAN CHURCH U.S.A.'S FOUNDATION:",
- 'REX TILLERSON:',
- 'HUNTER MARTIN, SHAREHOLDER:',
- 'REX TILLERSON:',
- 'HUNTER MARTIN:',
- 'REX TILLERSON:',
- 'ANNA KOLINSKI:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'UNIDENTIFIED AUDIENCE MEMBER:',
- 'REX TILLERSON:',
- 'JULIAN MARTINEZ, REPRESENTATIVE, SER-JOBS FOR PROGRESS:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'UNIDENTIFIED COMPANY REPRESENTATIVE:',
- 'REX TILLERSON:']
+There are 31 speakers on this call:
+INTRODUCTION
+JEFF WOODBURY, VP OF INVESTOR RELATIONS, CORPORATE SECRETARY, EXXONMOBIL CORPORATION: 
+REX TILLERSON: 
+REX TILLERSON: 
+REX TILLERSON: 
+BETH RICHTMAN, INVESTMENT MANAGER, CALPERS: 
+REX TILLERSON: 
+MICHAEL CROSBY, CAPUCHIN FRANCISCAN FRIAR: 
+REX TILLERSON: 
+TRACEY REMBERT, SHAREHOLDER, CHRISTIAN BROTHERS INVESTMENT SERVICES: 
 \end{verbatim}
+
+We want to do more than just identify the speakers though; we want to
+break up the text of our earnings call into chunks of speech and
+associate each chunk of speech with its speaker. We can split a string
+using regular expressions using
+\texttt{re.split(\textless{}regex\textgreater{},\textless{}text\textgreater{})}.
+This takes one block of text, splits it into chunks using the regex, and
+returns a list of chunks:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{re.split(}\VerbatimStringTok{r\textquotesingle{}([A{-}Z]+.+[A{-}Z]+:)\textquotesingle{}}\NormalTok{, call[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{])[}\DecValTok{9}\NormalTok{]}
+\CommentTok{\# split the text of the earnings call using our regex, save the list as "speech"}
+\NormalTok{speech}\OperatorTok{=}\NormalTok{re.split(}\VerbatimStringTok{r\textquotesingle{}[A{-}Z]+.+[A{-}Z]+: \textquotesingle{}}\NormalTok{, call[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{])}
+
+\CommentTok{\# now, we can print the fourth speaker:}
+\BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}Speaker: }\CharTok{\textbackslash{}n}\StringTok{\textquotesingle{}}\NormalTok{, speakers[}\DecValTok{3}\NormalTok{])}
+ 
+\CommentTok{\# and the text of the fourth speech:  }
+\BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}}\CharTok{\textbackslash{}n}\StringTok{ Speech: }\CharTok{\textbackslash{}n}\StringTok{\textquotesingle{}}\NormalTok{, speech[}\DecValTok{3}\NormalTok{])}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-'BETH RICHTMAN, INVESTMENT MANAGER, CALPERS:'
+Speaker: 
+ REX TILLERSON: 
+
+ Speech: 
+ So now, turning to the formal business of the meeting and a few brief remarks on shareholder proposals and voting. Each year, the corporation receives a number of suggestions from shareholders. Some of these are in the form of proposals to be presented at the Annual Meeting and each is given careful consideration.
+
+We seek dialogues with the sponsors prior to the meeting when there is more time to better understand each other's positions and we often find agreement. Let me be clear on the conduct of the meeting. Recognizing that the majority of our shareholders have voted by proxy and are not present, we have established procedures to facilitate an orderly meeting.
+
+We've set up a process for speakers to identify themselves and to express their views and I assure you, we welcome those views. In order that as many shareholders as possible can participate, we have set time limits and a system of reminders to help you manage your time.
+
+We have 14 items to consider. As Secretary Woodberry said earlier, discussion on all items of business will be deferred to the discussion period. This may enable us to have some time for general comments and questions as well and conclude the meeting in a reasonable time frame.
+
+For those of you who may wish to leave the meeting at any time, let me express my appreciation for your attendance. Since we have a number of items yet to discuss on the program and you've been sitting for a while, I would invite you to stand and take a short stretch break and I would ask that you not leave the hall. We'll resume in just a moment.
+
+(Break)
+
 \end{verbatim}
 
-The kind of analysis we will be doing reqires \emph{tokenizing} a text,
-and \emph{tagging} individual words. Tokenizing means splitting the text
-into individul sentences or individual words, while tagging means
-classifying each word according to a POS (Parts Of Speech)
-classification. We can word tokenize our data using the
-\texttt{word\_tokenize} function from the \texttt{nltk} library, which
-returns an object which is a list of tokens; if we print the first 19
-tokens, we get the first sentence:
+Now we've associated chunk of speech with their speaker, amazing. Let's
+create a new dataframe that reflects this structure. Currently, our
+dataframe \texttt{call} has one row. Let's use the two lists we just
+created, \texttt{speakers} and \texttt{speech}, to create a dataframe in
+which each row is one chunk of speech. A column called ``speaker'' will
+indicate who is speaking, and a column called ``speech'' will contain
+the text of the speech:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{  tokens}\OperatorTok{=}\NormalTok{nltk.word\_tokenize(call[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{])  }
-\NormalTok{  tokens[:}\DecValTok{19}\NormalTok{]}
+\CommentTok{\# create the new dataframe, from the two lists, and name it "speaker\_df"}
+\NormalTok{speaker\_df}\OperatorTok{=}\NormalTok{pd.DataFrame(\{}\StringTok{"speaker"}\NormalTok{:speakers,}\StringTok{"speech"}\NormalTok{:speech\})}
+
+\CommentTok{\# clean up the "speaker" column by removing the colons using .str.replace(":","")}
+\CommentTok{\# remove trailing white space using str.rstrip()}
+\NormalTok{speaker\_df[}\StringTok{\textquotesingle{}speaker\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{speaker\_df[}\StringTok{\textquotesingle{}speaker\textquotesingle{}}\NormalTok{].}\BuiltInTok{str}\NormalTok{.replace(}\StringTok{\textquotesingle{}:\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{).}\BuiltInTok{str}\NormalTok{.rstrip()}
+
+\CommentTok{\# print rows in which rex tillerson is speaking:}
+\BuiltInTok{print}\NormalTok{(speaker\_df[speaker\_df[}\StringTok{\textquotesingle{}speaker\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{"REX TILLERSON"}\NormalTok{])}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-['I',
- "'m",
- 'Rex',
- 'Tillerson',
- ',',
- 'I',
- "'m",
- 'the',
- 'Chairman',
- 'and',
- 'Chief',
- 'Executive',
- 'Officer',
- 'of',
- 'the',
- 'Exxon',
- 'Mobil',
- 'Corporation',
- '.']
+          speaker                                             speech
+2   REX TILLERSON  Thank you, Jeff. We will address our items of ...
+3   REX TILLERSON  So now, turning to the formal business of the ...
+4   REX TILLERSON  If you'd please take your seats. The first ite...
+6   REX TILLERSON  Thank you. The Board recommends a vote against...
+8   REX TILLERSON  Thank you, Fr. Crosby. The Board recommends a ...
+10  REX TILLERSON  Thank you, Ms. Rembert. The Board recommends a...
+12  REX TILLERSON  Thank you, Mr. Garland. The Board recommends a...
+14  REX TILLERSON  Thank you, Mr. Sifferman. The Board recommends...
+16  REX TILLERSON  Thank you, Mr. Jenkins. The Board recommends a...
+18  REX TILLERSON  Thank you, Ms. Lamb. The board recommends a vo...
+20  REX TILLERSON                           I'm well. Thank you.\n\n
+22  REX TILLERSON  Thanks, Sister Pat. The board recommends a vot...
+24  REX TILLERSON  Thank you, Mr. Mason. The board recommends a v...
+26  REX TILLERSON  Thank you, Ms. Fugere. The board recommends a ...
+28  REX TILLERSON  Thank you, Ms. Fugere. The board recommends a ...
+29  REX TILLERSON  Okay, let's resume the meeting, so if you woul...
+30  REX TILLERSON                             There in the back.\n\n
+32  REX TILLERSON  Thank you. Other speakers? All right, down her...
+34  REX TILLERSON  Well, ALEC, as you probably know, is an organi...
+36  REX TILLERSON  Well, as you and I have spoken before, my view...
+38  REX TILLERSON  I understand, and so I'm going to respond to a...
+40  REX TILLERSON           Thank you. In the inside aisle here.\n\n
+42  REX TILLERSON  Speculating on future court events would be ir...
+44  REX TILLERSON  The only way I know to respond is to tell you ...
+46  REX TILLERSON  And we have responded to those allegations as ...
+48  REX TILLERSON                 Could you begin to wrap it up?\n\n
+50  REX TILLERSON  Thank you. So over here to this side of the ha...
+52  REX TILLERSON  Well, as to Saudi Aramco's views or the Kingdo...
+54  REX TILLERSON  I wish my dad had bought some shares the year ...
+56  REX TILLERSON    Thank you for those kind words. Right here.\n\n
+58  REX TILLERSON  We will continue to engage in the policy discu...
+59  REX TILLERSON  I believe all the items of business have been ...
+60  REX TILLERSON  While the inspectors of election are preparing...
+62  REX TILLERSON  Well, I'm not sure I would characterize it as ...
+64  REX TILLERSON  Well, as many of have heard me say before, if ...
+65  REX TILLERSON  The inspectors of election are ready to report...
+67  REX TILLERSON  Thank you. As stated in the written report of ...
 \end{verbatim}
 
-Having tokenized our text, there are a number of useful functions can
-use to explore it quantitatively. Let's start by counting the number of
-times ``climate'' is mentioned:
+\hypertarget{analyzing-distinguishing-terms}{%
+\section{Analyzing Distinguishing
+Terms}\label{analyzing-distinguishing-terms}}
+
+And there we have it. We started with a PDF on a website, and we've
+ended up with a dataframe in which each row is a speech, with a column
+indicating who is speaking, what they're saying, and when they said it.
+
+Now, lets use this dataframe to create a scatterplot comparing the
+language used by the company's CEO Rex Tillerson and the company's
+shareholders.This will give us insights into the topics that are
+important for shareholders, and the debates that take place within the
+company.
+
+We'll do so using the
+\href{https://spacy.io/universe/project/scattertext}{scattertext}
+libray:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{tokens.count(}\StringTok{\textquotesingle{}climate\textquotesingle{}}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-76
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{nltk.Text(tokens).collocations()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-REX TILLERSON; climate change; proxy statement; Exxon Mobil; Mr.
-Tillerson; voting thereon; resolution concerning; per day; shares
-voting; health care; Good morning; New York; Annual Meeting; barrels
-per; natural gas; shareholder proposal; global warming; oil
-equivalent; last year; York City
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#nltk.Text(tokens).concordance(\textquotesingle{}climate change\textquotesingle{})}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-['EXXONMOBIL CORPORATION:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'CALPERS:',
- 'REX TILLERSON:',
- 'CAPUCHIN FRANCISCAN FRIAR:',
- 'REX TILLERSON:',
- 'CHRISTIAN BROTHERS INVESTMENT SERVICES:',
- 'REX TILLERSON:',
- 'OFFICE OF NEW YORK CITY COMPTROLLER:',
- 'REX TILLERSON:',
- 'MOBIL OIL:',
- 'REX TILLERSON:',
- 'UNITED STEELWORKERS:',
- 'REX TILLERSON:',
- 'ARJUNA CAPITAL AND BALDWIN BROTHERS:',
- 'REX TILLERSON:',
- 'DOMINIC OF CALDWELL NEW JERSEY:',
- 'REX TILLERSON:',
- 'PATRICIA DALY:',
- 'REX TILLERSON:',
- 'CHURCH COMMISSIONERS FOR ENGLAND:',
- 'REX TILLERSON:',
- 'DANIELLE FUGERE:',
- 'REX TILLERSON:',
- 'DANIELLE FUGERE:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'SHAREHOLDER:',
- 'REX TILLERSON:',
- 'DAVID RIESMAN:',
- 'REX TILLERSON:',
- 'MERCY INVESTMENT SERVICES:',
- 'REX TILLERSON:',
- 'MICHAEL MACCRACKEN:',
- 'REX TILLERSON:',
- 'GEOLOGIST:',
- 'REX TILLERSON:',
- 'RENEE BOUCHARD:',
- 'REX TILLERSON:',
- 'UNION OF CONCERNED SCIENTISTS:',
- 'REX TILLERSON:',
- 'KATHY MULVEY:',
- 'REX TILLERSON:',
- 'SHAREHOLDER:',
- 'REX TILLERSON:',
- 'CHARLOTTE RAWLS:',
- 'REX TILLERSON:',
- 'S FOUNDATION:',
- 'REX TILLERSON:',
- 'SHAREHOLDER:',
- 'REX TILLERSON:',
- 'HUNTER MARTIN:',
- 'REX TILLERSON:',
- 'ANNA KOLINSKI:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'UNIDENTIFIED AUDIENCE MEMBER:',
- 'REX TILLERSON:',
- 'JOBS FOR PROGRESS:',
- 'REX TILLERSON:',
- 'REX TILLERSON:',
- 'UNIDENTIFIED COMPANY REPRESENTATIVE:',
- 'REX TILLERSON:']
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ nltk }\ImportTok{import}\NormalTok{ bigrams}
-
-\NormalTok{finder }\OperatorTok{=}\NormalTok{ BigramCollocationFinder.from\_words(tokens)}
-\NormalTok{bigram\_measures }\OperatorTok{=}\NormalTok{ nltk.collocations.BigramAssocMeasures()}
-\BuiltInTok{print}\NormalTok{(finder.nbest(bigram\_measures.pmi, }\DecValTok{2}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[('1,000', 'academics'), ('1,400', 'Gulf')]
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ tokenize(raw\_text):}
-\NormalTok{  tokens}\OperatorTok{=}\NormalTok{nltk.word\_tokenize(raw\_text)}
-\NormalTok{  text}\OperatorTok{=}\NormalTok{nltk.Text(tokens)}
-  \ControlFlowTok{return}\NormalTok{ text}
-
-\NormalTok{df[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{].}\BuiltInTok{apply}\NormalTok{(}\KeywordTok{lambda}\NormalTok{ x: tokenize(x))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df[}\StringTok{\textquotesingle{}climate\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{].}\BuiltInTok{apply}\NormalTok{(}\KeywordTok{lambda}\NormalTok{ x: x.count(}\StringTok{\textquotesingle{}climate\textquotesingle{}}\NormalTok{))}
-\NormalTok{df.plot(}\StringTok{\textquotesingle{}climate\textquotesingle{}}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-<matplotlib.axes._subplots.AxesSubplot at 0x7fd4956abb90>
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W04. Natural Language Processing_files/figure-pdf/cell-25-output-2.png}
-
-}
-
-\end{figure}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{call}\OperatorTok{=}\NormalTok{df.iloc[}\DecValTok{38}\NormalTok{]}
-
-\NormalTok{text}\OperatorTok{=}\NormalTok{call[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{]}
-\CommentTok{\#tokens=nltk.word\_tokenize(raw\_text)}
-\CommentTok{\#text=nltk.Text(tokens)}
-
-\NormalTok{word\_fd }\OperatorTok{=}\NormalTok{ nltk.FreqDist(filtered\_sentence)}
-
-\NormalTok{text.concordance(}\StringTok{\textquotesingle{}climate\textquotesingle{}}\NormalTok{)}
-\BuiltInTok{print}\NormalTok{(text.count(}\StringTok{\textquotesingle{}climate change\textquotesingle{}}\NormalTok{))}
-
-\NormalTok{text.dispersion\_plot([}\StringTok{\textquotesingle{}climate\textquotesingle{}}\NormalTok{])}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-NameError: ignored
-\end{verbatim}
-
-\hypertarget{scatter-text}{%
-\section{Scatter Text}\label{scatter-text}}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ceo\_df}\OperatorTok{=}\NormalTok{df[}\DecValTok{30}\NormalTok{:}\DecValTok{40}\NormalTok{]}
-\NormalTok{ceo\_df[}\StringTok{\textquotesingle{}CEO\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(ceo\_df[}\StringTok{\textquotesingle{}Date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\StringTok{\textquotesingle{}01{-}01{-}2017\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Woods\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Tillerson\textquotesingle{}}\NormalTok{)}
+\OperatorTok{\%\%}\NormalTok{capture}
 
 \ImportTok{import}\NormalTok{ scattertext }\ImportTok{as}\NormalTok{ st}
 
-\NormalTok{corpus }\OperatorTok{=}\NormalTok{ st.CorpusFromPandas(ceo\_df,}
-\NormalTok{                             category\_col}\OperatorTok{=}\StringTok{\textquotesingle{}CEO\textquotesingle{}}\NormalTok{,}
-\NormalTok{                             text\_col}\OperatorTok{=}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{,}
-\NormalTok{                             nlp}\OperatorTok{=}\NormalTok{nlp).build()}
-\end{Highlighting}
-\end{Shaded}
+\CommentTok{\# create a corpus of text from the dataframe }
+\NormalTok{corpus }\OperatorTok{=}\NormalTok{ st.CorpusFromPandas(speaker\_df, }\CommentTok{\# load the dataframe }
+\NormalTok{                             category\_col}\OperatorTok{=}\StringTok{\textquotesingle{}speaker\textquotesingle{}}\NormalTok{, }\CommentTok{\# indicate which column contains the category we want to distinguish by }
+\NormalTok{                             text\_col}\OperatorTok{=}\StringTok{\textquotesingle{}speech\textquotesingle{}}\NormalTok{, }\CommentTok{\# indicate which column stores the text to be analyzed}
+\NormalTok{                             nlp}\OperatorTok{=}\NormalTok{nlp).build() }\CommentTok{\# load the NLP models used for analysis }
 
-\begin{Shaded}
-\begin{Highlighting}[]
+\CommentTok{\# remove stopwords from the corpus of text}
 \NormalTok{corpus}\OperatorTok{=}\NormalTok{corpus.remove\_terms(nlp.Defaults.stop\_words, ignore\_absences}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+
+\CommentTok{\# now, we create the scatterplot }
+\NormalTok{html }\OperatorTok{=}\NormalTok{ st.produce\_scattertext\_explorer(}
+\NormalTok{                   corpus, }\CommentTok{\# load the corpus }
+\NormalTok{                   category}\OperatorTok{=}\StringTok{"REX TILLERSON"}\NormalTok{, }\CommentTok{\# indicate which category value we want to compare against all others; in this case, all rows in which "REX TILLERSON" is the speaker}
+\NormalTok{                   category\_name}\OperatorTok{=}\StringTok{\textquotesingle{}Rex Tillerson\textquotesingle{}}\NormalTok{, }\CommentTok{\# set the label on the plot as "Rex Tillerson"}
+\NormalTok{                   not\_category\_name}\OperatorTok{=}\StringTok{\textquotesingle{}Others\textquotesingle{}}\NormalTok{, }\CommentTok{\# set the label on the plot for all other speakers as "Others"}
+\NormalTok{                   width\_in\_pixels}\OperatorTok{=}\DecValTok{1000}\NormalTok{) }\CommentTok{\#set the width }
 \end{Highlighting}
 \end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{html }\OperatorTok{=}\NormalTok{ st.produce\_scattertext\_explorer(}
-\NormalTok{                   corpus,}
-\NormalTok{                   category}\OperatorTok{=}\StringTok{\textquotesingle{}Woods\textquotesingle{}}\NormalTok{,}
-\NormalTok{                   category\_name}\OperatorTok{=}\StringTok{\textquotesingle{}Woods\textquotesingle{}}\NormalTok{,}
-\NormalTok{                   not\_category\_name}\OperatorTok{=}\StringTok{\textquotesingle{}Tillerson\textquotesingle{}}\NormalTok{,}
-\NormalTok{                   width\_in\_pixels}\OperatorTok{=}\DecValTok{1000}\NormalTok{)}
-
+\CommentTok{\# display the plot                   }
 \NormalTok{display(HTML(html))}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{].}\BuiltInTok{str}\NormalTok{.split(}\StringTok{\textquotesingle{}}\CharTok{\textbackslash{}n\textbackslash{}n}\StringTok{\textquotesingle{}}\NormalTok{)}
-\NormalTok{paragraphs}\OperatorTok{=}\NormalTok{df.explode(}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{)}
-\NormalTok{paragraphs}
-\end{Highlighting}
-\end{Shaded}
+\begin{verbatim}
+<IPython.core.display.HTML object>
+\end{verbatim}
+
+The plot above compares the frequency of terms used by Exxon CEO Rex
+Tillerson (on the Y axis) against those used by other speakers (mainly
+shareholders, on the X axis). The top right corner will contain terms
+used frequently by both groups. the bottom left corner contains terms
+used infrequently by both groups. The top left corner contains terms
+used frequently by Rex Tillerson, but infrequently by shareholders. The
+bottom right corner contains terms used frequently by shareholders, but
+infrequently by Rex Tillerson.
+
+A list of top terms used by each group is shown in the right. On this
+list, we can see that ``climate change'' is the 4th most common phrase
+used by the ``Others'' category, but isn't even in the top ten for Rex.
+If you click on ``climate change'' in this list, it will give you some
+statistics on how frequently this term is used by each group, as well as
+a selection of example sentences in which the term appears. You can
+search for other words/phrases either by clicking on them in the
+scatterplot, or entering them into the ``Search the chart'' box below
+the scatterplot.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercise-11}{%
+\subsection{Exercise}\label{exercise-11}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Search for ``ALEC'' in this plot, and then google the term to find out
+  more about what this is. What are shareholders aiming to do regarding
+  ALEC, and how does Tillerson respond?
+\item
+  Search for the term ``carbon''. What differences do you notice in the
+  use of this term by Rex Tillerson versus the shareholders?
+\item
+  Use this plot to identify another topic that shareholders are
+  pressuring Exxon about.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{external-pressure}{%
+\chapter{External pressure}\label{external-pressure}}
+
+The fact that Exxon knew about climate change in the 1970s and still
+funded climate denial resulted in public outrage, culminating in an
+online movement organized around the twitter hashtag \#ExxonKnew.
+
+I've downloaded almost 100,000 tweets containing the hashtag
+\#ExxonKnew, between 2016 and 2017. Work together as a group to explore
+and analyze this dataset.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{paragraphs[}\StringTok{\textquotesingle{}speaker\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{paragraphs[}\StringTok{\textquotesingle{}Text\textquotesingle{}}\NormalTok{].}\BuiltInTok{str}\NormalTok{.split(}\StringTok{\textquotesingle{}:\textquotesingle{}}\NormalTok{).}\BuiltInTok{str}\NormalTok{[}\DecValTok{0}\NormalTok{]}
-\NormalTok{paragraphs}
+\NormalTok{tweets}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}data/wk4/Exxon\_tweets\_clean.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{tweets}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ spacy.matcher }\ImportTok{import}\NormalTok{ PhraseMatcher}
+\begin{longtable}[]{@{}lllllllll@{}}
+\toprule()
+& Unnamed: 0 & text & created\_at & author\_id & lang & geo & latitude &
+longitude \\
+\midrule()
+\endhead
+0 & 0 & \#ClimateChangeIsReal \#climateChange \#PutinPupp... &
+2016-12-31T22:45:29.000Z & 22220344.0 & qme & NaN & NaN & NaN \\
+1 & 1 & What you should know about @latimes connection... &
+2016-12-31T22:42:18.000Z & 31413260.0 & en & NaN & NaN & NaN \\
+2 & 2 & RT @EnergyInDepth: Legal experts say attack on... &
+2016-12-31T22:17:33.000Z & 7.59e+17 & en & NaN & NaN & NaN \\
+3 & 3 & RT @anneli8012: @Khanoisseur yep, Exxon knew a... &
+2016-12-31T21:40:05.000Z & 8e+17 & en & NaN & NaN & NaN \\
+4 & 4 & Former NY AG: N.Y.'s ExxonMobil overreach http... &
+2016-12-31T20:05:36.000Z & 7.5e+17 & en & NaN & NaN & NaN \\
+... & ... & ... & ... & ... & ... & ... & ... & ... \\
+89096 & 89085 & RT @billmckibben: Next shoe drops in \#exxonkne... &
+2016-01-01T00:16:01.000Z & 885173964.0 & en & NaN & NaN & NaN \\
+89097 & 89086 & Así ha transcurrido el día más caliente regist... &
+2016-01-01T00:12:27.000Z & 30540898.0 & es & NaN & NaN & NaN \\
+89098 & 89087 & RT @Mdettinger: While undermining public confi... &
+2016-01-01T00:07:08.000Z & 490991866.0 & en & NaN & NaN & NaN \\
+89099 & 89088 & RT @greenpeaceusa: Lying for profit is called ... &
+2016-01-01T00:06:10.000Z & 4182290233.0 & en & NaN & NaN & NaN \\
+89100 & 89089 & RT @billmckibben: Thanks to @democracynow for ... &
+2016-01-01T00:01:39.000Z & 11186572.0 & en & NaN & NaN & NaN \\
+\bottomrule()
+\end{longtable}
 
-\NormalTok{matcher }\OperatorTok{=}\NormalTok{ PhraseMatcher(nlp.vocab)}
-\NormalTok{matcher.add(}\StringTok{"cc"}\NormalTok{, [nlp(}\StringTok{"carbon capture"}\NormalTok{)])}
-\NormalTok{matches }\OperatorTok{=}\NormalTok{ matcher(doc)}
+\hypertarget{sentiment-analysis}{%
+\subsection{Sentiment Analysis}\label{sentiment-analysis}}
 
-\NormalTok{ix}\OperatorTok{=}\NormalTok{matches[}\DecValTok{0}\NormalTok{]}
+Sentiment analysis is the computational study of people's opinions,
+sentiments, emotions, appraisals, and attitudes towards entities such as
+products, services, organizations, individuals, issues, events, topics,
+and their attributes. Let's study the sentiment of the tweets in this
+dataset.
 
-\NormalTok{doc[ix[}\DecValTok{1}\NormalTok{]}\OperatorTok{{-}}\DecValTok{10}\NormalTok{:ix[}\DecValTok{2}\NormalTok{]}\OperatorTok{+}\DecValTok{10}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
+\href{https://spacytextblob.netlify.app/}{spacytextblob} performs
+sentiment analysis using the TextBlob library. Adding spacytextblob to a
+spaCy nlp pipeline creates a new extension attribute for the Doc.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ spacy.matcher }\ImportTok{import}\NormalTok{ PhraseMatcher}
+The \texttt{.\_.blob} attribute contains all of the methods and
+attributes that belong to the textblob.TextBlob class Some of the common
+methods and attributes include:
 
-\NormalTok{phrase\_matcher }\OperatorTok{=}\NormalTok{ PhraseMatcher(nlp.vocab)}
-\NormalTok{phrase\_list }\OperatorTok{=}\NormalTok{ [nlp(}\StringTok{\textquotesingle{}climate change\textquotesingle{}}\NormalTok{)]}
-\NormalTok{phrase\_matcher.add(}\StringTok{"Text Extractor"}\NormalTok{, }\VariableTok{None}\NormalTok{, }\OperatorTok{*}\NormalTok{phrase\_list)}
-\NormalTok{matched\_items }\OperatorTok{=}\NormalTok{ phrase\_matcher(doc)}
-
-\NormalTok{matched\_text }\OperatorTok{=}\NormalTok{ []}
-
-\ControlFlowTok{for}\NormalTok{ match\_id, start, end }\KeywordTok{in}\NormalTok{ matched\_items:}
-\NormalTok{    text }\OperatorTok{=}\NormalTok{ nlp.vocab.strings[match\_id]}
-\NormalTok{    span }\OperatorTok{=}\NormalTok{ doc[start: end]}
-\NormalTok{    matched\_text.append(span.sent)}
-
-\NormalTok{matched\_text}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{displacy.render(matched\_text[}\DecValTok{1}\NormalTok{], jupyter}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{import}\NormalTok{ textacy.extract}
-
-\NormalTok{kwic}\OperatorTok{=}\NormalTok{textacy.extract.kwic.keyword\_in\_context(doc, }\StringTok{\textquotesingle{}global warming\textquotesingle{}}\NormalTok{)}
-
-\ControlFlowTok{for}\NormalTok{ a }\KeywordTok{in}\NormalTok{ kwic:}
-  \BuiltInTok{print}\NormalTok{(a)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ spacy }\ImportTok{import}\NormalTok{ displacy}
-\NormalTok{displacy.render(sentences[}\DecValTok{1}\NormalTok{], jupyter}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ collections }\ImportTok{import}\NormalTok{ Counter, defaultdict}
-
-\KeywordTok{def}\NormalTok{ find\_character\_occurences(doc):}
-    \CommentTok{"""}
-\CommentTok{    Return a list of actors from \textasciigrave{}doc\textasciigrave{} with corresponding occurences.}
-\CommentTok{    }
-\CommentTok{    :param doc: Spacy NLP parsed document}
-\CommentTok{    :return: list of tuples in form}
-\CommentTok{        [(\textquotesingle{}elizabeth\textquotesingle{}, 622), (\textquotesingle{}darcy\textquotesingle{}, 312), (\textquotesingle{}jane\textquotesingle{}, 286), (\textquotesingle{}bennet\textquotesingle{}, 266)]}
-\CommentTok{    """}
-    
-\NormalTok{    characters }\OperatorTok{=}\NormalTok{ Counter()}
-    \ControlFlowTok{for}\NormalTok{ ent }\KeywordTok{in}\NormalTok{ doc.ents:}
-        \ControlFlowTok{if}\NormalTok{ ent.label\_ }\OperatorTok{==} \StringTok{\textquotesingle{}PERSON\textquotesingle{}}\NormalTok{:}
-\NormalTok{            characters[ent.lemma\_] }\OperatorTok{+=} \DecValTok{1}
-            
-    \ControlFlowTok{return}\NormalTok{ characters.most\_common()}
-
-\BuiltInTok{print}\NormalTok{(find\_character\_occurences(doc)[:}\DecValTok{20}\NormalTok{])}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{text.dispersion\_plot([}\StringTok{\textquotesingle{}Grail\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}rabbit\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Knights\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Ni\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}castle\textquotesingle{}}\NormalTok{])}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{ token }\KeywordTok{in}\NormalTok{ doc:}
-    \BuiltInTok{print}\NormalTok{(token.text, token.pos\_, token.ent\_)}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{dirty-words-1}{%
-\section{Dirty Words}\label{dirty-words-1}}
-
-Text often comes `unclean' either containing tags such as HTML (or XML),
-or has other issues, but fortunately we will be using `clean' sources,
-at least initially. Be cautious when committing to a text analysis
-project - you may spend a great deal of time tidying up your text.
-
-The kind of analysis we will be doing reqires \emph{tokenizing} a text,
-and \emph{tagging} individual words. Tokenizing means splitting the text
-into individul sentences or individual words, while tagging means
-classifying each word according to a POS (Parts Of Speech)
-classification.
-
-\hypertarget{the-castle-of-aaargh}{%
-\section{The Castle of Aaargh}\label{the-castle-of-aaargh}}
-
-We will first experiment with nltk and its built in corpus texts. We'll
-work with some Monty Python, beloved of comedy bores for half a century
-
-\hypertarget{setup}{%
-\section{Setup}\label{setup}}
-
-\begin{itemize}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  install nltk through package manager, or the command line
+  \texttt{.\_.blob.polarity}: a float within the range {[}-1.0, 1.0{]}.
 \item
-  import nltk
+  \texttt{.\_.blob.subjectivity}: a float within the range {[}0.0,
+  1.0{]} where 0.0 is very objective and 1.0 is very subjective.
 \item
-  type nltk.download(`book'). This will automatically download the books
-  into our workspace
-\end{itemize}
+  \texttt{.\_.blob.sentiment\_assessments.assessments}: a list of
+  polarity and subjectivity scores for the assessed tokens.
+\end{enumerate}
+
+Let
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\#nltk: natural language processing toolkit}
-\ImportTok{import}\NormalTok{ nltk}
+\CommentTok{\# grab the 130th row in the dataframe and select the text of the tweet}
+\NormalTok{text}\OperatorTok{=}\NormalTok{tweets.iloc[}\DecValTok{130}\NormalTok{][}\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{]}
+
+\CommentTok{\# apply the NLP pipeline to this text.}
+\NormalTok{doc }\OperatorTok{=}\NormalTok{ nlp(text)}
+
+\BuiltInTok{print}\NormalTok{(text)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}Polarity: \textquotesingle{}}\NormalTok{, doc.\_.blob.polarity)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}Subjectivity: \textquotesingle{}}\NormalTok{, doc.\_.blob.subjectivity)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}Assessments: \textquotesingle{}}\NormalTok{, doc.\_.blob.sentiment\_assessments.assessments)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+RT @Exxon_Knew: Stop saying #Tillerson is good on climate. He leads the oil company WORST on climate #ExxonKnew via @jacobwe https://t.co/P…
+Polarity:  -0.15000000000000002
+Subjectivity:  0.8
+Assessments:  [(['good'], 0.7, 0.6000000000000001, None), (['worst'], -1.0, 1.0, None)]
+\end{verbatim}
+
+We can see that the model has deemed this tweet to be expressing
+negative sentiment: it has a polarity of -0.15. It also deems this to be
+a pretty subjective tweet, with a subjectivity score of 0.8. It does
+indeed appear to be expressing a subjective opinion. Finally, we can see
+which words are leading to this assessment. The word ``good'' is leading
+to a 0.7 increase in the polarity score, and a 0.6 increase in the
+subjectivity score. The word ``worst'' is leading to a -1 change
+polarity, and a +1 change in subjectivity. The overall scores are
+weighted averages of these values. Though these scores do roughly align
+with the actual sentiment of this tweet, \textbf{ALWAYS} pay attention
+to whats going on inside of your sentiment analysis pipeline. Even
+though the overall sentiment score here is negative, it should probably
+be even more negative; the algorithm picked up on the word ``good'' in
+this tweet, and this improved the polarity score by 0.7. But the context
+in which ``good'' was uttered in this tweet is actually negative! the
+person is saying ``stop saying \#Tillerson is good on climate''-- this
+is expressing negative sentiment!
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercise-12}{%
+\subsection{Exercise}\label{exercise-12}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  create a dataframe called ``sample'' which contains the first 1000
+  tweets from the ``tweets'' dataframe.
+\item
+  Using a lambda function,
+  \texttt{.apply(lambda\ x:\ nlp(x).\_.blob.polarity)}, create a column
+  in the sample dataframe that contains the polarity of each tweet.
+\item
+  Create a column that contains the subjectivity score for each tweet.
+\item
+  Filter the dataframe to discard tweets that are not subjective
+  (subjectivity score \textless{} 0.5).
+\item
+  Sort the dataframe and print out the top 10 most negative tweets, and
+  the top 10 most positive tweets.
+\end{enumerate}
+
+Do you agree with the algorithm's assessment of these tweets' sentiment?
+To go above and beyond, select tweets for which you disagree, print out
+the model's assessments to see which words are contributing to the
+sentiment score.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\#Download the sample books}
-\NormalTok{nltk.download(}\StringTok{\textquotesingle{}book\textquotesingle{}}\NormalTok{)}
+
 \end{Highlighting}
 \end{Shaded}
 
-Now, we import the sample texts. You'll notice that text6 is ``Monty
-Python and the Holy Grail'', as promised. Presumably this was compiled
-pre-\emph{Spamalot}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#Import all features from nltk.book}
-\ImportTok{from}\NormalTok{ nltk.book }\ImportTok{import} \OperatorTok{*}
-\end{Highlighting}
-\end{Shaded}
-
-Let's look at the object text6; we can look at the first few words..
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#View the first ten words of text6}
-\NormalTok{text6[}\DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-Which are presumably stage directions rather than dialogue. How many
-words/symbols are in the text?
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#View the length of the list}
-\BuiltInTok{len}\NormalTok{(text6)}
-\end{Highlighting}
-\end{Shaded}
-
-Bear in mind that a lot of the functions we will carry out rely on this
-being a text object - we'll start to think about how we use free text
-and convert it to a \textbf{Text} object later.
-
-We can now start to do some slightly more sophisticated work; for
-example, a dispersion plot to see where words appear. Let's give it a
-few keywords that those familiar with \emph{\ldots The Holy Grail} might
-recognise:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{text6.dispersion\_plot([}\StringTok{\textquotesingle{}Grail\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}rabbit\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Knights\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Ni\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}castle\textquotesingle{}}\NormalTok{])}
-\end{Highlighting}
-\end{Shaded}
-
-And we can easily count \emph{how many} times a word appears.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{text6.count(}\StringTok{\textquotesingle{}Ni\textquotesingle{}}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-Or the words which most commonly appear together:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{text6.collocations()}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{exercise-from-hells-heart-i-stab-at-thee}{%
-\section{Exercise: From Hell's Heart I Stab at
-Thee}\label{exercise-from-hells-heart-i-stab-at-thee}}
-
-From Moby Dick, find out - Where the narrator Ishmael, Captain Ahab and
-his Nemesis are mentioned. When do each enter the story? Where do they
-have most emphasis? - Which parts of the books appear to take place at
-sea, and points where their ship is wrecked or sinking (spoilers) - two
-significant places in the story (HINT: use collocations)
-
-Let's now look at carrying out the full process of importing and working
-with text data.
-
-\hypertarget{making-an-impact}{%
-\section{Making an IMPACT}\label{making-an-impact}}
-
-As part of the REF2014 exercise, universities reported on the
-\emph{Impact} their research activities had on the world. Their
-\emph{Impact Case Studies} were subsequently made available by HEFCE.
-What sort of information do they contain? How do universities frame
-``impact''? All of this data is available via the REF website.
-
-A little context: I've included examples from the four \emph{panels}
-used by HEFCE. Broadly speaking, Panel A is health, bioscience and
-medicine, B is physical science and engineering, C is social science,
-and D is humanities - the full categories are visible here:
-http://www.ref.ac.uk/panels/unitsofassessment/
-
-Let's first look at random sample from Panel A:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#Data path to file}
-\NormalTok{data\_path }\OperatorTok{=} \StringTok{"./data/wk7/PanelA.txt"}
-
-\ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(data\_path) }\ImportTok{as} \BuiltInTok{file}\NormalTok{:}
-\NormalTok{    data }\OperatorTok{=} \BuiltInTok{file}\NormalTok{.read()}
-\BuiltInTok{print}\NormalTok{(data)}
-\end{Highlighting}
-\end{Shaded}
-
-We could tokenize this into sentences:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{sentences }\OperatorTok{=}\NormalTok{ nltk.sent\_tokenize(data)}
-\NormalTok{sentences[}\DecValTok{1}\NormalTok{:}\DecValTok{5}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-Or into individual words; generally, it may be useful to retain
-sentences, so we can see where two words are in the same sentence, for
-example - but we'll be doing something simpler:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{tokens }\OperatorTok{=}\NormalTok{ nltk.word\_tokenize(data)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{tokens[}\DecValTok{1}\NormalTok{:}\DecValTok{20}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-Tokenising is a process which has many subtleties and corner-cases, and
-you may want to proceed in a more fine-grained way for some texts:
-
-http://nltk.org/api/nltk.tokenize.html
-
-Let's now convert this into a Text object, which will allow us to
-analyse other aspects of the text. For example, we can look at
-\textbf{collocations}, words which commonly appear together. This may
-help to provide context.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{simple\_text }\OperatorTok{=}\NormalTok{ nltk.Text(tokens)}
-\NormalTok{simple\_text.collocations()}
-\end{Highlighting}
-\end{Shaded}
-
-We can create a dispersion plot - although in this case, it tells us a
-limited amount\ldots{}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{simple\_text.dispersion\_plot([}\StringTok{\textquotesingle{}NHS\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}evidence\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}practice\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Hospital\textquotesingle{}}\NormalTok{])}
-\end{Highlighting}
-\end{Shaded}
-
-Even from this, we get a sense of the work this unit does, and its
-impacts on the world. But what are the most 20 common words used? To
-find this out, we produce a \textbf{Freq}uency \textbf{Dist}ribution
-(\emph{FreqDist}) object. This has an implicit loop - the \emph{for}
-statement is telling python to look through all the words in `tokens'
-and seeing how often they occur. The .lower() command converts them all
-to lower case for comparison, so it will flag up upper \emph{and} lower
-case occurrences of the word.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{fd }\OperatorTok{=}\NormalTok{ nltk.FreqDist(word.lower() }\ControlFlowTok{for}\NormalTok{ word }\KeywordTok{in}\NormalTok{ tokens)}
-\NormalTok{fd.plot(}\DecValTok{20}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-Not very helpful - this includes all kinds of junk, and tells us that
-``and'' is very common. Not very interesting. Let's try a bit harder and
-identify Parts of Speech.
-
-\hypertarget{pos}{%
-\section{POS}\label{pos}}
-
-Parts of speech indicate whether something is a noun, a verb, adjective,
-and so on. In nltk, we can use the \emph{pos\_tag} command, which will
-identify which word belongs to which part of speech.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{tagged }\OperatorTok{=}\NormalTok{ nltk.pos\_tag(tokens)}
-\NormalTok{tagged[}\DecValTok{0}\NormalTok{:}\DecValTok{10}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-`NNP' refers to Proper Noun, Singular; you can find the full list of
-Parts of Speech here:
-http://www.ling.upenn.edu/courses/Fall\_2003/ling001/penn\_treebank\_pos.html
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{permitted\_tags }\OperatorTok{=} \BuiltInTok{set}\NormalTok{([}
-    \StringTok{\textquotesingle{}NN\textquotesingle{}}\NormalTok{,}
-    \StringTok{\textquotesingle{}NNS\textquotesingle{}}
-\NormalTok{])}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{one-for-all}{%
-\section{One FOR All}\label{one-for-all}}
-
-We've so far managed to avoid this staple of programming, the FOR loop -
-and we're not going to delve too deeply into it in the last class of
-term. Of course, you probably came across FOR loops and IF statements
-when you worked through the prerequisites for the module, but that feels
-like a long time ago\ldots{}
-
-We do use FOR and IF here, and it's worth understanding a bit about what
-it means, even if you don't intend to use it a lot yourself. In the next
-piece of code, we set up \emph{fd}, a new object which will record
-frequency distribution information. Then we use a FOR loop
-
-`for bit in tagged: \ldots'
-
-This goes through every element of tagged one at a time - and each
-element is called `bit' for the purposes of this loop. Then, for each
-`bit', we check that it has one of the permitted tags, and make sure
-it's at least 3 characters long - shorter words probably aren't all that
-relevant in this case:
-
-`if bit\href{http://www.literateprogramming.com/lpquotes.html}{1} in
-permitted\_tags and len(bit{[}0{]})\textgreater2:'
-
-note that the \emph{and} means both of these have to be true - if both
-\emph{are} true, only then does the following statement execute:
-
-`fd{[}bit{[}0{]}{]} = fd{[}bit{[}0{]}{]} + 1'
-
-which increases the count for that word. So, this code increases the
-count for a word iff (if and only if) its at least 3 characters long,
-and it's of the correct tag (Noun, Singular or Plural).
-
-\hypertarget{double-indentity}{%
-\section{Double Indentity}\label{double-indentity}}
-
-One final remark: we haven't dealt with \textbf{indents} much in python,
-but indenting the code like below, after the for statement, and
-\emph{again} after the if statement, is the way that python knows it's
-dealing with a loop (for) and a conditional (if). It's also the way
-python deals with defining new functions, but that's not something you
-will need to do. This is just a pointer - if your code doesn't work,
-check the colons are there (:) and the indenting is too.
-
-On with the show - as promised, this creates a word frequency graph of
-nouns:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{fd }\OperatorTok{=}\NormalTok{ nltk.FreqDist()}
-
-\ControlFlowTok{for}\NormalTok{ bit }\KeywordTok{in}\NormalTok{ tagged:}
-    \ControlFlowTok{if}\NormalTok{ bit[}\DecValTok{1}\NormalTok{] }\KeywordTok{in}\NormalTok{ permitted\_tags }\KeywordTok{and} \BuiltInTok{len}\NormalTok{(bit[}\DecValTok{0}\NormalTok{])}\OperatorTok{\textgreater{}}\DecValTok{2}\NormalTok{:}
-\NormalTok{        fd[bit[}\DecValTok{0}\NormalTok{]] }\OperatorTok{=}\NormalTok{ fd[bit[}\DecValTok{0}\NormalTok{]] }\OperatorTok{+} \DecValTok{1}
-        
-\NormalTok{fd.plot(}\DecValTok{20}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-We start to get a sense of the impact - `care', `practice', and
-`services' all feature heavily.
-
-Let's now look at another randomly chosen example from Panel A:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{data\_path }\OperatorTok{=} \StringTok{"./data/wk7/PanelA2.txt"}
-
-\ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(data\_path) }\ImportTok{as} \BuiltInTok{file}\NormalTok{:}
-\NormalTok{    data }\OperatorTok{=} \BuiltInTok{file}\NormalTok{.read()}
-
-\NormalTok{tokens }\OperatorTok{=}\NormalTok{ nltk.word\_tokenize(text)}
-\NormalTok{simple\_text.collocations()}
-\NormalTok{simple\_text }\OperatorTok{=}\NormalTok{ nltk.Text(tokens)}
-\NormalTok{tagged }\OperatorTok{=}\NormalTok{ nltk.pos\_tag(tokens)}
-\NormalTok{fd }\OperatorTok{=}\NormalTok{ nltk.FreqDist()}
-
-\ControlFlowTok{for}\NormalTok{ bit }\KeywordTok{in}\NormalTok{ tagged:}
-    \ControlFlowTok{if}\NormalTok{ bit[}\DecValTok{1}\NormalTok{] }\KeywordTok{in}\NormalTok{ permitted\_tags }\KeywordTok{and} \BuiltInTok{len}\NormalTok{(bit[}\DecValTok{0}\NormalTok{])}\OperatorTok{\textgreater{}}\DecValTok{2}\NormalTok{:}
-\NormalTok{        fd[bit[}\DecValTok{0}\NormalTok{]] }\OperatorTok{=}\NormalTok{ fd[bit[}\DecValTok{0}\NormalTok{]] }\OperatorTok{+} \DecValTok{1}
-        
-\NormalTok{fd.plot(}\DecValTok{20}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-A very different set of words, clearly geared towards language therapy,
-and working directly with patients. Perhaps if we looked at the
-\emph{slightly} less common words, we'd see links between these
-submissions - for example, we see \emph{communication} appearing in
-both. Not a huge surprise, if we're talking about public impact, but
-students of the public role of the university might start to wonder
-about the distinctions between \emph{communication} and
-\emph{engagement}.
-
-\hypertarget{exercise-9}{%
-\section{Exercise}\label{exercise-9}}
-
-Repeat this for the examples from Panels B, C and D - what trends and
-keywords appear? What use do the collocations have? What do different
-parts of speech (e.g.~verbs or proper nouns) tell you about the text?
-
-If we wanted to analyse the sector as a whole, we would want to analyse
-Impact statements en masse - and we would hope that this would draw out
-links across differnt statements from different centres and
-universities, and even in different panels.
-
-\hypertarget{working-with-larger-text-datasets}{%
-\section{Working with larger text
-datasets}\label{working-with-larger-text-datasets}}
-
-Working with larger text corpora starts to get slow. At this point, we
-will look at a body of text we have previously tagged up. The file is
-``The Nameless City'' by H. P. Lovecraft, a horror author from the early
-20th century.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{import}\NormalTok{ pickle}
-\ImportTok{import}\NormalTok{ requests}
-\ImportTok{from}\NormalTok{ urllib.request }\ImportTok{import}\NormalTok{ urlopen}
-\end{Highlighting}
-\end{Shaded}
-
-This may take a little while - so wait for the task to run:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Loading the tokenized and tagged file. }
-\NormalTok{tagged }\OperatorTok{=}\NormalTok{ pickle.load(urlopen(}\StringTok{"https://s3.eu{-}west{-}2.amazonaws.com/qm2/wk7/lovecraft\_tagged.pickle"}\NormalTok{), encoding}\OperatorTok{=}\StringTok{\textquotesingle{}latin1\textquotesingle{}}\NormalTok{)}
-
-\CommentTok{\#How many sentences do we have?}
-\BuiltInTok{len}\NormalTok{(tagged)}
-\end{Highlighting}
-\end{Shaded}
-
-This is tokenised by sentence - and there are 18,513 of them. That would
-have taken a long time to tag up. If you're interested, this is how you
-take a set of \emph{sentences} and tag them with Part of Speech:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{exampleSentences }\OperatorTok{=}\NormalTok{ nltk.sent\_tokenize(data)}
-  
-\NormalTok{exampleTagged }\OperatorTok{=}\NormalTok{ [nltk.pos\_tag(nltk.word\_tokenize(sent)) }\ControlFlowTok{for}\NormalTok{ sent }\KeywordTok{in}\NormalTok{ sentences]}
-\end{Highlighting}
-\end{Shaded}
-
-Note that the second line is running an implicit for loop through every
-sentence, and tagging each word.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# first sentence.}
-\NormalTok{exampleTagged[}\DecValTok{0}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-An impressive start! Let's again build our word frequency chart. Note
-now that we have an extra layer of FOR - we need to look at each
-sentence in the text; at each word in each sentence; and then check each
-word to see whether it is of an allowed type.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{fd }\OperatorTok{=}\NormalTok{ nltk.FreqDist()}
-
-\NormalTok{permitted\_tags }\OperatorTok{=} \BuiltInTok{set}\NormalTok{([}
-    \StringTok{\textquotesingle{}JJS\textquotesingle{}}\NormalTok{,}
-    \StringTok{\textquotesingle{}FW\textquotesingle{}}\NormalTok{,}
-    \StringTok{\textquotesingle{}NN\textquotesingle{}}\NormalTok{,}
-    \StringTok{\textquotesingle{}NNS\textquotesingle{}}\NormalTok{,}
-    \StringTok{\textquotesingle{}NNP\textquotesingle{}}\NormalTok{,}
-    \StringTok{\textquotesingle{}NNPS\textquotesingle{}}\NormalTok{,}
-    \StringTok{\textquotesingle{}UH\textquotesingle{}}\NormalTok{,}
-\NormalTok{])}
-\ControlFlowTok{for}\NormalTok{ sentence }\KeywordTok{in}\NormalTok{ tagged:}
-    \ControlFlowTok{for}\NormalTok{ word }\KeywordTok{in}\NormalTok{ sentence:}
-        \ControlFlowTok{if}\NormalTok{ word[}\DecValTok{1}\NormalTok{] }\KeywordTok{in}\NormalTok{ permitted\_tags:}
-\NormalTok{                fd[word[}\DecValTok{0}\NormalTok{]] }\OperatorTok{=}\NormalTok{ fd[word[}\DecValTok{0}\NormalTok{]] }\OperatorTok{+} \DecValTok{1}
-\NormalTok{fd.plot(}\DecValTok{20}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-Now that we've produced counts for all words which conform to our list
-of tags, we can quickly see how frequently common words appear; because
-we have tokenized by sentence, we have to do this with a slightly
-different mechanism - run through the words of interest and see how many
-occurrences appear in the Frequency Distribution object, fd. Again,
-we're sneaking in a FOR loop to run through these.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{ word }\KeywordTok{in}\NormalTok{ [}\StringTok{\textquotesingle{}space\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}nameless\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}mad\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}dread\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}fear\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}cthulhu\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}necronomicon\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}caring\textquotesingle{}}\NormalTok{]:}
-    \BuiltInTok{print}\NormalTok{(word, fd[word])}
-\end{Highlighting}
-\end{Shaded}
-
-So far, we've completely avoided the use of pandas - but we can put this
-data into a pandas dataframe very easily, and use the built-in graphing
-methods to change the style of our graph.
-
-We feed in fd.keys() - the words - and fd.values(), the wordcount.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#Convert to list so subscriptable}
-\BuiltInTok{list}\NormalTok{(fd.keys())[}\DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#Convert to list so subscriptable}
-\BuiltInTok{list}\NormalTok{(fd.values())[}\DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
-
-\CommentTok{\#Convert to list for use in creating dataframe}
-\NormalTok{df }\OperatorTok{=}\NormalTok{ pd.DataFrame(\{}\StringTok{\textquotesingle{}items\textquotesingle{}}\NormalTok{: }\BuiltInTok{list}\NormalTok{(fd.keys()), }\StringTok{\textquotesingle{}counts\textquotesingle{}}\NormalTok{: }\BuiltInTok{list}\NormalTok{(fd.values())\})}
-\NormalTok{df.head()}
-\end{Highlighting}
-\end{Shaded}
-
-Let's now arrange them in order of appearance - the most common at the
-top.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df }\OperatorTok{=}\NormalTok{ df.sort\_values(by}\OperatorTok{=}\StringTok{\textquotesingle{}counts\textquotesingle{}}\NormalTok{,ascending}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
-\NormalTok{df.head()}
-\end{Highlighting}
-\end{Shaded}
-
-We now have a DataFrame with certain word tags sorted by decreasing
-frequency. Let's plot this in a bar graph; we will use df{[}1:50{]} to
-select the most common 50 words.
+\begin{verbatim}
+KeyboardInterrupt: ignored
+\end{verbatim}
+
+\hypertarget{above-and-beyond}{%
+\section{Above and beyond}\label{above-and-beyond}}
+
+If this is all too easy for you, keep going. Let's combine this week's
+knowledge with last week's. We have geographic information for some of
+the tweets. Modify the code below to plot the distribution of the
+\#ExxonKnew campaign. If you want to get fancy, color the points
+according to sentiment polarity.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
-\end{Highlighting}
-\end{Shaded}
+\ImportTok{from}\NormalTok{ mpl\_toolkits.basemap }\ImportTok{import}\NormalTok{ Basemap}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{plt.style.use(}\StringTok{\textquotesingle{}ggplot\textquotesingle{}}\NormalTok{)}
-\NormalTok{df[}\DecValTok{1}\NormalTok{:}\DecValTok{50}\NormalTok{].plot(kind}\OperatorTok{=}\StringTok{\textquotesingle{}bar\textquotesingle{}}\NormalTok{, x}\OperatorTok{=}\StringTok{\textquotesingle{}items\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}counts\textquotesingle{}}\NormalTok{, legend}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
-\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}Word\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.ylabel(}\StringTok{\textquotesingle{}Word Count\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}Word counts for H.P. Lovecraft}\CharTok{\textbackslash{}\textquotesingle{}}\StringTok{s }\CharTok{\textbackslash{}"}\StringTok{The Nameless City}\CharTok{\textbackslash{}"}\StringTok{\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.axhline(df[}\StringTok{\textquotesingle{}counts\textquotesingle{}}\NormalTok{].mean(), color}\OperatorTok{=}\StringTok{\textquotesingle{}\#2222ff\textquotesingle{}}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\BuiltInTok{map} \OperatorTok{=}\NormalTok{ Basemap(projection}\OperatorTok{=}\StringTok{\textquotesingle{}mill\textquotesingle{}}\NormalTok{)}
 
-\hypertarget{exercise-10}{%
-\section{Exercise}\label{exercise-10}}
+\BuiltInTok{map}\NormalTok{.drawcountries()}
+\BuiltInTok{map}\NormalTok{.drawcoastlines()}
 
-What is the percentage of words that appear exactly once in the entire
-text? (Hint : FreqDist objects have a method called `hapaxes')
-
-\hypertarget{exercise-11}{%
-\section{Exercise}\label{exercise-11}}
-
-The words of our ex Prime Minister, David Cameron:
-
-\begin{verbatim}
-1. Select one of Cameron's speeches.
-2. Sentence and word tokenize it.
-3. POS tag it.
-4. Create noun and adjective histograms of the 20 most frequent words.
-(notice that there are several POS for each.)
-5. Create dispersion plots for these nouns and adjectives. 
-6. What is the percentage of words that are adjectives in the speech?
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# read a raw text from a remote location. }
-\NormalTok{speech }\OperatorTok{=}\NormalTok{ requests.get(}\StringTok{\textquotesingle{}https://s3.eu{-}west{-}2.amazonaws.com/qm2/wk7/speeches/cameron{-}leaders{-}speech{-}2006a.txt\textquotesingle{}}\NormalTok{).text}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{speeches}{%
-\subsection{Speeches}\label{speeches}}
-
-https://s3.eu-west-2.amazonaws.com/qm2/wk7/speeches/cameron-election-victory-speech-2010.txt\\
-https://s3.eu-west-2.amazonaws.com/qm2/wk7/speeches/cameron-leaders-speech-2006a.txt\\
-https://s3.eu-west-2.amazonaws.com/qm2/wk7/speeches/cameron-leaders-speech-2006b.txt\\
-https://s3.eu-west-2.amazonaws.com/qm2/wk7/speeches/cameron-leaders-speech-2007.txt\\
-https://s3.eu-west-2.amazonaws.com/qm2/wk7/speeches/cameron-leaders-speech-2008.txt\\
-https://s3.eu-west-2.amazonaws.com/qm2/wk7/speeches/cameron-leaders-speech-2013.txt\\
-https://s3.eu-west-2.amazonaws.com/qm2/wk7/speeches/cameron-leaders-speech-2012.txt\\
-https://s3.eu-west-2.amazonaws.com/qm2/wk7/speeches/cameron-leaders-speech-2011.txt\\
-https://s3.eu-west-2.amazonaws.com/qm2/wk7/speeches/cameron-leaders-speech-2010.txt\\
-https://s3.eu-west-2.amazonaws.com/qm2/wk7/speeches/cameron-leaders-speech-2009.txt
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{speech}
+\BuiltInTok{map}\NormalTok{.scatter(}
+\NormalTok{      x}\OperatorTok{=}\NormalTok{, }
+\NormalTok{      y}\OperatorTok{=}\NormalTok{, }
+\NormalTok{      latlon}\OperatorTok{=}\VariableTok{True}\NormalTok{, }
+\NormalTok{      vmin}\OperatorTok{=}\DecValTok{0}\NormalTok{, }
+\NormalTok{      vmax}\OperatorTok{=}\DecValTok{300}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -4678,8 +4133,8 @@ Glasgow & 5.830768 & 3.804848 & 4.211793 \\
 \bottomrule()
 \end{longtable}
 
-\hypertarget{exercise-12}{%
-\section{Exercise:}\label{exercise-12}}
+\hypertarget{exercise-13}{%
+\section{Exercise:}\label{exercise-13}}
 
 How many cities appear in: - both dataframes - only df1 - only df5 -
 neither df1 nor df5?
@@ -4842,8 +4297,8 @@ NaN & NaN & NaN \\
 
 As we see, the missing data appears as \textbf{NaN} - Not a Number.
 
-\hypertarget{exercise-13}{%
-\section{Exercise:}\label{exercise-13}}
+\hypertarget{exercise-14}{%
+\section{Exercise:}\label{exercise-14}}
 
 Carry out \emph{right} and \emph{outer} joins on the dataframes df1 and
 df5 and explain how they're filtering and joining the data.
@@ -4905,8 +4360,8 @@ Final figure, complete & 2013 & 5408.0 & NaN \\
 \bottomrule()
 \end{longtable}
 
-\hypertarget{exercise-14}{%
-\section{Exercise}\label{exercise-14}}
+\hypertarget{exercise-15}{%
+\section{Exercise}\label{exercise-15}}
 
 There is a another datafile we downloaded called
 \emph{UN\_Cities\_1214\_country.csv}. This is saved to
@@ -5014,8 +4469,8 @@ http://data.un.org/Data.aspx?d=WDI\&f=Indicator\_Code\%3ASP.DYN.LE00.IN
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{exercise-15}{%
-\section{Exercise:}\label{exercise-15}}
+\hypertarget{exercise-16}{%
+\section{Exercise:}\label{exercise-16}}
 
 In a new cell, clean up the above dataframe by
 
@@ -5044,8 +4499,8 @@ column. This is one way to do that:
 
 \bookmarksetup{startatroot}
 
-\hypertarget{exercise-16}{%
-\chapter{Exercise}\label{exercise-16}}
+\hypertarget{exercise-17}{%
+\chapter{Exercise}\label{exercise-17}}
 
 Now, merge this data with the cities data to show life expectancy for
 each city (based on the country it is in), and show the first 5 rows.
@@ -5894,15 +5349,15 @@ of the top lower half and the lower top half, so the median of C is
 (hint: consider area under curve and what it means)? What about
 quartiles? What about deciles? What are these quantities?
 
-\hypertarget{exercise-17}{%
-\section{Exercise}\label{exercise-17}}
+\hypertarget{exercise-18}{%
+\section{Exercise}\label{exercise-18}}
 
 Under which conditions is the median equal to the mean? (hint: look at
 the normal distribution - but think more broadly abouting how
 ``counting'' and ``area under curve'' are related in histograms).
 
-\hypertarget{exercise-18}{%
-\section{Exercise}\label{exercise-18}}
+\hypertarget{exercise-19}{%
+\section{Exercise}\label{exercise-19}}
 
 Construct a set of 5 numbers such that the median is half the value of
 the mean.
@@ -5980,8 +5435,8 @@ Text(0, 0.5, 'Frequency')
 
 \end{figure}
 
-\hypertarget{exercise-19}{%
-\section{Exercise:}\label{exercise-19}}
+\hypertarget{exercise-20}{%
+\section{Exercise:}\label{exercise-20}}
 
 Add lines showing the mean, mode and median to the above graph, and
 comment on this with a box of markdown.
@@ -6049,8 +5504,8 @@ Text(0, 0.5, 'Frequency')
 
 \end{figure}
 
-\hypertarget{exercise-20}{%
-\section{Exercise:}\label{exercise-20}}
+\hypertarget{exercise-21}{%
+\section{Exercise:}\label{exercise-21}}
 
 Plot the mean and median for the above graph. What might be better
 statistics? How might you find them?
@@ -7047,8 +6502,8 @@ numerical columns.
 Name: All Ages, dtype: float64
 \end{verbatim}
 
-\hypertarget{exercise-21}{%
-\section{Exercise}\label{exercise-21}}
+\hypertarget{exercise-22}{%
+\section{Exercise}\label{exercise-22}}
 
 Using the Ward Code, \textbf{merge} the \emph{persons} geodataframe with
 the \emph{londonWards} dataframe to create a new geodataframe called
@@ -7120,8 +6575,8 @@ And let's project this into a new geodataframe:
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{exercise-22}{%
-\section{Exercise}\label{exercise-22}}
+\hypertarget{exercise-23}{%
+\section{Exercise}\label{exercise-23}}
 
 Create a choropleth map of the population of each ward using
 \emph{projected\_geopeople.plot()} and save it as an image file. Use the
