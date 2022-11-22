@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.251">
+<meta name="generator" content="quarto-1.2.269">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -162,8 +162,8 @@ ga('send', {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="../" class="sidebar-logo-link">
-      <img src=".././logo2.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Quantitative Methods 2</a> 
@@ -318,6 +318,7 @@ ga('send', {
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
@@ -326,14 +327,6 @@ ga('send', {
 
 <section id="workshop-4-open-in-colab" class="level2">
 <h2 class="anchored" data-anchor-id="workshop-4-open-in-colab"><em>Workshop 4</em> <a href="https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W04.%20Natural%20Language%20Processing.ipynb"><img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a></h2>
-<p>Today we’ll be using the <em>Natural Language Tool Kit</em> package <strong>nltk</strong>, which will allow us to split (clean) text into words, parts of speech, and sentences, and plot word occurrence and frequency.</p>
-<p><strong>Aims</strong></p>
-<ul>
-<li>to work with nltk and some standard corpus texts</li>
-<li>to tokenise by word and sentence</li>
-<li>to plot word occurrence and frequency</li>
-<li>to filter by parts of speech</li>
-</ul>
 </section>
 <section id="background" class="level2">
 <h2 class="anchored" data-anchor-id="background">Background</h2>
@@ -352,19 +345,19 @@ ga('send', {
 <h2 class="anchored" data-anchor-id="downloading-the-data">Downloading the Data</h2>
 <p>Let’s grab the data we will need this week from our course website and save it into our data folder. If you’ve not already created a data folder then do so using the following command.</p>
 <p>Don’t worry if it generates an error, that means you’ve already got a data folder.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install spacy</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install scattertext</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install tika</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install spacytextblob</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="2">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Make a ./data/wk4 directory</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data<span class="op">/</span>wk4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="a1d0b22a-0fec-4aba-d649-ecc8036c606a" data-execution_count="3">
+<div class="cell" data-outputid="a1d0b22a-0fec-4aba-d649-ecc8036c606a">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>storage.googleapis.com<span class="op">/</span>qm2<span class="op">/</span>wk4<span class="op">/</span>Exxon.json <span class="op">-</span>o data<span class="op">/</span>wk4<span class="op">/</span>Exxon.json</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -372,7 +365,7 @@ ga('send', {
 100 10.5M  100 10.5M    0     0  42.5M      0 --:--:-- --:--:-- --:--:-- 42.6M</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="c226cbb6-6112-44d4-ab2e-eb8616750560" data-execution_count="4">
+<div class="cell" data-outputid="c226cbb6-6112-44d4-ab2e-eb8616750560">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pylab</span>
@@ -396,7 +389,7 @@ ga('send', {
 <section id="downloading-and-reading-one-earnings-call" class="level2">
 <h2 class="anchored" data-anchor-id="downloading-and-reading-one-earnings-call">Downloading and reading one earnings call</h2>
 <p>Exxon host earnings calls on their website in PDF form. Usually, working with PDFs is a real pain as they are not machine-readable. Using a python package called <a href="https://www.geeksforgeeks.org/parsing-pdfs-in-python-with-tika/">tika</a>, we can “parse” a pdf, turning it into machine-readable text:</p>
-<div class="cell" data-outputid="20f3c8ac-3c71-49d9-a1e6-75d2ea1956a3" data-execution_count="5">
+<div class="cell" data-outputid="20f3c8ac-3c71-49d9-a1e6-75d2ea1956a3">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define the URL where your PDF lives. You could also upload your own pdf.</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>url<span class="op">=</span><span class="st">'https://corporate.exxonmobil.com/-/media/Global/Files/investor-relations/quarterly-earnings/earnings-transcripts/2022-earnings-transcripts/1Q22-XOM-Earnings-Call-Transcript-4-29-22.pdf'</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># parse the pdf by feeding tika the URL and store the text in an object called "raw" </span></span>
@@ -415,7 +408,7 @@ WARNING:tika.tika:Failed to see startup log message; retrying...</code></pre>
 </div>
 </div>
 <p>Now, we have an object called “raw” that contains some useful information. Notice the squiggly brackets; this is a dictionary. It contains several fields, including some useful metadata such as the author</p>
-<div class="cell" data-outputid="e8a77514-a34f-4ed9-d224-909780d11471" data-execution_count="6">
+<div class="cell" data-outputid="e8a77514-a34f-4ed9-d224-909780d11471">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>date<span class="op">=</span>raw[<span class="st">'metadata'</span>][<span class="st">'date'</span>]</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>title<span class="op">=</span>raw[<span class="st">'metadata'</span>][<span class="st">'dc:title'</span>]</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>raw_text<span class="op">=</span>raw[<span class="st">'content'</span>]</span>
@@ -436,7 +429,7 @@ Text:</code></pre>
 </div>
 </div>
 <p>look at that! we’re beginning to give some structure to our text data. But suppose I wanted to analyze multiple earnings calls; I need to organize this data so that it can accomodate new entries. As always, we want to <strong>tabularize</strong> our data. Let’s create a dataframe with three columns (Date, Title, and Text) in which each row is one earnings call:</p>
-<div class="cell" data-outputid="dd9b2fce-3ca0-4ab1-cfe1-03c0535e98a5" data-execution_count="7">
+<div class="cell" data-outputid="dd9b2fce-3ca0-4ab1-cfe1-03c0535e98a5">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a dataframe using the above data </span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>call<span class="op">=</span>pd.DataFrame({<span class="st">'Date'</span>:[date],<span class="st">'Title'</span>:[title],<span class="st">'Text'</span>:[raw_text]})</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -548,7 +541,7 @@ Text:</code></pre>
 </div>
 </div>
 <p>Now, if we were so inclined, we could use a loop to repeat this process for a large number of earnings calls, yielding a neatly organized dataframe containing the date, title, and text of earnings calls over time. I’ve done this so you don’t have to, and stored it as a file called “Exxon.json”. It spans 2002-2019, and contains over 10 million words’ worth of earnings calls. Let’s take a peek:</p>
-<div class="cell" data-outputid="257a1f52-5a66-4b93-9cb0-df3a776d4552" data-execution_count="8">
+<div class="cell" data-outputid="257a1f52-5a66-4b93-9cb0-df3a776d4552">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df<span class="op">=</span>pd.read_json(<span class="st">'data/wk4/Exxon.json'</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
@@ -719,7 +712,7 @@ Text:</code></pre>
 <h2 class="anchored" data-anchor-id="dirty-words">Dirty Words</h2>
 <p>Text often comes ‘unclean’ either containing tags such as HTML (or XML), or has other issues. We’ve already done a bit of tidying, but it’s been relatively straightforward. Be cautious when committing to a text analysis project - you may spend a great deal of time tidying up your text.</p>
 <p>For example, you may have noticed “…” in the text of the first earnings call we downloaded. This is a character (just like “a” or “$”) except it indicates that we want to create a new line. It’s part of the formatting of the pdf. That’s not really useful information to us. Let start by selecting an earnings call; i’ve chosen the 38th in this dataframe:</p>
-<div class="cell" data-outputid="88d485ad-2084-49b6-905a-b6b2069df3f2" data-execution_count="9">
+<div class="cell" data-outputid="88d485ad-2084-49b6-905a-b6b2069df3f2">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>call<span class="op">=</span>df.iloc[<span class="dv">38</span>]</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Date: '</span>, call[<span class="st">'Date'</span>])</span>
@@ -738,7 +731,7 @@ Text:</code></pre>
 </div>
 </div>
 <p>This call took place on May 25th, 2016. The transcript is over 125,000 words, nearly as long as the third Lord of the Rings book. It would be a pain to read all of it, so we’ll use python to extract insights. Currently, the contents of <code>call["Text"]</code> is a <a href="https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str">“string”</a>– a sequence of characters. We can do a number of things with strings, including splitting a big string into smaller strings using a specific delimiter and the <code>.split()</code> function. For example, I can break down the whole text of the earnings call roughly into sentences by splitting the string every time I encounter a period (“.”). This returns a list of smaller strings, and if i select the first one using <code>[0]</code>, I get the first sentence of this call:</p>
-<div class="cell" data-outputid="d4b2fbb7-300e-401f-c87e-e9bc8d1e3bc1" data-execution_count="10">
+<div class="cell" data-outputid="d4b2fbb7-300e-401f-c87e-e9bc8d1e3bc1">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>call[<span class="st">'Text'</span>].split(<span class="st">'.'</span>)[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>"I'm Rex Tillerson, I'm the Chairman and Chief Executive Officer of the Exxon Mobil Corporation"</code></pre>
@@ -752,7 +745,7 @@ Text:</code></pre>
 <h2 class="anchored" data-anchor-id="regular-expressions-regex">Regular Expressions (Regex)</h2>
 <p>Another thing we can do with strings in python is search them using regular expressions. A regular expression is a sequence of characters that specifies a search pattern in text. You can play around building some regex queries using this <a href="https://regexr.com/">tool</a>.</p>
 <p>You can think about this as Ctrl+F on steroids; In its simplest form, we can use regex to search for a character, word, or phrase in a bunch of text. For example, we can use regular expressions to count how many times “climate change” is mentioned in this earnings call using the <code>re.findall()</code> function:</p>
-<div class="cell" data-outputid="7a35e1a2-2a43-4505-a18f-72a87ee49fb4" data-execution_count="97">
+<div class="cell" data-outputid="7a35e1a2-2a43-4505-a18f-72a87ee49fb4">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import the regular expressions library </span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -778,7 +771,7 @@ Text:</code></pre>
 <h3 class="anchored" data-anchor-id="applying-a-lambda-function-to-a-dataframe">Applying a lambda function to a dataframe</h3>
 <p>Because each row of our dataframe <code>df</code> is an earnings call (the text of which is contained in <code>df['Text']</code>, we want to apply the analysis we did for the single earnings call above to each row of <code>df</code>.</p>
 <p>We can accomplish this using a <a href="https://www.w3schools.com/python/python_lambda.asp"><strong>lambda function</strong></a>. This allows us to iterate over each value in a dataframe column, and apply a function to it. In the simple example below, I use a lambda function to create a new column that is takes the values from a different column and multiplies them by 2:</p>
-<div class="cell" data-outputid="a7d4346a-f611-492a-a987-bf8fe7311f6a" data-execution_count="96">
+<div class="cell" data-outputid="a7d4346a-f611-492a-a987-bf8fe7311f6a">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a dataframe called "example" with one column called "numbers" which contains numbers 0-5</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>example<span class="op">=</span> pd.DataFrame({<span class="st">'numbers'</span>:[<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>]})</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -821,7 +814,7 @@ Text:</code></pre>
 <li><code>.apply(lambda x:</code>: iterate over each row in the column, and call each value in that column x. In other words, x will represent the text of each earnings call.</li>
 <li><code>len(re.findall(r'climate change', x, re.IGNORECASE)</code> this is exactly the same as what did previously to find the number of mentions of climate change in the one earnings call, except that we swapped <code>call['Text']</code> with <code>x</code>, since we want to do this for the text of every earnings call.</li>
 </ol>
-<div class="cell" data-outputid="895507d5-280b-473c-a6ea-bde767e2d681" data-execution_count="102">
+<div class="cell" data-outputid="895507d5-280b-473c-a6ea-bde767e2d681">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a column called "climate change" that contains the count of mentions of this keyword</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'climate change'</span>]<span class="op">=</span>df[<span class="st">'Text'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="bu">len</span>(re.findall(<span class="vs">r'climate change'</span>, x, re.IGNORECASE)))</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -853,7 +846,7 @@ Text:</code></pre>
 <p>Advanced: Our current measure of the number of mentions of keywords might be biased: if one earnings call mentions climate change 10 times more than another, but that earnings call has 10 times more words, then the <em>rate</em> of keyword mentions hasn’t actually increased; people are just talking more. You can get the word count of each earnings call in the lambda function above using <code>len(x)</code> (using <code>len()</code> on a string will get you a word count). Edit the lambda function above such that we don’t get a <em>count</em> of the number of mentions of climate change, but the <em>rate</em> of mentions (i.e., count of “climate change” divided by total word count per call).</p>
 <hr>
 <p>Let’s plot the frequency of these mentions over time to analyze temporal trends in the salience of climate change and other keywords in these calls. We’ll accomplish this using</p>
-<div class="cell" data-outputid="e9f781e3-3c2b-4f44-b6b0-ad2f37087c30" data-execution_count="108">
+<div class="cell" data-outputid="e9f781e3-3c2b-4f44-b6b0-ad2f37087c30">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract the year from the date column </span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Year'</span>]<span class="op">=</span>df[<span class="st">'Date'</span>].dt.year</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -867,7 +860,7 @@ Text:</code></pre>
 <pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f7d77456890&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W04.%20Natural%20Language%20Processing_files/figure-html/cell-15-output-2.png" class="img-fluid"></p>
+<p><img src="W04. Natural Language Processing_files/figure-html/cell-15-output-2.png" class="img-fluid"></p>
 </div>
 </div>
 <p>Do you notice any patterns in the salience of these topics over time?</p>
@@ -885,7 +878,7 @@ Text:</code></pre>
 <li><code>climate change</code> the phrase we want our sentence to contain.</li>
 </ol>
 <p>when you put it all together, the regex will search for groups of characters (1.) bounded by periods (2.) that contain the phrase “climate change” (3.)</p>
-<div class="cell" data-outputid="51003ba7-3f13-44de-f5b1-3b5da0a9640d" data-execution_count="170">
+<div class="cell" data-outputid="51003ba7-3f13-44de-f5b1-3b5da0a9640d">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a list called "climate_sentences" that contains the results of this query</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>climate_sentences<span class="op">=</span>re.findall(<span class="vs">r"([^.]*climate change[^.]*)"</span>,<span class="st">" "</span>.join(df[<span class="st">'Text'</span>]))</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -928,7 +921,7 @@ The next shareholder proposal calls for a specific Board climate change committe
 <section id="semantic-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="semantic-analysis">Semantic Analysis</h3>
 <p>Now we can see the <em>sentences</em> which mention climate change, which helps us understand a bit about the context. We can perform semantic analysis on some of these sentences to take a close look at the grammar of some of these sentences; I’ve isolated the 9th sentence and produced a dependency tree, like the ones we’ve seen in class.</p>
-<div class="cell" data-outputid="02162160-4c97-4f22-dc0e-0eff2ff71e49" data-execution_count="179">
+<div class="cell" data-outputid="02162160-4c97-4f22-dc0e-0eff2ff71e49">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy <span class="im">import</span> displacy</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#run the NLP pipeline on the 9th sentence from our list of sentences about climate change.</span></span>
@@ -1175,7 +1168,7 @@ In terms of when we'll see significant production growth out of the unconvention
 <li>The sequence always ends in a colon * regex: <code>([A-Z]+.+[A-Z]+:)</code></li>
 </ol>
 <p>Let’s use this regex in <code>re.findall()</code> to get a list of the speakers on this call:</p>
-<div class="cell" data-outputid="246e3254-c8a8-4fda-f5f8-2368baf50ad1" data-execution_count="116">
+<div class="cell" data-outputid="246e3254-c8a8-4fda-f5f8-2368baf50ad1">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a list of all the speakers by searching text of the earnings call for the above regex. </span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>speakers <span class="op">=</span> re.findall(<span class="vs">r'([A-Z]+.+[A-Z]+: )'</span>, call[<span class="st">'Text'</span>])</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1204,7 +1197,7 @@ TRACEY REMBERT, SHAREHOLDER, CHRISTIAN BROTHERS INVESTMENT SERVICES: </code></pr
 </div>
 </div>
 <p>We want to do more than just identify the speakers though; we want to break up the text of our earnings call into chunks of speech and associate each chunk of speech with its speaker. We can split a string using regular expressions using <code>re.split(&lt;regex&gt;,&lt;text&gt;)</code>. This takes one block of text, splits it into chunks using the regex, and returns a list of chunks:</p>
-<div class="cell" data-outputid="a4a9573e-1667-4d4e-f3e6-88cfb8c1eeeb" data-execution_count="23">
+<div class="cell" data-outputid="a4a9573e-1667-4d4e-f3e6-88cfb8c1eeeb">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># split the text of the earnings call using our regex, save the list as "speech"</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>speech<span class="op">=</span>re.split(<span class="vs">r'[A-Z]+.+[A-Z]+: '</span>, call[<span class="st">'Text'</span>])</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1234,7 +1227,7 @@ For those of you who may wish to leave the meeting at any time, let me express m
 </div>
 </div>
 <p>Now we’ve associated chunk of speech with their speaker, amazing. Let’s create a new dataframe that reflects this structure. Currently, our dataframe <code>call</code> has one row. Let’s use the two lists we just created, <code>speakers</code> and <code>speech</code>, to create a dataframe in which each row is one chunk of speech. A column called “speaker” will indicate who is speaking, and a column called “speech” will contain the text of the speech:</p>
-<div class="cell" data-outputid="ec34c473-2be3-452c-b326-396bf376a5ff" data-execution_count="18">
+<div class="cell" data-outputid="ec34c473-2be3-452c-b326-396bf376a5ff">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the new dataframe, from the two lists, and name it "speaker_df"</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>speaker_df<span class="op">=</span>pd.DataFrame({<span class="st">"speaker"</span>:speakers,<span class="st">"speech"</span>:speech})</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1291,7 +1284,7 @@ For those of you who may wish to leave the meeting at any time, let me express m
 <p>And there we have it. We started with a PDF on a website, and we’ve ended up with a dataframe in which each row is a speech, with a column indicating who is speaking, what they’re saying, and when they said it.</p>
 <p>Now, lets use this dataframe to create a scatterplot comparing the language used by the company’s CEO Rex Tillerson and the company’s shareholders.This will give us insights into the topics that are important for shareholders, and the debates that take place within the company.</p>
 <p>We’ll do so using the <a href="https://spacy.io/universe/project/scattertext">scattertext</a> libray:</p>
-<div class="cell" data-execution_count="19">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scattertext <span class="im">as</span> st</span>
@@ -1313,7 +1306,7 @@ For those of you who may wish to leave the meeting at any time, let me express m
 <span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>                   not_category_name<span class="op">=</span><span class="st">'Others'</span>, <span class="co"># set the label on the plot for all other speakers as "Others"</span></span>
 <span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>                   width_in_pixels<span class="op">=</span><span class="dv">1000</span>) <span class="co">#set the width </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="ecb51376-ae7d-4c4f-c89f-8f8b826f9a10" data-execution_count="117">
+<div class="cell" data-outputid="ecb51376-ae7d-4c4f-c89f-8f8b826f9a10">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># display the plot                   </span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>display(HTML(html))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
@@ -9003,9 +8996,12 @@ autocomplete(
 <h1>External pressure</h1>
 <p>The fact that Exxon knew about climate change in the 1970s and still funded climate denial resulted in public outrage, culminating in an online movement organized around the twitter hashtag #ExxonKnew.</p>
 <p>I’ve downloaded almost 100,000 tweets containing the hashtag #ExxonKnew, between 2016 and 2017. Work together as a group to explore and analyze this dataset.</p>
-<div class="cell" data-outputid="b9fdb120-68c7-41fc-895a-5057ca9d1c37" data-execution_count="121">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>tweets<span class="op">=</span>pd.read_csv(<span class="st">'data/wk4/Exxon_tweets_clean.csv'</span>)</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>tweets</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>storage.googleapis.com<span class="op">/</span>qm2<span class="op">/</span>wk4<span class="op">/</span>Exxon_tweets_clean.csv <span class="op">-</span>o data<span class="op">/</span>wk4<span class="op">/</span>Exxon_tweets_clean.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-outputid="b9fdb120-68c7-41fc-895a-5057ca9d1c37">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>tweets<span class="op">=</span>pd.read_csv(<span class="st">'data/wk4/Exxon_tweets_clean.csv'</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>tweets</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="121">
 
 
@@ -9239,17 +9235,17 @@ autocomplete(
 <li><code>._.blob.sentiment_assessments.assessments</code>: a list of polarity and subjectivity scores for the assessed tokens.</li>
 </ol>
 <p>Let</p>
-<div class="cell" data-outputid="bf72b095-d3ab-4390-90ff-eef1d5c6f01f" data-execution_count="145">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># grab the 130th row in the dataframe and select the text of the tweet</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>text<span class="op">=</span>tweets.iloc[<span class="dv">130</span>][<span class="st">'text'</span>]</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># apply the NLP pipeline to this text.</span></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>doc <span class="op">=</span> nlp(text)</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text)</span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Polarity: '</span>, doc._.blob.polarity)</span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Subjectivity: '</span>, doc._.blob.subjectivity)</span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Assessments: '</span>, doc._.blob.sentiment_assessments.assessments)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-outputid="bf72b095-d3ab-4390-90ff-eef1d5c6f01f">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># grab the 130th row in the dataframe and select the text of the tweet</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>text<span class="op">=</span>tweets.iloc[<span class="dv">130</span>][<span class="st">'text'</span>]</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co"># apply the NLP pipeline to this text.</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>doc <span class="op">=</span> nlp(text)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text)</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Polarity: '</span>, doc._.blob.polarity)</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Subjectivity: '</span>, doc._.blob.subjectivity)</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Assessments: '</span>, doc._.blob.sentiment_assessments.assessments)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>RT @Exxon_Knew: Stop saying #Tillerson is good on climate. He leads the oil company WORST on climate #ExxonKnew via @jacobwe https://t.co/P…
 Polarity:  -0.15000000000000002
@@ -9271,17 +9267,14 @@ Assessments:  [(['good'], 0.7, 0.6000000000000001, None), (['worst'], -1.0, 1.0,
 </ol>
 <p>Do you agree with the algorithm’s assessment of these tweets’ sentiment? To go above and beyond, select tweets for which you disagree, print out the model’s assessments to see which words are contributing to the sentiment score.</p>
 <hr>
-<div class="cell" data-outputid="51d5a302-a34b-47e3-b9a9-3e14ee6bec8b" data-execution_count="144">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>KeyboardInterrupt: ignored</code></pre>
-</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="above-and-beyond" class="level2">
 <h2 class="anchored" data-anchor-id="above-and-beyond">Above and beyond</h2>
 <p>If this is all too easy for you, keep going. Let’s combine this week’s knowledge with last week’s. We have geographic information for some of the tweets. Modify the code below to plot the distribution of the #ExxonKnew campaign. If you want to get fancy, color the points according to sentiment polarity.</p>
-<div class="cell">
+<div class="cell" data-outputid="8e7a8f3d-3de2-4f95-a965-c411a98b55f6">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.basemap <span class="im">import</span> Basemap</span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -9296,6 +9289,9 @@ Assessments:  [(['good'], 0.7, 0.6000000000000001, None), (['worst'], -1.0, 1.0,
 <span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>      latlon<span class="op">=</span><span class="va">True</span>, </span>
 <span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>      vmin<span class="op">=</span><span class="dv">0</span>, </span>
 <span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>      vmax<span class="op">=</span><span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>SyntaxError: ignored</code></pre>
+</div>
 </div>
 
 
@@ -9344,7 +9340,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -9380,24 +9393,42 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script>

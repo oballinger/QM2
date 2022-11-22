@@ -23,7 +23,8 @@ book:
   repo-actions: [edit]
   downloads: [pdf, epub]
   sharing: [twitter, facebook]
-  logo: ./logo2.png
+  sidebar:
+    logo: logo.png
 bibliography: references.bib
 
 format:
