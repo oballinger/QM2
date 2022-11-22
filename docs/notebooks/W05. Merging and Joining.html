@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.251">
+<meta name="generator" content="quarto-1.2.269">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -162,8 +162,8 @@ ga('send', {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="../" class="sidebar-logo-link">
-      <img src=".././logo2.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Quantitative Methods 2</a> 
@@ -273,7 +273,7 @@ ga('send', {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#workshop-5-open-in-colab" id="toc-workshop-5-open-in-colab" class="nav-link active" data-scroll-target="#workshop-5-open-in-colab"><em>Workshop 5</em> <img src="../colab-badge.png" class="img-fluid" alt="Open In Colab"></a>
+  <li><a href="#workshop-5-open-in-colab" id="toc-workshop-5-open-in-colab" class="nav-link active" data-scroll-target="#workshop-5-open-in-colab"><em>Workshop 5</em> <img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a>
   <ul class="collapse">
   <li><a href="#aims" id="toc-aims" class="nav-link" data-scroll-target="#aims">Aims</a></li>
   </ul></li>
@@ -320,6 +320,7 @@ ga('send', {
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
@@ -327,7 +328,7 @@ ga('send', {
 </header>
 
 <section id="workshop-5-open-in-colab" class="level2">
-<h2 class="anchored" data-anchor-id="workshop-5-open-in-colab"><em>Workshop 5</em> <a href="https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W05.%20Merging%20and%20Joining.ipynb"><img src="../colab-badge.png" class="img-fluid" alt="Open In Colab"></a></h2>
+<h2 class="anchored" data-anchor-id="workshop-5-open-in-colab"><em>Workshop 5</em> <a href="https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W05.%20Merging%20and%20Joining.ipynb"><img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a></h2>
 <p>Sometimes, we will want to combine data from different sources about the same subject - perhaps we want to compare the GDP in a country with life expectancy, or the proportion of free schools meals with the level of unemployment.</p>
 <section id="aims" class="level3">
 <h3 class="anchored" data-anchor-id="aims">Aims</h3>
@@ -342,37 +343,27 @@ ga('send', {
 <h2 class="anchored" data-anchor-id="downloading-the-data">Downloading the Data</h2>
 <p>Let’s grab the data we will need this week from our course website and save it into our data folder. If you’ve not already created a data folder then do so using the following command.</p>
 <p>Don’t worry if it generates an error, that means you’ve already got a data folder.</p>
-<div class="cell" data-execution_count="43">
+<div class="cell" data-outputid="a43e6b17-8ac5-4135-b489-ce5c0a515cbf">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>mkdir: data: File exists</code></pre>
+<pre><code>mkdir: cannot create directory ‘data’: File exists</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="44">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data<span class="op">/</span>wk3</span>
+<div class="cell" data-outputid="53454ca5-ad96-4b57-85e2-16ac32c7f11a">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data<span class="op">/</span>wk5</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>s3.eu<span class="op">-</span>west<span class="op">-</span><span class="fl">2.</span><span class="er">amazonaws</span>.com<span class="op">/</span>qm2<span class="op">/</span>wk3<span class="op">/</span>UN_Life_all.csv <span class="op">-</span>o .<span class="op">/</span>data<span class="op">/</span>wk5<span class="op">/</span>UN_Life_all.csv</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>s3.eu<span class="op">-</span>west<span class="op">-</span><span class="fl">2.</span><span class="er">amazonaws</span>.com<span class="op">/</span>qm2<span class="op">/</span>wk3<span class="op">/</span>UN_Cities_1214_country.csv <span class="op">-</span>o .<span class="op">/</span>data<span class="op">/</span>wk5<span class="op">/</span>UN_Cities_1214_country.csv</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>s3.eu<span class="op">-</span>west<span class="op">-</span><span class="fl">2.</span><span class="er">amazonaws</span>.com<span class="op">/</span>qm2<span class="op">/</span>wk3<span class="op">/</span>UN_Cities_1214_population.csv <span class="op">-</span>o .<span class="op">/</span>data<span class="op">/</span>wk5<span class="op">/</span>UN_Cities_1214_population.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>mkdir: data/wk3: File exists
+<pre><code>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  354k  100  354k    0     0   411k      0 --:--:-- --:--:-- --:--:--  410k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0Warning: Failed to create the file ./data/wk5/UN_Life_all.csv: No such file or 
-Warning: directory
-  4  354k    4 15915    0     0  36914      0  0:00:09 --:--:--  0:00:09 37271
-curl: (23) Failure writing output to destination
+100 31445  100 31445    0     0  63397      0 --:--:-- --:--:-- --:--:-- 63397
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0Warning: Failed to create the file ./data/wk5/UN_Cities_1214_country.csv: No 
-Warning: such file or directory
- 52 31445   52 16384    0     0  32380      0 --:--:-- --:--:-- --:--:-- 32833
-curl: (23) Failure writing output to destination
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0Warning: Failed to create the file ./data/wk5/UN_Cities_1214_population.csv: 
-Warning: No such file or directory
-  0  373k    0  1580    0     0   3234      0  0:01:58 --:--:--  0:01:58  3284
-curl: (23) Failure writing output to destination</code></pre>
+100  373k  100  373k    0     0   471k      0 --:--:-- --:--:-- --:--:--  471k</code></pre>
 </div>
 </div>
 </section>
@@ -380,7 +371,7 @@ curl: (23) Failure writing output to destination</code></pre>
 <h2 class="anchored" data-anchor-id="joining-instructions">Joining Instructions</h2>
 <p>Joins are the combination of different datasets, and are common in relational databases as a way of performing queries. There are lots of examples of why and when we might want to do this, but most start with two tables of data. We’re going to start with some data we’ve generated.</p>
 <p>I’m going to go back and work with fake data for a while, because it’s clean and small and we can see what’s going on - when we work with real data, we have to take great care that the data is clean, the indices match, and so on.</p>
-<div class="cell" data-execution_count="45">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -388,15 +379,18 @@ curl: (23) Failure writing output to destination</code></pre>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s create dataframes which represent fictitious values associated with people. Let’s assume our data is anonymised because we’re ethical researchers and don’t want information about real people leaking out.</p>
-<div class="cell" data-execution_count="46">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>people1 <span class="op">=</span> pd.DataFrame(<span class="dv">5</span><span class="op">+</span>np.random.randn(<span class="dv">5</span>, <span class="dv">5</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>people1.columns <span class="op">=</span> [<span class="st">'units of alcohol drunk'</span>,<span class="st">'cigarettes smoked'</span>,<span class="st">'sleep per night'</span>,<span class="st">'height'</span>,<span class="st">'BMI'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="47">
+<div class="cell" data-outputid="fdefe3f9-f74c-4b36-9409-93eff9a90746">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>people1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="47">
+<div class="cell-output cell-output-display" data-execution_count="44">
 
-<div>
+
+  <div id="df-71f8ec53-8bfe-4cab-96e0-192ce4e0c762">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -412,58 +406,134 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>0</th>
-      <td>6.053520</td>
-      <td>5.767268</td>
-      <td>4.521370</td>
-      <td>4.315644</td>
-      <td>6.513931</td>
+      <td>4.589208</td>
+      <td>5.052479</td>
+      <td>5.514619</td>
+      <td>4.721543</td>
+      <td>6.076186</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>3.845497</td>
-      <td>5.102046</td>
-      <td>4.397347</td>
-      <td>7.332429</td>
-      <td>3.944509</td>
+      <td>5.091470</td>
+      <td>4.275959</td>
+      <td>6.630442</td>
+      <td>7.084920</td>
+      <td>4.787786</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>5.433980</td>
-      <td>5.129674</td>
-      <td>2.899948</td>
-      <td>5.641938</td>
-      <td>5.147669</td>
+      <td>5.751082</td>
+      <td>4.630197</td>
+      <td>5.286618</td>
+      <td>5.058565</td>
+      <td>3.803777</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>4.461049</td>
-      <td>6.897319</td>
-      <td>6.241158</td>
-      <td>3.693360</td>
-      <td>5.240822</td>
+      <td>6.219418</td>
+      <td>6.131729</td>
+      <td>4.359941</td>
+      <td>5.165182</td>
+      <td>3.270455</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>6.095539</td>
-      <td>4.239457</td>
-      <td>3.986249</td>
-      <td>4.525927</td>
-      <td>4.374219</td>
+      <td>5.930070</td>
+      <td>3.745579</td>
+      <td>4.980880</td>
+      <td>6.670358</td>
+      <td>5.003252</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-71f8ec53-8bfe-4cab-96e0-192ce4e0c762')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-71f8ec53-8bfe-4cab-96e0-192ce4e0c762 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-71f8ec53-8bfe-4cab-96e0-192ce4e0c762');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
-<div class="cell" data-execution_count="48">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>people2 <span class="op">=</span> pd.DataFrame(<span class="dv">5</span><span class="op">+</span>np.random.randn(<span class="dv">3</span>, <span class="dv">5</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>people2.columns <span class="op">=</span> [<span class="st">'units of alcohol drunk'</span>,<span class="st">'cigarettes smoked'</span>,<span class="st">'sleep per night'</span>,<span class="st">'height'</span>,<span class="st">'BMI'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="49">
+<div class="cell" data-outputid="7f2fb38b-5eff-4495-d8c9-e41f277be2d0">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>people2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="49">
+<div class="cell-output cell-output-display" data-execution_count="7">
 
-<div>
+
+  <div id="df-71a5214f-1dca-4154-858a-1281a8918b7c">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -479,45 +549,121 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>0</th>
-      <td>5.060422</td>
-      <td>5.479779</td>
-      <td>5.134008</td>
-      <td>4.705505</td>
-      <td>6.048511</td>
+      <td>3.657942</td>
+      <td>5.022931</td>
+      <td>5.657866</td>
+      <td>5.342434</td>
+      <td>4.768451</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>5.996277</td>
-      <td>5.845720</td>
-      <td>2.615113</td>
-      <td>5.479796</td>
-      <td>4.905734</td>
+      <td>5.801720</td>
+      <td>6.528911</td>
+      <td>3.863262</td>
+      <td>3.918306</td>
+      <td>3.233783</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>4.979671</td>
-      <td>5.011475</td>
-      <td>6.751763</td>
-      <td>6.605953</td>
-      <td>4.257274</td>
+      <td>4.937641</td>
+      <td>4.726278</td>
+      <td>4.398084</td>
+      <td>5.610086</td>
+      <td>4.368852</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-71a5214f-1dca-4154-858a-1281a8918b7c')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-71a5214f-1dca-4154-858a-1281a8918b7c button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-71a5214f-1dca-4154-858a-1281a8918b7c');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 </section>
 <section id="adding-new-observations" class="level1">
 <h1>Adding new observations</h1>
 <p>It looks as if we have some data about people (although we’ve just made it up), and a set of common measurements. It would be nice to have all of this in one place, so let’s <em>merge</em> them into one dataframe. We’ll use the <em>concat</em> command, which is short for <em>concatenate</em>, or “chain together”.</p>
-<div class="cell" data-execution_count="50">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>people3 <span class="op">=</span> pd.concat([people1,people2])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="51">
+<div class="cell" data-outputid="29133464-4d82-44d0-dfe1-06751209a6bc">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>people3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="51">
+<div class="cell-output cell-output-display" data-execution_count="9">
 
-<div>
+
+  <div id="df-ccedecab-84a4-4a52-9162-788af7cdfbcf">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -533,83 +679,159 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>0</th>
-      <td>6.053520</td>
-      <td>5.767268</td>
-      <td>4.521370</td>
-      <td>4.315644</td>
-      <td>6.513931</td>
+      <td>4.656973</td>
+      <td>3.732003</td>
+      <td>5.204398</td>
+      <td>5.592159</td>
+      <td>3.964027</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>3.845497</td>
-      <td>5.102046</td>
-      <td>4.397347</td>
-      <td>7.332429</td>
-      <td>3.944509</td>
+      <td>5.023007</td>
+      <td>3.480838</td>
+      <td>4.677067</td>
+      <td>5.065464</td>
+      <td>4.795884</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>5.433980</td>
-      <td>5.129674</td>
-      <td>2.899948</td>
-      <td>5.641938</td>
-      <td>5.147669</td>
+      <td>7.415662</td>
+      <td>4.302678</td>
+      <td>3.746028</td>
+      <td>5.616205</td>
+      <td>4.797184</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>4.461049</td>
-      <td>6.897319</td>
-      <td>6.241158</td>
-      <td>3.693360</td>
-      <td>5.240822</td>
+      <td>5.102570</td>
+      <td>4.572136</td>
+      <td>3.668020</td>
+      <td>2.840370</td>
+      <td>4.426059</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>6.095539</td>
-      <td>4.239457</td>
-      <td>3.986249</td>
-      <td>4.525927</td>
-      <td>4.374219</td>
+      <td>5.393448</td>
+      <td>4.397537</td>
+      <td>6.849025</td>
+      <td>4.490472</td>
+      <td>5.248013</td>
     </tr>
     <tr>
       <th>0</th>
-      <td>5.060422</td>
-      <td>5.479779</td>
-      <td>5.134008</td>
-      <td>4.705505</td>
-      <td>6.048511</td>
+      <td>3.657942</td>
+      <td>5.022931</td>
+      <td>5.657866</td>
+      <td>5.342434</td>
+      <td>4.768451</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>5.996277</td>
-      <td>5.845720</td>
-      <td>2.615113</td>
-      <td>5.479796</td>
-      <td>4.905734</td>
+      <td>5.801720</td>
+      <td>6.528911</td>
+      <td>3.863262</td>
+      <td>3.918306</td>
+      <td>3.233783</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>4.979671</td>
-      <td>5.011475</td>
-      <td>6.751763</td>
-      <td>6.605953</td>
-      <td>4.257274</td>
+      <td>4.937641</td>
+      <td>4.726278</td>
+      <td>4.398084</td>
+      <td>5.610086</td>
+      <td>4.368852</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-ccedecab-84a4-4a52-9162-788af7cdfbcf')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-ccedecab-84a4-4a52-9162-788af7cdfbcf button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-ccedecab-84a4-4a52-9162-788af7cdfbcf');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 <section id="what-is-the-problem-above" class="level3">
 <h3 class="anchored" data-anchor-id="what-is-the-problem-above">What is the problem above?</h3>
-<div class="cell" data-execution_count="52">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>people4 <span class="op">=</span> pd.concat([people1,people2], ignore_index<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="53">
+<div class="cell" data-outputid="393d3cbc-955f-4ee2-8350-063224ab695b">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>people4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="53">
+<div class="cell-output cell-output-display" data-execution_count="11">
 
-<div>
+
+  <div id="df-67d14b67-4296-4412-9fbe-3271382eef2b">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -625,71 +847,144 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>0</th>
-      <td>6.053520</td>
-      <td>5.767268</td>
-      <td>4.521370</td>
-      <td>4.315644</td>
-      <td>6.513931</td>
+      <td>4.656973</td>
+      <td>3.732003</td>
+      <td>5.204398</td>
+      <td>5.592159</td>
+      <td>3.964027</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>3.845497</td>
-      <td>5.102046</td>
-      <td>4.397347</td>
-      <td>7.332429</td>
-      <td>3.944509</td>
+      <td>5.023007</td>
+      <td>3.480838</td>
+      <td>4.677067</td>
+      <td>5.065464</td>
+      <td>4.795884</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>5.433980</td>
-      <td>5.129674</td>
-      <td>2.899948</td>
-      <td>5.641938</td>
-      <td>5.147669</td>
+      <td>7.415662</td>
+      <td>4.302678</td>
+      <td>3.746028</td>
+      <td>5.616205</td>
+      <td>4.797184</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>4.461049</td>
-      <td>6.897319</td>
-      <td>6.241158</td>
-      <td>3.693360</td>
-      <td>5.240822</td>
+      <td>5.102570</td>
+      <td>4.572136</td>
+      <td>3.668020</td>
+      <td>2.840370</td>
+      <td>4.426059</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>6.095539</td>
-      <td>4.239457</td>
-      <td>3.986249</td>
-      <td>4.525927</td>
-      <td>4.374219</td>
+      <td>5.393448</td>
+      <td>4.397537</td>
+      <td>6.849025</td>
+      <td>4.490472</td>
+      <td>5.248013</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>5.060422</td>
-      <td>5.479779</td>
-      <td>5.134008</td>
-      <td>4.705505</td>
-      <td>6.048511</td>
+      <td>3.657942</td>
+      <td>5.022931</td>
+      <td>5.657866</td>
+      <td>5.342434</td>
+      <td>4.768451</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>5.996277</td>
-      <td>5.845720</td>
-      <td>2.615113</td>
-      <td>5.479796</td>
-      <td>4.905734</td>
+      <td>5.801720</td>
+      <td>6.528911</td>
+      <td>3.863262</td>
+      <td>3.918306</td>
+      <td>3.233783</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>4.979671</td>
-      <td>5.011475</td>
-      <td>6.751763</td>
-      <td>6.605953</td>
-      <td>4.257274</td>
+      <td>4.937641</td>
+      <td>4.726278</td>
+      <td>4.398084</td>
+      <td>5.610086</td>
+      <td>4.368852</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-67d14b67-4296-4412-9fbe-3271382eef2b')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-67d14b67-4296-4412-9fbe-3271382eef2b button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-67d14b67-4296-4412-9fbe-3271382eef2b');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 <p><code>ignore_index</code> is very useful when we want a new DataFrame which only contains data from other DataFrames, but unrelated otherwise.</p>
@@ -697,16 +992,19 @@ curl: (23) Failure writing output to destination</code></pre>
 <section id="data-with-a-unique-index-adding-new-observations" class="level2">
 <h2 class="anchored" data-anchor-id="data-with-a-unique-index-adding-new-observations">Data with a unique index: adding new observations</h2>
 <p>Let’s now examine data where the elements of study are not anonymous. Let’s consider that we have some city data. If we have city names (or equivalent) in the index column, simply concatenating them would be fine, because the names would not repeat in the way the index has above.</p>
-<div class="cell" data-execution_count="54">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="op">=</span> pd.DataFrame(<span class="dv">5</span><span class="op">+</span>np.random.randn(<span class="dv">5</span>, <span class="dv">5</span>))</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df1.columns <span class="op">=</span> [<span class="st">'area'</span>,<span class="st">'population'</span>,<span class="st">'mean temperature'</span>,<span class="st">'elevation'</span>,<span class="st">'annual rainfall'</span>]</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>df1.index <span class="op">=</span> [<span class="st">'London'</span>, <span class="st">'Paris'</span>, <span class="st">'Beijing'</span>, <span class="st">'Medellin'</span>, <span class="st">'Port Elizabeth'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="55">
+<div class="cell" data-outputid="5ce31866-dce0-4d36-e7b8-ac57a999a59e">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="55">
+<div class="cell-output cell-output-display" data-execution_count="13">
 
-<div>
+
+  <div id="df-58c2a438-26a0-442e-bb52-9b194151f4c6">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -722,59 +1020,135 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>5.077016</td>
-      <td>3.344452</td>
-      <td>7.000945</td>
-      <td>5.854193</td>
-      <td>4.457887</td>
+      <td>4.150726</td>
+      <td>6.091615</td>
+      <td>5.638999</td>
+      <td>4.033120</td>
+      <td>5.312239</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>3.631221</td>
-      <td>5.323007</td>
-      <td>4.579731</td>
-      <td>3.598146</td>
-      <td>6.832792</td>
+      <td>6.406381</td>
+      <td>5.192887</td>
+      <td>5.165797</td>
+      <td>4.642474</td>
+      <td>5.776229</td>
     </tr>
     <tr>
       <th>Beijing</th>
-      <td>4.598318</td>
-      <td>4.187428</td>
-      <td>5.287178</td>
-      <td>5.074045</td>
-      <td>3.491496</td>
+      <td>5.300187</td>
+      <td>4.790422</td>
+      <td>5.425208</td>
+      <td>4.857182</td>
+      <td>4.830031</td>
     </tr>
     <tr>
       <th>Medellin</th>
-      <td>6.213580</td>
-      <td>4.411090</td>
-      <td>5.798357</td>
-      <td>5.241598</td>
-      <td>6.739662</td>
+      <td>5.248481</td>
+      <td>4.734017</td>
+      <td>4.762919</td>
+      <td>5.325021</td>
+      <td>4.415028</td>
     </tr>
     <tr>
       <th>Port Elizabeth</th>
-      <td>5.416446</td>
-      <td>4.351028</td>
-      <td>6.595819</td>
-      <td>5.297740</td>
-      <td>3.935567</td>
+      <td>3.663045</td>
+      <td>5.555412</td>
+      <td>5.418251</td>
+      <td>4.369018</td>
+      <td>5.411102</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-58c2a438-26a0-442e-bb52-9b194151f4c6')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-58c2a438-26a0-442e-bb52-9b194151f4c6 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-58c2a438-26a0-442e-bb52-9b194151f4c6');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
-<div class="cell" data-execution_count="56">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> pd.DataFrame(<span class="dv">5</span><span class="op">+</span>np.random.randn(<span class="dv">3</span>, <span class="dv">5</span>))</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df2.columns <span class="op">=</span> [<span class="st">'area'</span>,<span class="st">'population'</span>,<span class="st">'mean temperature'</span>,<span class="st">'elevation'</span>,<span class="st">'annual rainfall'</span>]</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>df2.index <span class="op">=</span> [<span class="st">'Mumbai'</span>, <span class="st">'Sydney'</span>, <span class="st">'Boston'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="57">
+<div class="cell" data-outputid="0fbb5277-0cce-4bfd-eb20-2c5d152c5ebc">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="57">
+<div class="cell-output cell-output-display" data-execution_count="15">
 
-<div>
+
+  <div id="df-57f15a1f-a8ae-4800-b9ec-fd2997b86d00">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -790,41 +1164,117 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>Mumbai</th>
-      <td>5.403218</td>
-      <td>5.646440</td>
-      <td>5.259170</td>
-      <td>6.065506</td>
-      <td>5.657623</td>
+      <td>7.023555</td>
+      <td>4.045827</td>
+      <td>4.536805</td>
+      <td>5.383593</td>
+      <td>5.707156</td>
     </tr>
     <tr>
       <th>Sydney</th>
-      <td>6.807486</td>
-      <td>4.278180</td>
-      <td>4.786912</td>
-      <td>4.375484</td>
-      <td>4.119702</td>
+      <td>5.444850</td>
+      <td>4.930251</td>
+      <td>3.803988</td>
+      <td>5.578729</td>
+      <td>6.248074</td>
     </tr>
     <tr>
       <th>Boston</th>
-      <td>4.651726</td>
-      <td>5.190903</td>
-      <td>5.123513</td>
-      <td>6.541282</td>
-      <td>4.807702</td>
+      <td>3.380747</td>
+      <td>3.468165</td>
+      <td>4.166799</td>
+      <td>4.950791</td>
+      <td>5.094166</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-57f15a1f-a8ae-4800-b9ec-fd2997b86d00')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-57f15a1f-a8ae-4800-b9ec-fd2997b86d00 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-57f15a1f-a8ae-4800-b9ec-fd2997b86d00');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
-<div class="cell" data-execution_count="58">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df3 <span class="op">=</span> pd.concat([df1,df2])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="59">
+<div class="cell" data-outputid="7e313b9f-5309-4b05-bae5-c89a515c5a74">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="59">
+<div class="cell-output cell-output-display" data-execution_count="17">
 
-<div>
+
+  <div id="df-4cab92bd-2586-4156-89b1-eb18ee4b400a">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -840,71 +1290,144 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>5.077016</td>
-      <td>3.344452</td>
-      <td>7.000945</td>
-      <td>5.854193</td>
-      <td>4.457887</td>
+      <td>4.150726</td>
+      <td>6.091615</td>
+      <td>5.638999</td>
+      <td>4.033120</td>
+      <td>5.312239</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>3.631221</td>
-      <td>5.323007</td>
-      <td>4.579731</td>
-      <td>3.598146</td>
-      <td>6.832792</td>
+      <td>6.406381</td>
+      <td>5.192887</td>
+      <td>5.165797</td>
+      <td>4.642474</td>
+      <td>5.776229</td>
     </tr>
     <tr>
       <th>Beijing</th>
-      <td>4.598318</td>
-      <td>4.187428</td>
-      <td>5.287178</td>
-      <td>5.074045</td>
-      <td>3.491496</td>
+      <td>5.300187</td>
+      <td>4.790422</td>
+      <td>5.425208</td>
+      <td>4.857182</td>
+      <td>4.830031</td>
     </tr>
     <tr>
       <th>Medellin</th>
-      <td>6.213580</td>
-      <td>4.411090</td>
-      <td>5.798357</td>
-      <td>5.241598</td>
-      <td>6.739662</td>
+      <td>5.248481</td>
+      <td>4.734017</td>
+      <td>4.762919</td>
+      <td>5.325021</td>
+      <td>4.415028</td>
     </tr>
     <tr>
       <th>Port Elizabeth</th>
-      <td>5.416446</td>
-      <td>4.351028</td>
-      <td>6.595819</td>
-      <td>5.297740</td>
-      <td>3.935567</td>
+      <td>3.663045</td>
+      <td>5.555412</td>
+      <td>5.418251</td>
+      <td>4.369018</td>
+      <td>5.411102</td>
     </tr>
     <tr>
       <th>Mumbai</th>
-      <td>5.403218</td>
-      <td>5.646440</td>
-      <td>5.259170</td>
-      <td>6.065506</td>
-      <td>5.657623</td>
+      <td>7.023555</td>
+      <td>4.045827</td>
+      <td>4.536805</td>
+      <td>5.383593</td>
+      <td>5.707156</td>
     </tr>
     <tr>
       <th>Sydney</th>
-      <td>6.807486</td>
-      <td>4.278180</td>
-      <td>4.786912</td>
-      <td>4.375484</td>
-      <td>4.119702</td>
+      <td>5.444850</td>
+      <td>4.930251</td>
+      <td>3.803988</td>
+      <td>5.578729</td>
+      <td>6.248074</td>
     </tr>
     <tr>
       <th>Boston</th>
-      <td>4.651726</td>
-      <td>5.190903</td>
-      <td>5.123513</td>
-      <td>6.541282</td>
-      <td>4.807702</td>
+      <td>3.380747</td>
+      <td>3.468165</td>
+      <td>4.166799</td>
+      <td>4.950791</td>
+      <td>5.094166</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-4cab92bd-2586-4156-89b1-eb18ee4b400a')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-4cab92bd-2586-4156-89b1-eb18ee4b400a button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-4cab92bd-2586-4156-89b1-eb18ee4b400a');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 </section>
@@ -915,16 +1438,19 @@ curl: (23) Failure writing output to destination</code></pre>
 <section id="combining-on-attributes" class="level2">
 <h2 class="anchored" data-anchor-id="combining-on-attributes">Combining on Attributes</h2>
 <p>What if we’re looking at the same locations but different attributes? Consider the same df1</p>
-<div class="cell" data-execution_count="60">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="op">=</span> pd.DataFrame(<span class="dv">5</span><span class="op">+</span>np.random.randn(<span class="dv">5</span>, <span class="dv">5</span>))</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>df1.columns <span class="op">=</span> [<span class="st">'area'</span>,<span class="st">'population'</span>,<span class="st">'mean temperature'</span>,<span class="st">'elevation'</span>,<span class="st">'annual rainfall'</span>]</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>df1.index <span class="op">=</span> [<span class="st">'London'</span>, <span class="st">'Paris'</span>, <span class="st">'Beijing'</span>, <span class="st">'Medellin'</span>, <span class="st">'Port Elizabeth'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="61">
+<div class="cell" data-outputid="82a6fd77-a7fe-418c-993b-3bdfcf6e322d">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="61">
+<div class="cell-output cell-output-display" data-execution_count="49">
 
-<div>
+
+  <div id="df-b063b832-7d67-475b-a87a-fbcdd651506e">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -940,60 +1466,136 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>5.348823</td>
-      <td>5.486505</td>
-      <td>5.105354</td>
-      <td>3.680852</td>
-      <td>4.487838</td>
+      <td>6.216092</td>
+      <td>4.902209</td>
+      <td>3.726599</td>
+      <td>4.628916</td>
+      <td>6.348860</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>5.670247</td>
-      <td>5.812321</td>
-      <td>4.076454</td>
-      <td>6.701972</td>
-      <td>3.781139</td>
+      <td>6.041971</td>
+      <td>3.477545</td>
+      <td>3.075159</td>
+      <td>2.630728</td>
+      <td>5.945750</td>
     </tr>
     <tr>
       <th>Beijing</th>
-      <td>5.707170</td>
-      <td>6.253187</td>
-      <td>3.172944</td>
-      <td>5.131476</td>
-      <td>4.993762</td>
+      <td>4.117056</td>
+      <td>5.939825</td>
+      <td>5.166189</td>
+      <td>6.534852</td>
+      <td>4.581087</td>
     </tr>
     <tr>
       <th>Medellin</th>
-      <td>4.852207</td>
-      <td>3.773460</td>
-      <td>5.652641</td>
-      <td>5.607786</td>
-      <td>4.481264</td>
+      <td>4.186988</td>
+      <td>5.007498</td>
+      <td>5.732247</td>
+      <td>5.746915</td>
+      <td>2.452759</td>
     </tr>
     <tr>
       <th>Port Elizabeth</th>
-      <td>4.320782</td>
-      <td>5.476499</td>
-      <td>5.685651</td>
-      <td>5.537774</td>
-      <td>4.264993</td>
+      <td>5.755107</td>
+      <td>6.332844</td>
+      <td>5.603563</td>
+      <td>5.072384</td>
+      <td>6.222260</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-b063b832-7d67-475b-a87a-fbcdd651506e')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-b063b832-7d67-475b-a87a-fbcdd651506e button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-b063b832-7d67-475b-a87a-fbcdd651506e');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 <p>But a new dataframe df4, which details the same locations, but has different information about them:</p>
-<div class="cell" data-execution_count="62">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df4 <span class="op">=</span> pd.DataFrame(<span class="dv">5</span><span class="op">+</span>np.random.randn(<span class="dv">5</span>, <span class="dv">3</span>))</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>df4.columns <span class="op">=</span> [<span class="st">'Mean House Price'</span>, <span class="st">'median income'</span>,<span class="st">'walkability score'</span>]</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>df4.index <span class="op">=</span> [<span class="st">'London'</span>, <span class="st">'Paris'</span>, <span class="st">'Beijing'</span>, <span class="st">'Medellin'</span>, <span class="st">'Port Elizabeth'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="63">
+<div class="cell" data-outputid="3e849127-3811-43a6-af50-d824439c1726">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="63">
+<div class="cell-output cell-output-display" data-execution_count="51">
 
-<div>
+
+  <div id="df-72294788-4ada-46af-90e0-9ebf41eef460">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1007,48 +1609,124 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>4.400513</td>
-      <td>3.878475</td>
-      <td>5.134940</td>
+      <td>6.041301</td>
+      <td>4.795007</td>
+      <td>5.916860</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>4.221475</td>
-      <td>4.966409</td>
-      <td>3.641013</td>
+      <td>6.125245</td>
+      <td>3.869070</td>
+      <td>4.279607</td>
     </tr>
     <tr>
       <th>Beijing</th>
-      <td>5.131144</td>
-      <td>6.189124</td>
-      <td>5.357512</td>
+      <td>4.853104</td>
+      <td>5.725823</td>
+      <td>4.187186</td>
     </tr>
     <tr>
       <th>Medellin</th>
-      <td>5.250745</td>
-      <td>5.765428</td>
-      <td>4.313135</td>
+      <td>5.482517</td>
+      <td>3.667043</td>
+      <td>3.928093</td>
     </tr>
     <tr>
       <th>Port Elizabeth</th>
-      <td>3.748654</td>
-      <td>5.078490</td>
-      <td>4.935660</td>
+      <td>5.565643</td>
+      <td>5.884004</td>
+      <td>5.007168</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-72294788-4ada-46af-90e0-9ebf41eef460')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-72294788-4ada-46af-90e0-9ebf41eef460 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-72294788-4ada-46af-90e0-9ebf41eef460');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 <p>We have to join “on” the index - meaning when merging the records, python will look at the index column.</p>
-<div class="cell" data-execution_count="64">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df_joined <span class="op">=</span> df1.merge(df4, left_index<span class="op">=</span><span class="va">True</span>, right_index<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="65">
+<div class="cell" data-outputid="2740ad52-8070-4cc8-833d-44dc76b5fc35">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df_joined</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="65">
+<div class="cell-output cell-output-display" data-execution_count="57">
 
-<div>
+
+  <div id="df-43503f38-6c25-46d6-a6cb-9345c7a41c10">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1067,75 +1745,151 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>5.348823</td>
-      <td>5.486505</td>
-      <td>5.105354</td>
-      <td>3.680852</td>
-      <td>4.487838</td>
-      <td>4.400513</td>
-      <td>3.878475</td>
-      <td>5.134940</td>
+      <td>6.216092</td>
+      <td>4.902209</td>
+      <td>3.726599</td>
+      <td>4.628916</td>
+      <td>6.348860</td>
+      <td>6.041301</td>
+      <td>4.795007</td>
+      <td>5.916860</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>5.670247</td>
-      <td>5.812321</td>
-      <td>4.076454</td>
-      <td>6.701972</td>
-      <td>3.781139</td>
-      <td>4.221475</td>
-      <td>4.966409</td>
-      <td>3.641013</td>
+      <td>6.041971</td>
+      <td>3.477545</td>
+      <td>3.075159</td>
+      <td>2.630728</td>
+      <td>5.945750</td>
+      <td>6.125245</td>
+      <td>3.869070</td>
+      <td>4.279607</td>
     </tr>
     <tr>
       <th>Beijing</th>
-      <td>5.707170</td>
-      <td>6.253187</td>
-      <td>3.172944</td>
-      <td>5.131476</td>
-      <td>4.993762</td>
-      <td>5.131144</td>
-      <td>6.189124</td>
-      <td>5.357512</td>
+      <td>4.117056</td>
+      <td>5.939825</td>
+      <td>5.166189</td>
+      <td>6.534852</td>
+      <td>4.581087</td>
+      <td>4.853104</td>
+      <td>5.725823</td>
+      <td>4.187186</td>
     </tr>
     <tr>
       <th>Medellin</th>
-      <td>4.852207</td>
-      <td>3.773460</td>
-      <td>5.652641</td>
-      <td>5.607786</td>
-      <td>4.481264</td>
-      <td>5.250745</td>
-      <td>5.765428</td>
-      <td>4.313135</td>
+      <td>4.186988</td>
+      <td>5.007498</td>
+      <td>5.732247</td>
+      <td>5.746915</td>
+      <td>2.452759</td>
+      <td>5.482517</td>
+      <td>3.667043</td>
+      <td>3.928093</td>
     </tr>
     <tr>
       <th>Port Elizabeth</th>
-      <td>4.320782</td>
-      <td>5.476499</td>
-      <td>5.685651</td>
-      <td>5.537774</td>
-      <td>4.264993</td>
-      <td>3.748654</td>
-      <td>5.078490</td>
-      <td>4.935660</td>
+      <td>5.755107</td>
+      <td>6.332844</td>
+      <td>5.603563</td>
+      <td>5.072384</td>
+      <td>6.222260</td>
+      <td>5.565643</td>
+      <td>5.884004</td>
+      <td>5.007168</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-43503f38-6c25-46d6-a6cb-9345c7a41c10')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-43503f38-6c25-46d6-a6cb-9345c7a41c10 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-43503f38-6c25-46d6-a6cb-9345c7a41c10');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 <p>Note that this joins on the <em>index</em>, not the row number - so if the order of elements in df4 is different, it should still work.</p>
-<div class="cell" data-execution_count="66">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df4 <span class="op">=</span> pd.DataFrame(np.random.randn(<span class="dv">5</span>, <span class="dv">3</span>))</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>df4.columns <span class="op">=</span> [<span class="st">'Mean House Price'</span>, <span class="st">'median income'</span>,<span class="st">'walkability score'</span>]</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>df4.index <span class="op">=</span> [<span class="st">'Paris'</span>,<span class="st">'Port Elizabeth'</span>, <span class="st">'Beijing'</span>, <span class="st">'Medellin'</span>, <span class="st">'London'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="67">
+<div class="cell" data-outputid="50c5a4ef-846f-47c0-b180-7389e9854aa5">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="67">
+<div class="cell-output cell-output-display" data-execution_count="60">
 
-<div>
+
+  <div id="df-4db6ffc6-c416-4d16-be15-456884785d8d">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1151,54 +1905,130 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>5.348823</td>
-      <td>5.486505</td>
-      <td>5.105354</td>
-      <td>3.680852</td>
-      <td>4.487838</td>
+      <td>6.216092</td>
+      <td>4.902209</td>
+      <td>3.726599</td>
+      <td>4.628916</td>
+      <td>6.348860</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>5.670247</td>
-      <td>5.812321</td>
-      <td>4.076454</td>
-      <td>6.701972</td>
-      <td>3.781139</td>
+      <td>6.041971</td>
+      <td>3.477545</td>
+      <td>3.075159</td>
+      <td>2.630728</td>
+      <td>5.945750</td>
     </tr>
     <tr>
       <th>Beijing</th>
-      <td>5.707170</td>
-      <td>6.253187</td>
-      <td>3.172944</td>
-      <td>5.131476</td>
-      <td>4.993762</td>
+      <td>4.117056</td>
+      <td>5.939825</td>
+      <td>5.166189</td>
+      <td>6.534852</td>
+      <td>4.581087</td>
     </tr>
     <tr>
       <th>Medellin</th>
-      <td>4.852207</td>
-      <td>3.773460</td>
-      <td>5.652641</td>
-      <td>5.607786</td>
-      <td>4.481264</td>
+      <td>4.186988</td>
+      <td>5.007498</td>
+      <td>5.732247</td>
+      <td>5.746915</td>
+      <td>2.452759</td>
     </tr>
     <tr>
       <th>Port Elizabeth</th>
-      <td>4.320782</td>
-      <td>5.476499</td>
-      <td>5.685651</td>
-      <td>5.537774</td>
-      <td>4.264993</td>
+      <td>5.755107</td>
+      <td>6.332844</td>
+      <td>5.603563</td>
+      <td>5.072384</td>
+      <td>6.222260</td>
     </tr>
   </tbody>
 </table>
 </div>
-</div>
-</div>
-<div class="cell" data-execution_count="68">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="68">
+      <button class="colab-df-convert" onclick="convertToInteractive('df-4db6ffc6-c416-4d16-be15-456884785d8d')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
 
-<div>
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-4db6ffc6-c416-4d16-be15-456884785d8d button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-4db6ffc6-c416-4d16-be15-456884785d8d');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
+</div>
+</div>
+<div class="cell" data-outputid="a66a4e0c-1d1c-46ec-c195-52396244d412">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="61">
+
+
+  <div id="df-79b12e1f-e275-4cb5-a8d9-6740da94c41e">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1212,47 +2042,123 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>Paris</th>
-      <td>0.191529</td>
-      <td>0.428600</td>
-      <td>-1.627663</td>
+      <td>0.425225</td>
+      <td>-0.446028</td>
+      <td>-0.381586</td>
     </tr>
     <tr>
       <th>Port Elizabeth</th>
-      <td>1.002571</td>
-      <td>-0.171798</td>
-      <td>-0.780653</td>
+      <td>-0.918616</td>
+      <td>1.274748</td>
+      <td>0.355480</td>
     </tr>
     <tr>
       <th>Beijing</th>
-      <td>-2.158222</td>
-      <td>0.494159</td>
-      <td>0.825195</td>
+      <td>0.918480</td>
+      <td>1.060849</td>
+      <td>-1.040598</td>
     </tr>
     <tr>
       <th>Medellin</th>
-      <td>-0.147067</td>
-      <td>0.864457</td>
-      <td>-0.790751</td>
+      <td>1.414231</td>
+      <td>0.914922</td>
+      <td>-0.393816</td>
     </tr>
     <tr>
       <th>London</th>
-      <td>0.856815</td>
-      <td>-0.571106</td>
-      <td>0.417661</td>
+      <td>-1.036150</td>
+      <td>-0.902475</td>
+      <td>-0.417904</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-79b12e1f-e275-4cb5-a8d9-6740da94c41e')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-79b12e1f-e275-4cb5-a8d9-6740da94c41e button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-79b12e1f-e275-4cb5-a8d9-6740da94c41e');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
-<div class="cell" data-execution_count="69">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df_joined <span class="op">=</span> df1.merge(df4, left_index<span class="op">=</span><span class="va">True</span>, right_index<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="70">
+<div class="cell" data-outputid="874ae28d-24cb-4fd1-c822-53648caf496f">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df_joined</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="70">
+<div class="cell-output cell-output-display" data-execution_count="64">
 
-<div>
+
+  <div id="df-7d706fd9-a541-4cb3-b8e5-d51de9d143bd">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1271,73 +2177,149 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>5.348823</td>
-      <td>5.486505</td>
-      <td>5.105354</td>
-      <td>3.680852</td>
-      <td>4.487838</td>
-      <td>0.856815</td>
-      <td>-0.571106</td>
-      <td>0.417661</td>
+      <td>6.216092</td>
+      <td>4.902209</td>
+      <td>3.726599</td>
+      <td>4.628916</td>
+      <td>6.348860</td>
+      <td>-1.036150</td>
+      <td>-0.902475</td>
+      <td>-0.417904</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>5.670247</td>
-      <td>5.812321</td>
-      <td>4.076454</td>
-      <td>6.701972</td>
-      <td>3.781139</td>
-      <td>0.191529</td>
-      <td>0.428600</td>
-      <td>-1.627663</td>
+      <td>6.041971</td>
+      <td>3.477545</td>
+      <td>3.075159</td>
+      <td>2.630728</td>
+      <td>5.945750</td>
+      <td>0.425225</td>
+      <td>-0.446028</td>
+      <td>-0.381586</td>
     </tr>
     <tr>
       <th>Beijing</th>
-      <td>5.707170</td>
-      <td>6.253187</td>
-      <td>3.172944</td>
-      <td>5.131476</td>
-      <td>4.993762</td>
-      <td>-2.158222</td>
-      <td>0.494159</td>
-      <td>0.825195</td>
+      <td>4.117056</td>
+      <td>5.939825</td>
+      <td>5.166189</td>
+      <td>6.534852</td>
+      <td>4.581087</td>
+      <td>0.918480</td>
+      <td>1.060849</td>
+      <td>-1.040598</td>
     </tr>
     <tr>
       <th>Medellin</th>
-      <td>4.852207</td>
-      <td>3.773460</td>
-      <td>5.652641</td>
-      <td>5.607786</td>
-      <td>4.481264</td>
-      <td>-0.147067</td>
-      <td>0.864457</td>
-      <td>-0.790751</td>
+      <td>4.186988</td>
+      <td>5.007498</td>
+      <td>5.732247</td>
+      <td>5.746915</td>
+      <td>2.452759</td>
+      <td>1.414231</td>
+      <td>0.914922</td>
+      <td>-0.393816</td>
     </tr>
     <tr>
       <th>Port Elizabeth</th>
-      <td>4.320782</td>
-      <td>5.476499</td>
-      <td>5.685651</td>
-      <td>5.537774</td>
-      <td>4.264993</td>
-      <td>1.002571</td>
-      <td>-0.171798</td>
-      <td>-0.780653</td>
+      <td>5.755107</td>
+      <td>6.332844</td>
+      <td>5.603563</td>
+      <td>5.072384</td>
+      <td>6.222260</td>
+      <td>-0.918616</td>
+      <td>1.274748</td>
+      <td>0.355480</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-7d706fd9-a541-4cb3-b8e5-d51de9d143bd')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-7d706fd9-a541-4cb3-b8e5-d51de9d143bd button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-7d706fd9-a541-4cb3-b8e5-d51de9d143bd');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 </section>
 <section id="merge-records" class="level2">
 <h2 class="anchored" data-anchor-id="merge-records">Merge Records</h2>
 <p>Consider now a case where we have data for some but not all cities; so df1 stil has data for these 5 cities:</p>
-<div class="cell" data-execution_count="71">
+<div class="cell" data-outputid="2d7b71f3-9df9-4b8e-d3ad-2aa52690fe2d">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="71">
+<div class="cell-output cell-output-display" data-execution_count="29">
 
-<div>
+
+  <div id="df-8b746bea-53a5-4539-a252-9da37987d0d9">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1353,60 +2335,136 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>5.348823</td>
-      <td>5.486505</td>
-      <td>5.105354</td>
-      <td>3.680852</td>
-      <td>4.487838</td>
+      <td>4.898594</td>
+      <td>6.625739</td>
+      <td>3.587877</td>
+      <td>6.063331</td>
+      <td>4.342769</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>5.670247</td>
-      <td>5.812321</td>
-      <td>4.076454</td>
-      <td>6.701972</td>
-      <td>3.781139</td>
+      <td>6.032702</td>
+      <td>3.479265</td>
+      <td>2.383832</td>
+      <td>5.251509</td>
+      <td>5.158178</td>
     </tr>
     <tr>
       <th>Beijing</th>
-      <td>5.707170</td>
-      <td>6.253187</td>
-      <td>3.172944</td>
-      <td>5.131476</td>
-      <td>4.993762</td>
+      <td>4.368419</td>
+      <td>4.993774</td>
+      <td>2.942992</td>
+      <td>3.761624</td>
+      <td>6.002863</td>
     </tr>
     <tr>
       <th>Medellin</th>
-      <td>4.852207</td>
-      <td>3.773460</td>
-      <td>5.652641</td>
-      <td>5.607786</td>
-      <td>4.481264</td>
+      <td>7.437921</td>
+      <td>5.228150</td>
+      <td>3.902431</td>
+      <td>4.437361</td>
+      <td>5.563400</td>
     </tr>
     <tr>
       <th>Port Elizabeth</th>
-      <td>4.320782</td>
-      <td>5.476499</td>
-      <td>5.685651</td>
-      <td>5.537774</td>
-      <td>4.264993</td>
+      <td>7.053265</td>
+      <td>5.936734</td>
+      <td>5.842155</td>
+      <td>6.042136</td>
+      <td>7.057592</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-8b746bea-53a5-4539-a252-9da37987d0d9')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-8b746bea-53a5-4539-a252-9da37987d0d9 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-8b746bea-53a5-4539-a252-9da37987d0d9');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 <p>But our new table, df5, contains data for three cities:</p>
-<div class="cell" data-execution_count="72">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>df5 <span class="op">=</span> pd.DataFrame(<span class="dv">5</span><span class="op">+</span>np.random.randn(<span class="dv">3</span>, <span class="dv">3</span>))</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>df5.columns <span class="op">=</span> [<span class="st">'Mean House Price'</span>, <span class="st">'median income'</span>,<span class="st">'walkability score'</span>]</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>df5.index <span class="op">=</span> [<span class="st">'London'</span>, <span class="st">'Paris'</span>, <span class="st">'Glasgow'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="73">
+<div class="cell" data-outputid="ca47f0dd-80de-41ea-ddff-fc123adef720">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="73">
+<div class="cell-output cell-output-display" data-execution_count="31">
 
-<div>
+
+  <div id="df-f2cf9126-f712-45f3-ac23-594e711b9bc8">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1420,25 +2478,98 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>6.115865</td>
-      <td>5.045850</td>
-      <td>4.932779</td>
+      <td>4.848734</td>
+      <td>6.598818</td>
+      <td>5.442444</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>4.115616</td>
-      <td>5.671406</td>
-      <td>6.329527</td>
+      <td>5.294294</td>
+      <td>4.282418</td>
+      <td>5.741057</td>
     </tr>
     <tr>
       <th>Glasgow</th>
-      <td>5.830768</td>
-      <td>3.804848</td>
-      <td>4.211793</td>
+      <td>5.375804</td>
+      <td>4.697775</td>
+      <td>4.393675</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-f2cf9126-f712-45f3-ac23-594e711b9bc8')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-f2cf9126-f712-45f3-ac23-594e711b9bc8 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-f2cf9126-f712-45f3-ac23-594e711b9bc8');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 </section>
@@ -1452,25 +2583,28 @@ curl: (23) Failure writing output to destination</code></pre>
 </section>
 <section id="inner-join" class="level2">
 <h2 class="anchored" data-anchor-id="inner-join">Inner Join:</h2>
-<div class="cell" data-execution_count="74">
+<div class="cell" data-outputid="73daf8c4-da40-4b44-a593-8ce9cb08ba0c">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Image</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"https://s3.eu-west-2.amazonaws.com/qm2/wk3/inner.png"</span></span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>Image(data_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="74">
-<p><img src="W05.%20Merging%20and%20Joining_files/figure-html/cell-33-output-1.png" class="img-fluid"></p>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<p><img src="W05. Merging and Joining_files/figure-html/cell-33-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>(Image from http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/)</p>
 <p>The inner join <em>only</em> includes data whose index appears in both tables. Let’s see what that looks like:</p>
-<div class="cell" data-execution_count="75">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>df_joined <span class="op">=</span> df1.merge(df5, left_index<span class="op">=</span><span class="va">True</span>, right_index<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="76">
+<div class="cell" data-outputid="d20630dd-94de-4c7c-d7e0-8acb35ac63b2">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>df_joined</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="76">
+<div class="cell-output cell-output-display" data-execution_count="34">
 
-<div>
+
+  <div id="df-28c6a0ff-860d-41e9-9934-29c952076112">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1489,29 +2623,102 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>5.348823</td>
-      <td>5.486505</td>
-      <td>5.105354</td>
-      <td>3.680852</td>
-      <td>4.487838</td>
-      <td>6.115865</td>
-      <td>5.045850</td>
-      <td>4.932779</td>
+      <td>4.898594</td>
+      <td>6.625739</td>
+      <td>3.587877</td>
+      <td>6.063331</td>
+      <td>4.342769</td>
+      <td>4.848734</td>
+      <td>6.598818</td>
+      <td>5.442444</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>5.670247</td>
-      <td>5.812321</td>
-      <td>4.076454</td>
-      <td>6.701972</td>
-      <td>3.781139</td>
-      <td>4.115616</td>
-      <td>5.671406</td>
-      <td>6.329527</td>
+      <td>6.032702</td>
+      <td>3.479265</td>
+      <td>2.383832</td>
+      <td>5.251509</td>
+      <td>5.158178</td>
+      <td>5.294294</td>
+      <td>4.282418</td>
+      <td>5.741057</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-28c6a0ff-860d-41e9-9934-29c952076112')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-28c6a0ff-860d-41e9-9934-29c952076112 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-28c6a0ff-860d-41e9-9934-29c952076112');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 <p>Here, we have a couple of arguments specifying the manner of the join - we have specified that we are joining on the index of the left and right dataset with the optional “left_index=True” and “right_index=True”. Less obviously, the <strong>left</strong> dataset is df1 (because we’re using <em>df1.merge()</em> and the <strong>right</strong> dataset is df5 (because it appears as an argument in merge(). There’s no special reason it shouldn’t be the other way around, but for this function, it is this way around and we need to remember that when we use it.</p>
@@ -1519,14 +2726,17 @@ curl: (23) Failure writing output to destination</code></pre>
 <section id="inner-space" class="level2">
 <h2 class="anchored" data-anchor-id="inner-space">Inner Space</h2>
 <p>Although we haven’t specified it, the merge() function has defaulted to an inner join (like the diagram above). We can specify how the join is calculated by changing the text in the optional argument “how”:</p>
-<div class="cell" data-execution_count="77">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>df_joined <span class="op">=</span> df1.merge(df5, left_index<span class="op">=</span><span class="va">True</span>, right_index<span class="op">=</span><span class="va">True</span>, how<span class="op">=</span><span class="st">'inner'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="78">
+<div class="cell" data-outputid="9e1ea9fa-cc64-4ae6-9b7c-5efeacea3edf">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df_joined</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="78">
+<div class="cell-output cell-output-display" data-execution_count="36">
 
-<div>
+
+  <div id="df-b480acd3-a2b2-4464-8872-e5fa7edcf339">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1545,51 +2755,127 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>5.348823</td>
-      <td>5.486505</td>
-      <td>5.105354</td>
-      <td>3.680852</td>
-      <td>4.487838</td>
-      <td>6.115865</td>
-      <td>5.045850</td>
-      <td>4.932779</td>
+      <td>4.898594</td>
+      <td>6.625739</td>
+      <td>3.587877</td>
+      <td>6.063331</td>
+      <td>4.342769</td>
+      <td>4.848734</td>
+      <td>6.598818</td>
+      <td>5.442444</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>5.670247</td>
-      <td>5.812321</td>
-      <td>4.076454</td>
-      <td>6.701972</td>
-      <td>3.781139</td>
-      <td>4.115616</td>
-      <td>5.671406</td>
-      <td>6.329527</td>
+      <td>6.032702</td>
+      <td>3.479265</td>
+      <td>2.383832</td>
+      <td>5.251509</td>
+      <td>5.158178</td>
+      <td>5.294294</td>
+      <td>4.282418</td>
+      <td>5.741057</td>
     </tr>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-b480acd3-a2b2-4464-8872-e5fa7edcf339')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-b480acd3-a2b2-4464-8872-e5fa7edcf339 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-b480acd3-a2b2-4464-8872-e5fa7edcf339');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 </section>
 <section id="the-future-of-the-left" class="level2">
 <h2 class="anchored" data-anchor-id="the-future-of-the-left">The Future of The Left</h2>
 <p>The <em>left</em> join includes <strong>all</strong> rows where the index appears on the <strong>left</strong> hand side of the join, and <strong>any</strong> data which <strong>matches</strong> it on the <strong>right</strong> hand side. If the index appears on the left but not the right, it will include the data from the left table, and have blanks for the columns on the right.</p>
-<div class="cell" data-execution_count="79">
+<div class="cell" data-outputid="ff1637ef-c554-4f07-fd47-37d0862f501c">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"https://s3.eu-west-2.amazonaws.com/qm2/wk3/left.png"</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>Image(data_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="79">
-<p><img src="W05.%20Merging%20and%20Joining_files/figure-html/cell-38-output-1.png" class="img-fluid"></p>
+<div class="cell-output cell-output-display" data-execution_count="37">
+<p><img src="W05. Merging and Joining_files/figure-html/cell-38-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>What does <em>this</em> look like? We will use the <em>how=‘left’</em> optional argument to create a left join:</p>
-<div class="cell" data-execution_count="80">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>df_joined <span class="op">=</span> df1.merge(df5, left_index<span class="op">=</span><span class="va">True</span>, right_index<span class="op">=</span><span class="va">True</span>, how<span class="op">=</span><span class="st">'left'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="81">
+<div class="cell" data-outputid="4041eacc-ec51-4eae-f598-d14d81b4e87a">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>df_joined</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="81">
+<div class="cell-output cell-output-display" data-execution_count="39">
 
-<div>
+
+  <div id="df-828a035e-99f7-42bb-a930-f9f6de610548">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1608,55 +2894,55 @@ curl: (23) Failure writing output to destination</code></pre>
   <tbody>
     <tr>
       <th>London</th>
-      <td>5.348823</td>
-      <td>5.486505</td>
-      <td>5.105354</td>
-      <td>3.680852</td>
-      <td>4.487838</td>
-      <td>6.115865</td>
-      <td>5.045850</td>
-      <td>4.932779</td>
+      <td>4.898594</td>
+      <td>6.625739</td>
+      <td>3.587877</td>
+      <td>6.063331</td>
+      <td>4.342769</td>
+      <td>4.848734</td>
+      <td>6.598818</td>
+      <td>5.442444</td>
     </tr>
     <tr>
       <th>Paris</th>
-      <td>5.670247</td>
-      <td>5.812321</td>
-      <td>4.076454</td>
-      <td>6.701972</td>
-      <td>3.781139</td>
-      <td>4.115616</td>
-      <td>5.671406</td>
-      <td>6.329527</td>
+      <td>6.032702</td>
+      <td>3.479265</td>
+      <td>2.383832</td>
+      <td>5.251509</td>
+      <td>5.158178</td>
+      <td>5.294294</td>
+      <td>4.282418</td>
+      <td>5.741057</td>
     </tr>
     <tr>
       <th>Beijing</th>
-      <td>5.707170</td>
-      <td>6.253187</td>
-      <td>3.172944</td>
-      <td>5.131476</td>
-      <td>4.993762</td>
+      <td>4.368419</td>
+      <td>4.993774</td>
+      <td>2.942992</td>
+      <td>3.761624</td>
+      <td>6.002863</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>Medellin</th>
-      <td>4.852207</td>
-      <td>3.773460</td>
-      <td>5.652641</td>
-      <td>5.607786</td>
-      <td>4.481264</td>
+      <td>7.437921</td>
+      <td>5.228150</td>
+      <td>3.902431</td>
+      <td>4.437361</td>
+      <td>5.563400</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>Port Elizabeth</th>
-      <td>4.320782</td>
-      <td>5.476499</td>
-      <td>5.685651</td>
-      <td>5.537774</td>
-      <td>4.264993</td>
+      <td>7.053265</td>
+      <td>5.936734</td>
+      <td>5.842155</td>
+      <td>6.042136</td>
+      <td>7.057592</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -1664,6 +2950,79 @@ curl: (23) Failure writing output to destination</code></pre>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-828a035e-99f7-42bb-a930-f9f6de610548')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-828a035e-99f7-42bb-a930-f9f6de610548 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-828a035e-99f7-42bb-a930-f9f6de610548');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 <p>As we see, the missing data appears as <strong>NaN</strong> - Not a Number.</p>
@@ -1679,16 +3038,19 @@ curl: (23) Failure writing output to destination</code></pre>
 <p>We’ll be working now with data from the UN, covering information about cities - real data this time. The UN has some great data, we’ve taken some from here and processed it in various ways:</p>
 <p>http://data.un.org/Data.aspx?d=POP&amp;f=tableCode%3A240</p>
 <p>Let’s load up data on city population - this set contains data for 2012-2014 inclusive:</p>
-<div class="cell" data-execution_count="82">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"./data/wk3/UN_Cities_1214_population.csv"</span></span>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"./data/wk5/UN_Cities_1214_population.csv"</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>city_pop <span class="op">=</span> pd.read_csv(data_path, encoding<span class="op">=</span><span class="st">'latin1'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="83">
+<div class="cell" data-outputid="02ca7c3a-68a2-4b20-b65b-d7498f5b25a8">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>city_pop.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="83">
+<div class="cell-output cell-output-display" data-execution_count="41">
 
-<div>
+
+  <div id="df-f0c92bbf-48b0-4f50-a81b-3779b742239a">
+    <div class="colab-df-container">
+      <div>
 
 <table class="dataframe table table-sm table-striped">
   <thead>
@@ -1775,12 +3137,85 @@ curl: (23) Failure writing output to destination</code></pre>
   </tbody>
 </table>
 </div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-f0c92bbf-48b0-4f50-a81b-3779b742239a')" title="Convert this dataframe to an interactive table." style="display:none;">
+        
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"></path><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"></path>
+  </svg>
+      </button>
+      
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-f0c92bbf-48b0-4f50-a81b-3779b742239a button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-f0c92bbf-48b0-4f50-a81b-3779b742239a');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+  
 </div>
 </div>
 </section>
 <section id="exercise-2" class="level2">
 <h2 class="anchored" data-anchor-id="exercise-2">Exercise</h2>
-<p>There is a another datafile we downloaded called <em>UN_Cities_1214_country.csv</em>. This is saved to <em>./data/wk3/UN_Cities_1214_country.csv</em> - Load this into a dataframe called <em>city_c</em> with the city name as the index and view it; then, using <em>merge</em> on city name with city_pop to create a new dataframe called <em>cities</em>.</p>
+<p>There is a another datafile we downloaded called <em>UN_Cities_1214_country.csv</em>. This is saved to <em>./data/wk5/UN_Cities_1214_country.csv</em> - Load this into a dataframe called <em>city_c</em> with the city name as the index and view it; then, using <em>merge</em> on city name with city_pop to create a new dataframe called <em>cities</em>.</p>
 <p><strong>Hints:</strong> You’ll notice that the index <strong>won’t</strong> be the column you want to merge on in the city_pop data. What column <em>should</em> you merge on in city_pop? Which column should you merge on in city_c?</p>
 <p>The syntax for merging on a <strong>column</strong> (which is not the index) is to pass the column name to the optional ‘left_on=’ or ‘right_on=’ arguments. And we don’t use right_index=True (or left_index=True), depending on which we’re using.</p>
 <p>So for example: <strong>df1.merge(df2, left_on=‘Name’, right_index=True)</strong> would join df1 (on the left) to df2 (on the right), using the column ‘Name’ on the left (df1) and the index column (whatever that is) on the right (df2).</p>
@@ -1797,12 +3232,12 @@ curl: (23) Failure writing output to destination</code></pre>
 <li>I’m going to just look at “Both Sexes” (not focus on one gender)</li>
 <li>I’m going to get rid of a column of data (the ‘Value Footnotes’ column) using the <em>drop()</em> method.</li>
 </ol>
-<div class="cell" data-execution_count="84">
+<div class="cell" data-outputid="902afb0f-06d1-4b32-ef36-2f1c87033e86">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>cities <span class="op">=</span> cities[cities[<span class="st">'Sex'</span>]<span class="op">==</span><span class="st">'Both Sexes'</span>]</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>cities <span class="op">=</span> cities[cities[<span class="st">'Year'</span>]<span class="op">==</span><span class="dv">2012</span>]</span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>cities.drop(<span class="st">'Value Footnotes'</span>, axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
-<pre><code>NameError: name 'cities' is not defined</code></pre>
+<pre><code>NameError: ignored</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1820,7 +3255,7 @@ curl: (23) Failure writing output to destination</code></pre>
 <p>The UN also has useful data by country, so let’s try and work with some of that and join it up with our city data. Let’s work with Life Expectancy Data:</p>
 <p>http://data.un.org/Data.aspx?d=WDI&amp;f=Indicator_Code%3ASP.DYN.LE00.IN</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"./data/wk3/UN_Life_all.csv"</span></span>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"./data/wk5/UN_Life_all.csv"</span></span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>life <span class="op">=</span> pd.read_csv(data_path, index_col<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
@@ -1850,7 +3285,6 @@ curl: (23) Failure writing output to destination</code></pre>
 <p>Relabel the City Population column so it’s clear what it represents.</p>
 <p><strong>Extension:</strong> Plot population against life expectancy. Use plot’s <em>optional arguments</em> to specify the x column, y column, and that kind=‘scatter’.</p>
 <p><strong>Don’t forget to include a title and axis labels!</strong></p>
-<p>How does London fit in this trend? What are the problems with doing this?</p>
 <section id="recap-joins" class="level2">
 <h2 class="anchored" data-anchor-id="recap-joins">Recap: Joins</h2>
 <p>Pandas has <strong>four</strong> join methods:</p>
@@ -1905,7 +3339,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -1941,24 +3392,42 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script>
