@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2022.10.26)  28 OCT 2022 13:33
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2022.10.26)  2 DEC 2022 13:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1147,7 +1147,7 @@ No file index.toc.
 File: ./outline.png Graphic file (type bmp)
 <./outline.png>
 
-Overfull \hbox (10.95557pt too wide) in paragraph at lines 225--226
+Overfull \hbox (10.95557pt too wide) in paragraph at lines 230--231
 [][] 
  []
 
@@ -1171,35 +1171,35 @@ Class scrreprt Warning: \float@addtolists detected!
 (scrreprt)              deprecated \float@addtolist interface.
 
 LaTeX Font Info:    Font shape `TU/lmss/bx/it' in size <14.4> not available
-(Font)              Font shape `TU/lmss/bx/sl' tried instead on input line 234.
+(Font)              Font shape `TU/lmss/bx/sl' tried instead on input line 239.
 File: notebooks/../colab-badge.png Graphic file (type bmp)
 <notebooks/../colab-badge.png>
 [5
 
 ] [6] [7] [8]
-Overfull \hbox (7.39111pt too wide) in paragraph at lines 506--506
+Overfull \hbox (7.39111pt too wide) in paragraph at lines 511--511
 []  \TU/lmtt/m/n/10.95 % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current[] 
  []
 
 
-Overfull \hbox (1.64236pt too wide) in paragraph at lines 508--508
+Overfull \hbox (1.64236pt too wide) in paragraph at lines 513--513
 []\TU/lmtt/m/n/10.95 100   203  100   203    0     0    527      0 --:--:-- --:--:-- --:--:--   527[] 
  []
 
 
-Overfull \hbox (7.39111pt too wide) in paragraph at lines 509--509
+Overfull \hbox (7.39111pt too wide) in paragraph at lines 514--514
 []  \TU/lmtt/m/n/10.95 % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current[] 
  []
 
 
-Overfull \hbox (1.64236pt too wide) in paragraph at lines 511--511
+Overfull \hbox (1.64236pt too wide) in paragraph at lines 516--516
 []\TU/lmtt/m/n/10.95 100   297  100   297    0     0    838      0 --:--:-- --:--:-- --:--:--   836[] 
  []
 
 [9]
 
 Package longtable Warning: Column widths have changed
-(longtable)                in table 1.1 on input line 598.
+(longtable)                in table 1.1 on input line 603.
 
 [10]
 chapter 2.
@@ -1210,75 +1210,75 @@ chapter 3.
 File: notebooks/../colab-badge.png Graphic file (type bmp)
 <notebooks/../colab-badge.png>
 
-Overfull \hbox (36.6922pt too wide) in paragraph at lines 662--666
+Overfull \hbox (36.6922pt too wide) in paragraph at lines 667--671
 []\TU/lmr/m/n/10.95 This data is collected by the Office for National Statistics(ONS) : http://www.ons.gov.uk/ons/datasets-
  []
 
 
-Overfull \hbox (49.1106pt too wide) in paragraph at lines 662--666
+Overfull \hbox (49.1106pt too wide) in paragraph at lines 667--671
 \TU/lmr/m/n/10.95 and-tables/index.html?pageSize=50&sortBy=none&sortDirection=none&newquery=income+percentile
  []
 
 [12
 
 ]
-Overfull \hbox (7.39111pt too wide) in paragraph at lines 711--711
+Overfull \hbox (7.39111pt too wide) in paragraph at lines 716--716
 []  \TU/lmtt/m/n/10.95 % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current[] 
  []
 
 
-Overfull \hbox (1.64236pt too wide) in paragraph at lines 713--713
+Overfull \hbox (1.64236pt too wide) in paragraph at lines 718--718
 []\TU/lmtt/m/n/10.95 100 15154  100 15154    0     0   135k      0 --:--:-- --:--:-- --:--:--  143k[] 
  []
 
 [13]
-Overfull \hbox (1985.40271pt too wide) in alignment at lines 738--749
+Overfull \hbox (1985.40271pt too wide) in alignment at lines 743--754
  [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (1985.40271pt too wide) in alignment at lines 749--766
+Overfull \hbox (1985.40271pt too wide) in alignment at lines 754--771
  [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
  []
 
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 7.665pt on input line 773.
+(Font)              scaled to size 7.665pt on input line 778.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 5.475pt on input line 773.
+(Font)              scaled to size 5.475pt on input line 778.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 10.95099pt on input line 773.
+(Font)              scaled to size 10.95099pt on input line 778.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 7.66568pt on input line 773.
+(Font)              scaled to size 7.66568pt on input line 778.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 5.4755pt on input line 773.
+(Font)              scaled to size 5.4755pt on input line 778.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 10.94882pt on input line 773.
+(Font)              scaled to size 10.94882pt on input line 778.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 7.66417pt on input line 773.
+(Font)              scaled to size 7.66417pt on input line 778.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 5.47441pt on input line 773.
+(Font)              scaled to size 5.47441pt on input line 778.
 
-Overfull \hbox (1985.40271pt too wide) in alignment at lines 782--793
+Overfull \hbox (1985.40271pt too wide) in alignment at lines 787--798
  [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (1985.40271pt too wide) in alignment at lines 793--810
+Overfull \hbox (1985.40271pt too wide) in alignment at lines 798--815
  [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
  []
 
 [14]
-Overfull \hbox (1985.40271pt too wide) in alignment at lines 852--863
+Overfull \hbox (1985.40271pt too wide) in alignment at lines 857--868
  [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (1985.40271pt too wide) in alignment at lines 863--883
+Overfull \hbox (1985.40271pt too wide) in alignment at lines 868--888
  [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
  []
 
 [15]
-Overfull \hbox (30.38611pt too wide) in paragraph at lines 912--912
+Overfull \hbox (30.38611pt too wide) in paragraph at lines 917--917
 []\TU/lmtt/m/n/10.95 Name: Net equivalised household income in 2010-11, week, Length: 99, dtype: float64[] 
  []
 
@@ -1294,26 +1294,26 @@ File: notebooks/W02. Pandas_files/figure-pdf/cell-18-output-2.png Graphic file (
 [22] [23] [24]
 chapter 4.
 
-Overfull \hbox (15804.95229pt too wide) in paragraph at lines 1378--1378
+Overfull \hbox (15804.95229pt too wide) in paragraph at lines 1383--1383
 []  \TU/lmtt/m/n/10.95 .css-ld8rqy-container{position:relative;box-sizing:border-box;min-width:0;}.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}.css-3zcu7z-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;background-color:hsl(0, 0%, 100%);border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-shadow:none;cursor:pointer;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:0rem;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;box-sizing:border-box;background:transparent;border:none;padding:0px 3px;margin-left:-5px;}.css-3zcu7z-control:hover{border-color:rgba(255,255,255,0.9);}.css-zl2g27{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;padding:0;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;box-sizing:border-box;}.css-hlu0h4-singleValue{color:white;grid-area:1/1/2/3;margin-left:2px;margin-right:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-sizing:border-box;}Films (English).css-1a9ai41{margin:0;padding-bottom:2px;padding-top:2px;visibility:visible;color:hsl(0, 0%, 20%);-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;box-sizing:border-box;padding:0;}.css-1a9ai41:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}.css-1hyfx7x{display:none;}.css-xhbtlw-indicatorContainer{color:hsl(0, 0%, 80%);display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;padding:8px;-webkit-transition:color 150ms;transition:color 150ms;box-sizing:border-box;-webkit-transform:scale(0.8);-moz-transform:scale(0.8);-ms-transform:scale(0.8);transform:scale(0.8);}.css-xhbtlw-indicatorContainer:hover{color:hsl(0, 0%, 60%);}.css-xhbtlw-indicatorContainer:hover{-webkit-transform:scale(1);-moz-transform:scale(1);-ms-transform:scale(1);transform:scale(1);}  \[] 
  []
 
 [25
 
 ]
-Overfull \hbox (15804.95229pt too wide) in paragraph at lines 1412--1412
+Overfull \hbox (15804.95229pt too wide) in paragraph at lines 1417--1417
 []  \TU/lmtt/m/n/10.95 .css-ld8rqy-container{position:relative;box-sizing:border-box;min-width:0;}.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}.css-3zcu7z-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;background-color:hsl(0, 0%, 100%);border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-shadow:none;cursor:pointer;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:0rem;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;box-sizing:border-box;background:transparent;border:none;padding:0px 3px;margin-left:-5px;}.css-3zcu7z-control:hover{border-color:rgba(255,255,255,0.9);}.css-zl2g27{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;padding:0;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;box-sizing:border-box;}.css-hlu0h4-singleValue{color:white;grid-area:1/1/2/3;margin-left:2px;margin-right:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-sizing:border-box;}Films (English).css-1a9ai41{margin:0;padding-bottom:2px;padding-top:2px;visibility:visible;color:hsl(0, 0%, 20%);-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;box-sizing:border-box;padding:0;}.css-1a9ai41:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}.css-1hyfx7x{display:none;}.css-xhbtlw-indicatorContainer{color:hsl(0, 0%, 80%);display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;padding:8px;-webkit-transition:color 150ms;transition:color 150ms;box-sizing:border-box;-webkit-transform:scale(0.8);-moz-transform:scale(0.8);-ms-transform:scale(0.8);transform:scale(0.8);}.css-xhbtlw-indicatorContainer:hover{color:hsl(0, 0%, 60%);}.css-xhbtlw-indicatorContainer:hover{-webkit-transform:scale(1);-moz-transform:scale(1);-ms-transform:scale(1);transform:scale(1);}  \[] 
  []
 
 [26]
-Overfull \hbox (15.76666pt too wide) in paragraph at lines 1473--1477
+Overfull \hbox (15.76666pt too wide) in paragraph at lines 1478--1482
 \TU/lmr/m/n/10.95 Using the following URL https://en.wikipedia.org/wiki/List_of_Nobel_laureates_in_Chemistry
  []
 
 [27] [28]
 chapter 5.
 
-LaTeX Warning: File `https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1' not found on input line 1516.
+LaTeX Warning: File `https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1' not found on input line 1521.
 
 
 ! LaTeX Error: File `https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1' not found.
@@ -1322,12 +1322,12 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1516 ...Colab}}\label{workshop-3-open-in-colab}}
+l.1521 ...Colab}}\label{workshop-3-open-in-colab}}
                                                    
 Here is how much of TeX's memory you used:
  38137 strings out of 477723
  809638 string characters out of 5841548
- 1465700 words of memory out of 5000000
+ 1465698 words of memory out of 5000000
  58605 multiletter control sequences out of 15000+600000
  475706 words of font info for 80 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
