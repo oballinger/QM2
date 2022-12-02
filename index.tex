@@ -190,7 +190,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, sharp corners, boxrule=0pt, enhanced, borderline west={3pt}{0pt}{shadecolor}, interior hidden, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, sharp corners, boxrule=0pt, interior hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, breakable]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -5958,6 +5958,78 @@ no difference in mean income between men and women?
 Statistics=8.610, p=0.000
 \end{verbatim}
 
+\hypertarget{extension-3}{%
+\section{Extension}\label{extension-3}}
+
+If this is all way too easy for you, here's a different and less
+structured task. When Elon musk bought Twitter, he promisted to restore
+``free speech'' to the platform, herlading this new era with a tweet on
+28/10/2022, which read ``the bird is freed''. A tidal wave of hate
+speech ensued instead.
+
+Using twitter's API, I downloaded tweets containing a racial slur
+starting with N. Using the groupby function, I counted the number of
+mentions of this word per hour on the platform for about a month before
+the takeover, and a few days thereafter. I've saved these counts (but
+not the tweets themselves) as a csv file called ``elon\_tweets.csv''.
+
+The code below downloads this csv file, and plots the number of N-word
+containing tweets over time. Using a t-test and the full hypothesis
+testing procedure, investigate wheter there was a statistically
+significant increase in hate speech following Elon Musk's tweet.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{elon\_twitter.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{elon\_twitter.csv}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  4380  100  4380    0     0   8144      0 --:--:-- --:--:-- --:--:--  8217
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ datetime}
+\ImportTok{from}\NormalTok{ matplotlib.pyplot }\ImportTok{import}\NormalTok{ figure}
+\ImportTok{import}\NormalTok{ matplotlib.dates }\ImportTok{as}\NormalTok{ mdates}
+
+\NormalTok{tweets}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}data/wk7/elon\_twitter.csv\textquotesingle{}}\NormalTok{) }\CommentTok{\# read in the data}
+\NormalTok{figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{4}\NormalTok{), dpi}\OperatorTok{=}\DecValTok{200}\NormalTok{)}
+\NormalTok{tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{pd.to\_datetime(tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{])}
+
+\NormalTok{tweet}\OperatorTok{=}\NormalTok{datetime.datetime(}\DecValTok{2022}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{28}\NormalTok{)}\CommentTok{\#.strftime(\textquotesingle{}\%d/\%m/\%Y \%HH\textquotesingle{})}
+
+\NormalTok{pre\_mean}\OperatorTok{=}\NormalTok{tweets[tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\NormalTok{tweet][}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{].mean()}
+\NormalTok{post\_mean}\OperatorTok{=}\NormalTok{tweets[tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\NormalTok{tweet][}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{].mean()}
+\NormalTok{pct\_change}\OperatorTok{=} \BuiltInTok{int}\NormalTok{(((post\_mean}\OperatorTok{{-}}\NormalTok{pre\_mean)}\OperatorTok{/}\NormalTok{pre\_mean)}\OperatorTok{*}\DecValTok{100}\NormalTok{)}
+
+\NormalTok{plt.ylabel(}\StringTok{\textquotesingle{}Hourly N{-}word Tweets\textquotesingle{}}\NormalTok{)}
+
+\NormalTok{plt.plot\_date(tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{], tweets[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{], }\StringTok{\textquotesingle{}b{-}\textquotesingle{}}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.axvline(tweet, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}"the bird is freed"\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.legend()}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Elon Musk tweets "The bird is freed"; Tweets containing N{-}word increase }\SpecialCharTok{\{\}}\StringTok{\%\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(pct\_change))}
+\NormalTok{plt.gca().xaxis.set\_major\_locator(mdates.DayLocator())}
+\NormalTok{plt.gca().xaxis.set\_major\_formatter(mdates.DateFormatter(}\StringTok{\textquotesingle{}}\SpecialCharTok{\%d}\StringTok{/\%m\textquotesingle{}}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+/var/folders/6q/jt4x0r8n1rs0kbrrqrbj61fr0000gn/T/ipykernel_34310/354133693.py:17: UserWarning: color is redundantly defined by the 'color' keyword argument and the fmt string "b-" (-> color='b'). The keyword argument will take precedence.
+  plt.plot_date(tweets['hour'], tweets['count'], 'b-', color='red')
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-42-output-2.png}
+
+}
+
+\end{figure}
+
 \bookmarksetup{startatroot}
 
 \hypertarget{regression}{%
@@ -7231,8 +7303,8 @@ projection (using mercator, as before)
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{extension-3}{%
-\section{Extension:}\label{extension-3}}
+\hypertarget{extension-4}{%
+\section{Extension:}\label{extension-4}}
 
 We can make these points a bit bigger by using a `buffer' - this creates
 a geometry of circles rather than points:
