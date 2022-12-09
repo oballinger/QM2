@@ -257,7 +257,7 @@ ga('send', {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W09. Machine Learning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Machine Learning</span></a>
+  <a href="../notebooks/W09. Linear Regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linear Regression</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -1322,8 +1322,8 @@ The t-statistic is 8.610</code></pre>
 </section>
 <section id="extension-1" class="level2">
 <h2 class="anchored" data-anchor-id="extension-1">Extension</h2>
-<p>If this is all way too easy for you, here’s a different and less structured task. When Elon musk bought Twitter, he promisted to restore “free speech” to the platform, herlading this new era with a tweet on 28/10/2022, which read “the bird is freed”. A tidal wave of hate speech ensued instead.</p>
-<p>Using twitter’s API, I downloaded tweets containing a racial slur starting with N. Using the groupby function, I counted the number of mentions of this word per hour on the platform for about a month before the takeover, and a few days thereafter. I’ve saved these counts (but not the tweets themselves) as a csv file called “elon_tweets.csv”.</p>
+<p>If this is all way too easy for you, here’s a different and less structured task. When Elon musk bought Twitter, he promisted to restore “free speech” to the platform. He heralded this new era with a tweet on 28/10/2022, which read “the bird is freed”. A tidal wave of hate speech ensued instead.</p>
+<p>Using twitter’s API, I downloaded tweets containing a racial slur starting with N. Using the groupby function and regex, I counted the number of mentions of this word per hour on the platform for about a month before the takeover, and a few days thereafter. I’ve saved these counts (but not the tweets themselves) as a csv file called “elon_tweets.csv”.</p>
 <p>The code below downloads this csv file, and plots the number of N-word containing tweets over time. Using a t-test and the full hypothesis testing procedure, investigate wheter there was a statistically significant increase in hate speech following Elon Musk’s tweet.</p>
 <div class="cell" data-execution_count="44">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>storage.googleapis.com<span class="op">/</span>qm2<span class="op">/</span>wk7<span class="op">/</span>elon_twitter.csv <span class="op">-</span>o data<span class="op">/</span>wk7<span class="op">/</span>elon_twitter.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

@@ -5,4 +5,3 @@
 This course teaches quantitative skills, with an emphasis on the context and use of data. Students learn to focus on datasets which will allow them to explore questions in society – in arts, humanities, sports, criminal justice, economics, inequality, or policy. Students are expected to work with Python to carry out data manipulation (cleaning and segmentation), analysis (for example, deriving descriptive statistics) and visualisation (graphing, mapping and other forms of visualisation). They will engage with literatures around a topic and connect their datasets and analyses to explore and decide wider arguments, and link their results to these contextual considerations. Below is an outline of the course: 
 
 ![](outline.png) 
-

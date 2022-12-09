@@ -17,7 +17,7 @@ book:
     - Week 6.qmd
     - ./notebooks/W07. Distributions and Basic Statistics.ipynb
     - Week 8.qmd
-    - ./notebooks/W09. Machine Learning.ipynb
+    - ./notebooks/W09. Linear Regression.ipynb
     - ./notebooks/W10. Advanced Visualization.ipynb
   repo-url: https://github.com/oballinger/QM2/
   repo-actions: [edit]
