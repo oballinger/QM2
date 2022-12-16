@@ -190,7 +190,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, frame hidden, sharp corners, breakable, enhanced, boxrule=0pt, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, sharp corners, borderline west={3pt}{0pt}{shadecolor}, breakable, enhanced, interior hidden, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -7353,932 +7353,696 @@ For every additional year of schooling, log wages increase by 10.04%
 
 \bookmarksetup{startatroot}
 
-\hypertarget{advanced-visualization}{%
-\chapter{Advanced Visualization}\label{advanced-visualization}}
+\hypertarget{causal-inference}{%
+\chapter{Causal Inference}\label{causal-inference}}
 
 \hypertarget{workshop-10-open-in-colab}{%
 \section[\emph{Workshop 10} ]{\texorpdfstring{\emph{Workshop 10}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W10.\%20Advanced\%20Visualization.ipynb}{\protect\includegraphics{notebooks/../colab-badge.png}}}{Workshop 10 Open In Colab}}\label{workshop-10-open-in-colab}}
-
-We've successfully plotted spatial data using the core pandas and
-matplotlib libraries. In this session, we will use \emph{geopandas} - a
-library which is designed explicitly to work with apatial data; it does
-projection and allows us to plot geometries and create \emph{choropleth}
-maps.
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W10.\%20Causal\%20Inference.ipynb}{\protect\includegraphics{https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1}}}{Workshop 10 Open In Colab}}\label{workshop-10-open-in-colab}}
 
 \hypertarget{aims-5}{%
-\subsection{Aims}\label{aims-5}}
-
-\begin{itemize}
-\tightlist
-\item
-  Create and view a geopandas dataframe
-\item
-  Understand the significance of the \emph{geometry} column
-\item
-  The basics of projection
-\item
-  Create a choropleth map, based on data
-\item
-  Join dataframes to match data to geographies
-\item
-  Plot point data (extension)
-\item
-  Plot point data with a basemap (extension)
-\end{itemize}
-
-\hypertarget{install-packages}{%
-\section{Install packages}\label{install-packages}}
-
-Firstly, we will need to install Geopandas and pysal so that we can use
-it within this workshop. This will generate alot of text and might take
-a minute to complete. This is how we install packages within Azure
-Notebooks.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#Install newest branch}
-\OperatorTok{!}\NormalTok{pip install pysal}
-
-\CommentTok{\#Install the geopandas module}
-\OperatorTok{!}\NormalTok{pip install geopandas}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Requirement already satisfied: pysal in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (2.7.0)
-Requirement already satisfied: access>=1.1.8 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (1.1.8)
-Requirement already satisfied: spaghetti>=1.6.6 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (1.6.6)
-Requirement already satisfied: mgwr>=2.1.2 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (2.1.2)
-Requirement already satisfied: spvcm>=0.3.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (0.3.0)
-Requirement already satisfied: momepy>=0.5.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (0.5.4)
-Requirement already satisfied: pointpats>=2.2.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (2.2.0)
-Requirement already satisfied: spint>=1.0.7 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (1.0.7)
-Requirement already satisfied: libpysal>=4.6.2 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (4.6.2)
-Requirement already satisfied: spreg>=1.2.4 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (1.2.4)
-Requirement already satisfied: tobler>=0.8.2 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (0.9.0)
-Requirement already satisfied: mapclassify>=2.4.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (2.4.3)
-Requirement already satisfied: splot>=1.1.5.post1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (1.1.5.post1)
-Requirement already satisfied: spopt>=0.4.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (0.4.1)
-Requirement already satisfied: giddy>=2.3.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (2.3.3)
-Requirement already satisfied: esda>=2.4.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (2.4.3)
-Requirement already satisfied: spglm>=1.0.8 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (1.0.8)
-Requirement already satisfied: segregation>=2.3.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (2.3.1)
-Requirement already satisfied: inequality>=1.0.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pysal) (1.0.0)
-Requirement already satisfied: pandas>=0.23.4 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from access>=1.1.8->pysal) (1.2.4)
-Requirement already satisfied: numpy>=1.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from access>=1.1.8->pysal) (1.19.5)
-Requirement already satisfied: geopandas in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from access>=1.1.8->pysal) (0.11.1)
-Requirement already satisfied: requests>=2 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from access>=1.1.8->pysal) (2.25.1)
-Requirement already satisfied: scipy>=0.11 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from esda>=2.4.1->pysal) (1.6.3)
-Requirement already satisfied: scikit-learn in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from esda>=2.4.1->pysal) (0.24.2)
-Requirement already satisfied: quantecon>=0.4.7 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from giddy>=2.3.3->pysal) (0.5.3)
-Requirement already satisfied: beautifulsoup4 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from libpysal>=4.6.2->pysal) (4.9.3)
-Requirement already satisfied: jinja2 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from libpysal>=4.6.2->pysal) (3.1.2)
-Requirement already satisfied: appdirs in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from libpysal>=4.6.2->pysal) (1.4.4)
-Requirement already satisfied: packaging in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from libpysal>=4.6.2->pysal) (21.3)
-Requirement already satisfied: networkx in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from mapclassify>=2.4.3->pysal) (2.5.1)
-Requirement already satisfied: pygeos in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from momepy>=0.5.3->pysal) (0.13)
-Requirement already satisfied: tqdm>=4.27.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from momepy>=0.5.3->pysal) (4.61.0)
-Requirement already satisfied: shapely<2,>=1.7 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from geopandas->access>=1.1.8->pysal) (1.8.4)
-Requirement already satisfied: pyproj>=2.6.1.post1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from geopandas->access>=1.1.8->pysal) (3.4.0)
-Requirement already satisfied: fiona>=1.8 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from geopandas->access>=1.1.8->pysal) (1.8.21)
-Requirement already satisfied: certifi in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas->access>=1.1.8->pysal) (2020.12.5)
-Requirement already satisfied: munch in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas->access>=1.1.8->pysal) (2.5.0)
-Requirement already satisfied: cligj>=0.5 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas->access>=1.1.8->pysal) (0.7.2)
-Requirement already satisfied: click>=4.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas->access>=1.1.8->pysal) (8.0.1)
-Requirement already satisfied: click-plugins>=1.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas->access>=1.1.8->pysal) (1.1.1)
-Requirement already satisfied: attrs>=17 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas->access>=1.1.8->pysal) (22.1.0)
-Requirement already satisfied: six>=1.7 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas->access>=1.1.8->pysal) (1.15.0)
-Requirement already satisfied: setuptools in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas->access>=1.1.8->pysal) (56.0.0)
-Requirement already satisfied: decorator<5,>=4.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from networkx->mapclassify>=2.4.3->pysal) (4.4.2)
-Requirement already satisfied: python-dateutil>=2.7.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pandas>=0.23.4->access>=1.1.8->pysal) (2.8.2)
-Requirement already satisfied: pytz>=2017.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pandas>=0.23.4->access>=1.1.8->pysal) (2021.1)
-Requirement already satisfied: matplotlib in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pointpats>=2.2.0->pysal) (3.4.2)
-Requirement already satisfied: opencv-contrib-python>=4.2.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pointpats>=2.2.0->pysal) (4.6.0.66)
-Requirement already satisfied: numba in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from quantecon>=0.4.7->giddy>=2.3.3->pysal) (0.56.2)
-Requirement already satisfied: sympy in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from quantecon>=0.4.7->giddy>=2.3.3->pysal) (1.11.1)
-Requirement already satisfied: urllib3<1.27,>=1.21.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from requests>=2->access>=1.1.8->pysal) (1.26.5)
-Requirement already satisfied: idna<3,>=2.5 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from requests>=2->access>=1.1.8->pysal) (2.10)
-Requirement already satisfied: chardet<5,>=3.0.2 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from requests>=2->access>=1.1.8->pysal) (4.0.0)
-Requirement already satisfied: rvlib>=0.0.5 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from segregation>=2.3.1->pysal) (0.0.6)
-Requirement already satisfied: quilt3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from segregation>=2.3.1->pysal) (5.0.0)
-Requirement already satisfied: joblib in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from segregation>=2.3.1->pysal) (1.0.1)
-Requirement already satisfied: seaborn in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from segregation>=2.3.1->pysal) (0.12.0)
-Requirement already satisfied: deprecation in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from segregation>=2.3.1->pysal) (2.1.0)
-Requirement already satisfied: pip in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from segregation>=2.3.1->pysal) (21.1.2)
-Requirement already satisfied: cffi>=1.0.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from rvlib>=0.0.5->segregation>=2.3.1->pysal) (1.15.1)
-Requirement already satisfied: PyYAML in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from rvlib>=0.0.5->segregation>=2.3.1->pysal) (5.4.1)
-Requirement already satisfied: pycparser in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from cffi>=1.0.0->rvlib>=0.0.5->segregation>=2.3.1->pysal) (2.21)
-Requirement already satisfied: llvmlite<0.40,>=0.39.0dev0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from numba->quantecon>=0.4.7->giddy>=2.3.3->pysal) (0.39.1)
-Requirement already satisfied: threadpoolctl>=2.0.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from scikit-learn->esda>=2.4.1->pysal) (2.1.0)
-Requirement already satisfied: rtree in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from spaghetti>=1.6.6->pysal) (1.0.0)
-Requirement already satisfied: pulp in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from spopt>=0.4.1->pysal) (2.6.0)
-Requirement already satisfied: statsmodels in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from tobler>=0.8.2->pysal) (0.13.2)
-Requirement already satisfied: rasterio in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from tobler>=0.8.2->pysal) (1.3.2)
-Requirement already satisfied: rasterstats in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from tobler>=0.8.2->pysal) (0.17.0)
-Requirement already satisfied: soupsieve>1.2 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from beautifulsoup4->libpysal>=4.6.2->pysal) (2.2.1)
-Requirement already satisfied: MarkupSafe>=2.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from jinja2->libpysal>=4.6.2->pysal) (2.0.1)
-Requirement already satisfied: pillow>=6.2.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from matplotlib->pointpats>=2.2.0->pysal) (8.2.0)
-Requirement already satisfied: kiwisolver>=1.0.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from matplotlib->pointpats>=2.2.0->pysal) (1.3.1)
-Requirement already satisfied: cycler>=0.10 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from matplotlib->pointpats>=2.2.0->pysal) (0.10.0)
-Requirement already satisfied: pyparsing>=2.2.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from matplotlib->pointpats>=2.2.0->pysal) (2.4.7)
-Requirement already satisfied: jsonschema<5,>=3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from quilt3->segregation>=2.3.1->pysal) (4.16.0)
-Requirement already satisfied: boto3>=1.10.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from quilt3->segregation>=2.3.1->pysal) (1.24.89)
-Requirement already satisfied: tenacity>=5.1.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from quilt3->segregation>=2.3.1->pysal) (8.1.0)
-Requirement already satisfied: jsonlines==1.2.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from quilt3->segregation>=2.3.1->pysal) (1.2.0)
-Requirement already satisfied: requests-futures==1.0.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from quilt3->segregation>=2.3.1->pysal) (1.0.0)
-Requirement already satisfied: aws-requests-auth>=0.4.2 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from quilt3->segregation>=2.3.1->pysal) (0.4.3)
-Requirement already satisfied: jmespath<2.0.0,>=0.7.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from boto3>=1.10.0->quilt3->segregation>=2.3.1->pysal) (1.0.1)
-Requirement already satisfied: botocore<1.28.0,>=1.27.89 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from boto3>=1.10.0->quilt3->segregation>=2.3.1->pysal) (1.27.89)
-Requirement already satisfied: s3transfer<0.7.0,>=0.6.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from boto3>=1.10.0->quilt3->segregation>=2.3.1->pysal) (0.6.0)
-Requirement already satisfied: pyrsistent!=0.17.0,!=0.17.1,!=0.17.2,>=0.14.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from jsonschema<5,>=3->quilt3->segregation>=2.3.1->pysal) (0.18.1)
-Requirement already satisfied: affine in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from rasterio->tobler>=0.8.2->pysal) (2.3.1)
-Requirement already satisfied: snuggs>=1.4.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from rasterio->tobler>=0.8.2->pysal) (1.4.7)
-Requirement already satisfied: simplejson in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from rasterstats->tobler>=0.8.2->pysal) (3.17.6)
-Requirement already satisfied: patsy>=0.5.2 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from statsmodels->tobler>=0.8.2->pysal) (0.5.3)
-Requirement already satisfied: mpmath>=0.19 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from sympy->quantecon>=0.4.7->giddy>=2.3.3->pysal) (1.2.1)
-WARNING: You are using pip version 21.1.2; however, version 22.2.2 is available.
-You should consider upgrading via the '/Users/ollieballinger/.pyenv/versions/3.9.5/bin/python3.9 -m pip install --upgrade pip' command.
-Requirement already satisfied: geopandas in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (0.11.1)
-Requirement already satisfied: pyproj>=2.6.1.post1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from geopandas) (3.4.0)
-Requirement already satisfied: shapely<2,>=1.7 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from geopandas) (1.8.4)
-Requirement already satisfied: fiona>=1.8 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from geopandas) (1.8.21)
-Requirement already satisfied: pandas>=1.0.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from geopandas) (1.2.4)
-Requirement already satisfied: packaging in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from geopandas) (21.3)
-Requirement already satisfied: six>=1.7 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas) (1.15.0)
-Requirement already satisfied: click>=4.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas) (8.0.1)
-Requirement already satisfied: certifi in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas) (2020.12.5)
-Requirement already satisfied: munch in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas) (2.5.0)
-Requirement already satisfied: cligj>=0.5 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas) (0.7.2)
-Requirement already satisfied: click-plugins>=1.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas) (1.1.1)
-Requirement already satisfied: setuptools in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas) (56.0.0)
-Requirement already satisfied: attrs>=17 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from fiona>=1.8->geopandas) (22.1.0)
-Requirement already satisfied: numpy>=1.16.5 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pandas>=1.0.0->geopandas) (1.19.5)
-Requirement already satisfied: pytz>=2017.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pandas>=1.0.0->geopandas) (2021.1)
-Requirement already satisfied: python-dateutil>=2.7.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pandas>=1.0.0->geopandas) (2.8.2)
-Requirement already satisfied: pyparsing!=3.0.5,>=2.0.2 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from packaging->geopandas) (2.4.7)
-WARNING: You are using pip version 21.1.2; however, version 22.2.2 is available.
-You should consider upgrading via the '/Users/ollieballinger/.pyenv/versions/3.9.5/bin/python3.9 -m pip install --upgrade pip' command.
-\end{verbatim}
-
-\hypertarget{downloading-the-data-3}{%
-\section{Downloading the Data}\label{downloading-the-data-3}}
-
-Let's grab the data we will need this week from our course website and
-save it into our data folder. If you've not already created a data
-folder then do so using the following command.
-
-Don't worry if it generates an error, that means you've already got a
-data folder.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\OperatorTok{!}\NormalTok{mkdir data}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-mkdir: data: File exists
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\OperatorTok{!}\NormalTok{mkdir data}\OperatorTok{/}\NormalTok{wk10}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk9}\OperatorTok{/}\NormalTok{london\_wards.shp }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{london\_wards.shp}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk9}\OperatorTok{/}\NormalTok{london\_wards.cpg }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{london\_wards.cpg}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk9}\OperatorTok{/}\NormalTok{london\_wards.dbf }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{london\_wards.dbf}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk9}\OperatorTok{/}\NormalTok{london\_wards.prj }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{london\_wards.prj}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk9}\OperatorTok{/}\NormalTok{london\_wards.shx }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{london\_wards.shx}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk9}\OperatorTok{/}\DecValTok{2011}\ErrorTok{persons}\NormalTok{.csv }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\DecValTok{2011}\ErrorTok{persons}\NormalTok{.csv}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk9}\OperatorTok{/}\NormalTok{borough\_density.csv }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{borough\_density.csv}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk9}\OperatorTok{/}\NormalTok{tweet\_data.csv }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{tweet\_data.csv}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-mkdir: data/wk10: File exists
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 2532k  100 2532k    0     0  1562k      0  0:00:01  0:00:01 --:--:-- 1568k
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100    10  100    10    0     0    127      0 --:--:-- --:--:-- --:--:--   135
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  201k  100  201k    0     0  1151k      0 --:--:-- --:--:-- --:--:-- 1235k
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   143  100   143    0     0    268      0 --:--:-- --:--:-- --:--:--   271
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  5292  100  5292    0     0  11176      0 --:--:-- --:--:-- --:--:-- 11307
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 1004k  100 1004k    0     0  2439k      0 --:--:-- --:--:-- --:--:-- 2492k
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 6157k  100 6157k    0     0  4282k      0  0:00:01  0:00:01 --:--:-- 4299k
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  156k  100  156k    0     0   833k      0 --:--:-- --:--:-- --:--:--  861k
-\end{verbatim}
-
-\hypertarget{setup-our-enviroment}{%
-\section{Setup our enviroment}\label{setup-our-enviroment}}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\OperatorTok{!}\NormalTok{pip install descartes}
-\OperatorTok{!}\NormalTok{pip install mapclassify}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Requirement already satisfied: descartes in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (1.1.0)
-Requirement already satisfied: matplotlib in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from descartes) (3.4.2)
-Requirement already satisfied: pillow>=6.2.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from matplotlib->descartes) (8.2.0)
-Requirement already satisfied: numpy>=1.16 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from matplotlib->descartes) (1.19.5)
-Requirement already satisfied: python-dateutil>=2.7 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from matplotlib->descartes) (2.8.2)
-Requirement already satisfied: cycler>=0.10 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from matplotlib->descartes) (0.10.0)
-Requirement already satisfied: pyparsing>=2.2.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from matplotlib->descartes) (2.4.7)
-Requirement already satisfied: kiwisolver>=1.0.1 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from matplotlib->descartes) (1.3.1)
-Requirement already satisfied: six in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from cycler>=0.10->matplotlib->descartes) (1.15.0)
-WARNING: You are using pip version 21.1.2; however, version 22.2.2 is available.
-You should consider upgrading via the '/Users/ollieballinger/.pyenv/versions/3.9.5/bin/python3.9 -m pip install --upgrade pip' command.
-Requirement already satisfied: mapclassify in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (2.4.3)
-Requirement already satisfied: pandas>=1.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from mapclassify) (1.2.4)
-Requirement already satisfied: numpy>=1.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from mapclassify) (1.19.5)
-Requirement already satisfied: networkx in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from mapclassify) (2.5.1)
-Requirement already satisfied: scikit-learn in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from mapclassify) (0.24.2)
-Requirement already satisfied: scipy>=1.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from mapclassify) (1.6.3)
-Requirement already satisfied: python-dateutil>=2.7.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pandas>=1.0->mapclassify) (2.8.2)
-Requirement already satisfied: pytz>=2017.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from pandas>=1.0->mapclassify) (2021.1)
-Requirement already satisfied: six>=1.5 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from python-dateutil>=2.7.3->pandas>=1.0->mapclassify) (1.15.0)
-Requirement already satisfied: decorator<5,>=4.3 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from networkx->mapclassify) (4.4.2)
-Requirement already satisfied: threadpoolctl>=2.0.0 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from scikit-learn->mapclassify) (2.1.0)
-Requirement already satisfied: joblib>=0.11 in /Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages (from scikit-learn->mapclassify) (1.0.1)
-WARNING: You are using pip version 21.1.2; however, version 22.2.2 is available.
-You should consider upgrading via the '/Users/ollieballinger/.pyenv/versions/3.9.5/bin/python3.9 -m pip install --upgrade pip' command.
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ pysal }\ImportTok{import} \OperatorTok{*}
-\ImportTok{import}\NormalTok{ geopandas }\ImportTok{as}\NormalTok{ gp}
-\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
-\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
-\ImportTok{import}\NormalTok{ matplotlib}
-\ImportTok{import}\NormalTok{ pylab}
-\ImportTok{import}\NormalTok{ descartes}
-\ImportTok{import}\NormalTok{ mapclassify}
-
-\OperatorTok{\%}\NormalTok{matplotlib inline}
-
-\NormalTok{plt.style.use(}\StringTok{\textquotesingle{}ggplot\textquotesingle{}}\NormalTok{)}
-\NormalTok{pylab.rcParams[}\StringTok{\textquotesingle{}figure.figsize\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ (}\FloatTok{20.}\NormalTok{, }\FloatTok{16.}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{the-shape-of-things-to-come}{%
-\section{The shape of things to
-come}\label{the-shape-of-things-to-come}}
-
-Geopandas works with \emph{shapefiles} - an industry standard in spatial
-analysis and GIS created by ESRI, who make a lot of GIS products.
-Shapefiles actually involves a number of files (\emph{filename.shp},
-\emph{filename.shx}, \emph{filename.dbf}, \emph{filename.proj} and
-\emph{filename.cpg}) which encode the polygons, data, projection and
-various other useful bits of data. Suffice it to say that we generally
-need all of these bits, with the same filename (but different
-extension), in the same folder. Generally, if you download shapefiles,
-it should have all of the requisite bits.
-
-We'll load them into a \emph{GeoDataFrame} object, which, as we will
-see, looks a lot like a pandas dataframe - but has a special column,
-\emph{geometry}, which is what is used whenever we invoke the ``plot''
-command.
-
-Let's load the data - the geometries of London wards:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{data\_path }\OperatorTok{=} \StringTok{"./data/wk9/london\_wards.shp"}
-
-\CommentTok{\# londonWards = gp.GeoDataFrame.from\_file(data\_path)}
-
-\NormalTok{londonWards }\OperatorTok{=}\NormalTok{ gp.read\_file(data\_path)}
-
-\NormalTok{londonWards.head()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{longtable}[]{@{}lllllllllllllllll@{}}
-\toprule()
-& NAME & AREA\_CODE & DESCRIPTIO & FILE\_NAME & NUMBER & NUMBER0 &
-POLYGON\_ID & UNIT\_ID & CODE & HECTARES & AREA & TYPE\_CODE & DESCRIPT0
-& TYPE\_COD0 & DESCRIPT1 & geometry \\
-\midrule()
-\endhead
-0 & Chessington South Ward & LBW & London Borough Ward &
-GREATER\_LONDON\_AUTHORITY & 52 & 733 & 50840 & 10884 & E05000405 &
-755.173 & 0.0 & VA & CIVIL VOTING AREA & None & None & POLYGON
-((-0.33068 51.32901, -0.33059 51.32909... \\
-1 & Tolworth and Hook Rise Ward & LBW & London Borough Ward &
-GREATER\_LONDON\_AUTHORITY & 106 & 734 & 117160 & 11407 & E05000414 &
-259.464 & 0.0 & VA & CIVIL VOTING AREA & None & None & POLYGON
-((-0.30846 51.37586, -0.30834 51.37606... \\
-2 & Berrylands Ward & LBW & London Borough Ward &
-GREATER\_LONDON\_AUTHORITY & 107 & 735 & 50449 & 11413 & E05000401 &
-145.390 & 0.0 & VA & CIVIL VOTING AREA & None & None & POLYGON
-((-0.30385 51.39249, -0.30375 51.39252... \\
-3 & Alexandra Ward & LBW & London Borough Ward &
-GREATER\_LONDON\_AUTHORITY & 108 & 736 & 50456 & 11420 & E05000400 &
-268.506 & 0.0 & VA & CIVIL VOTING AREA & None & None & POLYGON
-((-0.26990 51.38845, -0.26975 51.38838... \\
-4 & Beverley Ward & LBW & London Borough Ward &
-GREATER\_LONDON\_AUTHORITY & 109 & 737 & 117161 & 11417 & E05000402 &
-187.821 & 0.0 & VA & CIVIL VOTING AREA & None & None & POLYGON
-((-0.24662 51.39921, -0.24672 51.39921... \\
-\bottomrule()
-\end{longtable}
-
-\hypertarget{projection}{%
-\section{Projection}\label{projection}}
-
-We could spend a long time working through the merits of different
-projection methods; many of these are available in geopandas, through
-the PySAL library - more documentation is available there if you want to
-work with different projections.
-
-More fundamentally, a \emph{Co-ordinate Reference System} (CRS) refers
-to how we identify points on the globe; the world isn't a perfect sphere
-so dealing with that is the job of the CRS. The WGS84 datum
-(https://en.wikipedia.org/wiki/World\_Geodetic\_System) which is
-sometimes called EPSG 4326 (epsg:4326).
-
-We can find out the CRS of the geometry:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{londonWards.crs}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-<Geographic 2D CRS: GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84" ...>
-Name: WGS 84
-Axis Info [ellipsoidal]:
-- lon[east]: Longitude (Degree)
-- lat[north]: Latitude (Degree)
-Area of Use:
-- undefined
-Datum: World Geodetic System 1984
-- Ellipsoid: WGS 84
-- Prime Meridian: Greenwich
-\end{verbatim}
-
-If we look at the geometry column, we see that they are latlon
-co-ordinates:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{londonWards[}\StringTok{\textquotesingle{}geometry\textquotesingle{}}\NormalTok{].head()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-0    POLYGON ((-0.33068 51.32901, -0.33059 51.32909...
-1    POLYGON ((-0.30846 51.37586, -0.30834 51.37606...
-2    POLYGON ((-0.30385 51.39249, -0.30375 51.39252...
-3    POLYGON ((-0.26990 51.38845, -0.26975 51.38838...
-4    POLYGON ((-0.24662 51.39921, -0.24672 51.39921...
-Name: geometry, dtype: geometry
-\end{verbatim}
-
-This is all well and good, but we need to project the latlon data onto a
-plane to plot. We'll create objects to keep track of these CRS frames.
-\emph{original\_crs} is the latlon co-ordinates; \emph{target\_crs} is a
-mercator (`merc') projection; and the third line, \emph{to\_crs}
-projects the geometry so we can plot it.
-
-\textbf{Extension}: You can find more detailed documentation about
-projection types and parameters at the PROJ.4 site which underpins
-pyproj/geopandas, and here:
-http://www.remotesensing.org/geotiff/proj\_list/; in this case, it won't
-make much difference which projection you use, because of the small
-scale.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{londonWards.crs }\OperatorTok{=} \StringTok{\textquotesingle{}epsg:4326\textquotesingle{}}
-\NormalTok{target\_crs }\OperatorTok{=}\NormalTok{ \{}\StringTok{\textquotesingle{}datum\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}WGS84\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}no\_defs\textquotesingle{}}\NormalTok{:}\VariableTok{True}\NormalTok{, }\StringTok{\textquotesingle{}proj\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}merc\textquotesingle{}}\NormalTok{\}}
-\NormalTok{projected\_londonWards }\OperatorTok{=}\NormalTok{ londonWards.to\_crs(crs}\OperatorTok{=}\NormalTok{target\_crs)}
-\end{Highlighting}
-\end{Shaded}
-
-The `geometry' column isn't in a lon, lat CRS any longer, but physical
-distances from some spatial point:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{projected\_londonWards[}\StringTok{\textquotesingle{}geometry\textquotesingle{}}\NormalTok{].head()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-0    POLYGON ((-36811.020 6646318.081, -36801.601 6...
-1    POLYGON ((-34337.301 6654646.965, -34324.488 6...
-2    POLYGON ((-33824.387 6657604.802, -33813.361 6...
-3    POLYGON ((-30045.140 6656886.727, -30028.328 6...
-4    POLYGON ((-27453.834 6658801.486, -27465.224 6...
-Name: geometry, dtype: geometry
-\end{verbatim}
-
-Plotting this is now a simple matter:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{projected\_londonWards.plot()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-<AxesSubplot:>
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W10. Advanced Visualization_files/figure-pdf/cell-12-output-2.png}
-
-}
-
-\end{figure}
-
-Our colours look a bit plain and boring. Let's upgrade our plot to
-something more informative.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{projected\_londonWards.plot(column}\OperatorTok{=}\StringTok{\textquotesingle{}UNIT\_ID\textquotesingle{}}\NormalTok{, cmap}\OperatorTok{=}\StringTok{\textquotesingle{}rainbow\textquotesingle{}}\NormalTok{, scheme}\OperatorTok{=}\StringTok{\textquotesingle{}quantiles\textquotesingle{}}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-<AxesSubplot:>
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W10. Advanced Visualization_files/figure-pdf/cell-13-output-2.png}
-
-}
-
-\end{figure}
-
-Have a play around with mapping differnt coloums using different colours
-and different colouring schemes
-
-\texttt{Scheme\ must\ be\ in\ the\ set:\ {[}\textquotesingle{}quantiles\textquotesingle{},\ \textquotesingle{}fisher\_jenks\textquotesingle{},\ \textquotesingle{}equal\_interval\textquotesingle{}{]}}
-
-If you want to play with the colour schemes for the map then take a look
-here. https://matplotlib.org/examples/color/colormaps\_reference.html
-
-\texttt{Possible\ values\ are:\ Accent,\ Accent\_r,\ Blues,\ Blues\_r,\ BrBG,\ BrBG\_r,\ BuGn,\ BuGn\_r,\ BuPu,\ BuPu\_r,\ CMRmap,\ CMRmap\_r,\ Dark2,\ Dark2\_r,\ GnBu,\ GnBu\_r,\ Greens,\ Greens\_r,\ Greys,\ Greys\_r,\ OrRd,\ OrRd\_r,\ Oranges,\ Oranges\_r,\ PRGn,\ PRGn\_r,\ Paired,\ Paired\_r,\ Pastel1,\ Pastel1\_r,\ Pastel2,\ Pastel2\_r,\ PiYG,\ PiYG\_r,\ PuBu,\ PuBuGn,\ PuBuGn\_r,\ PuBu\_r,\ PuOr,\ PuOr\_r,\ PuRd,\ PuRd\_r,\ Purples,\ Purples\_r,\ RdBu,\ RdBu\_r,\ RdGy,\ RdGy\_r,\ RdPu,\ RdPu\_r,\ RdYlBu,\ RdYlBu\_r,\ RdYlGn,\ RdYlGn\_r,\ Reds,\ Reds\_r,\ Set1,\ Set1\_r,\ Set2,\ Set2\_r,\ Set3,\ Set3\_r,\ Spectral,\ Spectral\_r,\ Wistia,\ Wistia\_r,\ YlGn,\ YlGnBu,\ YlGnBu\_r,\ YlGn\_r,\ YlOrBr,\ YlOrBr\_r,\ YlOrRd,\ YlOrRd\_r,\ afmhot,\ afmhot\_r,\ autumn,\ autumn\_r,\ binary,\ binary\_r,\ bone,\ bone\_r,\ brg,\ brg\_r,\ bwr,\ bwr\_r,\ cool,\ cool\_r,\ coolwarm,\ coolwarm\_r,\ copper,\ copper\_r,\ cubehelix,\ cubehelix\_r,\ flag,\ flag\_r,\ gist\_earth,\ gist\_earth\_r,\ gist\_gray,\ gist\_gray\_r,\ gist\_heat,\ gist\_heat\_r,\ gist\_ncar,\ gist\_ncar\_r,\ gist\_rainbow,\ gist\_rainbow\_r,\ gist\_stern,\ gist\_stern\_r,\ gist\_yarg,\ gist\_yarg\_r,\ gnuplot,\ gnuplot2,\ gnuplot2\_r,\ gnuplot\_r,\ gray,\ gray\_r,\ hot,\ hot\_r,\ hsv,\ hsv\_r,\ inferno,\ inferno\_r,\ jet,\ jet\_r,\ magma,\ magma\_r,\ nipy\_spectral,\ nipy\_spectral\_r,\ ocean,\ ocean\_r,\ pink,\ pink\_r,\ plasma,\ plasma\_r,\ prism,\ prism\_r,\ rainbow,\ rainbow\_r,\ seismic,\ seismic\_r,\ spectral,\ spectral\_r,\ spring,\ spring\_r,\ summer,\ summer\_r,\ terrain,\ terrain\_r,\ viridis,\ viridis\_r,\ winter,\ winter\_r}
-
-We can also control the alpha of the map as well if we want to.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{projected\_londonWards.plot(column}\OperatorTok{=}\StringTok{\textquotesingle{}UNIT\_ID\textquotesingle{}}\NormalTok{, cmap}\OperatorTok{=}\StringTok{\textquotesingle{}rainbow\textquotesingle{}}\NormalTok{, scheme}\OperatorTok{=}\StringTok{\textquotesingle{}quantiles\textquotesingle{}}\NormalTok{, alpha }\OperatorTok{=} \FloatTok{0.5}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-<AxesSubplot:>
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W10. Advanced Visualization_files/figure-pdf/cell-14-output-2.png}
-
-}
-
-\end{figure}
-
-\hypertarget{warding-off-evil}{%
-\section{Warding off evil}\label{warding-off-evil}}
-
-The electoral wards of London represent voting areas for local councils;
-let's now compare their populations to see where the population
-densities are in the city.
-
-Population data is available from the ONS - they link the population of
-different ages to a `Ward Code', which is a standard identified of that
-ward:
-http://www.ons.gov.uk/ons/publications/re-reference-tables.html?edition=tcm\%3A77-301951
-
-Let's read it into a standard Pandas dataframe:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{data\_path }\OperatorTok{=} \StringTok{"./data/wk9/2011persons.csv"}
-
-\NormalTok{persons }\OperatorTok{=}\NormalTok{ pd.read\_csv(data\_path, encoding }\OperatorTok{=} \StringTok{\textquotesingle{}latin1\textquotesingle{}}\NormalTok{)}
-\NormalTok{persons.head()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{longtable}[]{@{}llllllllllllllllllllll@{}}
-\toprule()
-& Ward Code 1 & Ward Name 1 & Local Authority & All Ages & 0-4 & 5-9 &
-10-14 & 15-19 & 20-24 & 25-29 & ... & 45-49 & 50-54 & 55-59 & 60-64 &
-65-69 & 70-74 & 75-79 & 80-84 & 85-89 & 90plus \\
-\midrule()
-\endhead
-0 & E05000001 & Aldersgate & City of London & 1,472 & 50 & 36 & 23 & 19
-& 66 & 138 & ... & 113 & 109 & 131 & 135 & 73 & 65 & 62 & 48.0 & 19.0 &
-8.0 \\
-1 & E05000005 & Bishopsgate & City of London & 226 & 2 & 1 & 2 & 6 & 20
-& 64 & ... & 13 & 12 & 13 & 8 & 2 & 0 & 0 & 1.0 & 0.0 & 0.0 \\
-2 & E05000015 & Cripplegate & City of London & 2,786 & 108 & 66 & 54 &
-102 & 117 & 233 & ... & 237 & 212 & 183 & 187 & 163 & 125 & 76 & 93.0 &
-43.0 & 31.0 \\
-3 & E05000017 & Farringdon Within & City of London & 278 & 8 & 12 & 26 &
-9 & 31 & 40 & ... & 17 & 12 & 14 & 13 & 10 & 3 & 1 & 0.0 & 0.0 & 0.0 \\
-4 & E05000018 & Farringdon Without & City of London & 1,112 & 17 & 5 & 6
-& 6 & 146 & 233 & ... & 106 & 51 & 59 & 67 & 31 & 22 & 11 & 8.0 & 5.0 &
-2.0 \\
-\bottomrule()
-\end{longtable}
-
-We need to make sure the data is in the right format - to remove commas
-and dashes, as we have done before. I'm just going to clean up the ``All
-Ages'' column for this example, but you could apply this to any (or all)
-numerical columns.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{persons.replace(}\StringTok{\textquotesingle{},\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{, regex}\OperatorTok{=}\VariableTok{True}\NormalTok{, inplace}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
-\NormalTok{persons[}\StringTok{\textquotesingle{}All Ages\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ persons[}\StringTok{\textquotesingle{}All Ages\textquotesingle{}}\NormalTok{].replace(}\StringTok{\textquotesingle{}{-}\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}NaN\textquotesingle{}}\NormalTok{, regex}\OperatorTok{=}\VariableTok{True}\NormalTok{).astype(}\StringTok{\textquotesingle{}float\textquotesingle{}}\NormalTok{)}
-\NormalTok{persons[}\StringTok{\textquotesingle{}All Ages\textquotesingle{}}\NormalTok{].head()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-0    1472.0
-1     226.0
-2    2786.0
-3     278.0
-4    1112.0
-Name: All Ages, dtype: float64
-\end{verbatim}
-
-\hypertarget{exercise-29}{%
-\section{Exercise}\label{exercise-29}}
-
-Using the Ward Code, \textbf{merge} the \emph{persons} geodataframe with
-the \emph{londonWards} dataframe to create a new geodataframe called
-``geopeople''. You can do do this in pretty much exactly the same way
-you've done for merging `vanilla' dataframes - refer to the examples
-from earlier in the term if your syntax is rusty.
-
-\textbf{One important caveat}: to plot the map, you need to be invoking
-\emph{.plot()} on a \textbf{geo}dataframe - so you need to merge
-\textbf{on} the geodataframe, with the dataframe as the argument. You
-can check this with the \emph{type(geopeople)} command:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\BuiltInTok{type}\NormalTok{(geopeople)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-NameError: name 'geopeople' is not defined
-\end{verbatim}
-
-Compare to merging \textbf{on} persons, which will give you a
-``pandas.core.frame.DataFrame'' object - \emph{not} a geodataframe.
-
-Let's now calculate the population \emph{density} using the `HECTARES'
-column:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{geopeople[}\StringTok{\textquotesingle{}density\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{geopeople[}\StringTok{\textquotesingle{}All Ages\textquotesingle{}}\NormalTok{]}\OperatorTok{/}\NormalTok{geopeople[}\StringTok{\textquotesingle{}HECTARES\textquotesingle{}}\NormalTok{]}
-\NormalTok{geopeople.head()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-NameError: ignored
-\end{verbatim}
-
-\hypertarget{portable-data}{%
-\section{Portable data}\label{portable-data}}
-
-At this point, we'll save the data into a .csv so it's easy to use in
-other software. This will be useful.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{data\_path }\OperatorTok{=} \StringTok{"./data/wk9/borough\_density.csv"}
-
-\NormalTok{geopeople.to\_csv(data\_path)}
-\end{Highlighting}
-\end{Shaded}
-
-And let's project this into a new geodataframe:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{original\_crs }\OperatorTok{=}\NormalTok{ geopeople.crs}
-\NormalTok{target\_crs }\OperatorTok{=}\NormalTok{ \{}\StringTok{\textquotesingle{}datum\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}WGS84\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}no\_defs\textquotesingle{}}\NormalTok{:}\VariableTok{True}\NormalTok{, }\StringTok{\textquotesingle{}proj\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}merc\textquotesingle{}}\NormalTok{\}}
-\NormalTok{projected\_geopeople }\OperatorTok{=}\NormalTok{ geopeople.to\_crs(crs}\OperatorTok{=}\NormalTok{target\_crs)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{projected\_geopeople.plot(column}\OperatorTok{=}\StringTok{\textquotesingle{}All Ages\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}2011 population by Ward\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.savefig(}\StringTok{\textquotesingle{}./data/wk9/Wards.png\textquotesingle{}}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{exercise-30}{%
-\section{Exercise}\label{exercise-30}}
-
-Create a choropleth map of the population of each ward using
-\emph{projected\_geopeople.plot()} and save it as an image file. Use the
-optional arguments:
+\subsection{Aims:}\label{aims-5}}
+
+This workshop builds on last week's material-- now that we know what a
+basic regression looks like, we'll be looking at three different types
+of regression that let us extract more robust and even plausibly causal
+insights from our data:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \emph{column}, To specific the `All Ages' column in the dataset to
-  colour the map based on population, and
+  Panel Regression
 \item
-  \emph{colormap}, using the `Blues' colormap to specify a white-blue
-  colour range
+  Difference in Differences
+\item
+  Regression Discontinuity
 \end{enumerate}
 
-(It looks as if there aren't population estimates for the smaller City
-of London Wards, so we're missing them - if we wanted to show them, we
-would need a different dataset)
-
-\hypertarget{between-the-bars}{%
-\section{Between the Bars}\label{between-the-bars}}
-
-We have a nice map, but no colour scale to explain what the colours
-mean; unfortunately, this is a place where geopandas falls down and we
-have to do something intensely complex. The code you'll see below was
-created by the inimitable Stephan Hugel to fill in the gaps (more for
-the superkeen here:
-sensitivecities.com/so-youd-like-to-make-a-map-using-python-EN.html\#.VlSfMcq2-K7)
+Our focus area will be the United States, where we'll be looking at the
+relationship between electoral outcomes, unemployment, and the minimum
+wage. We'll also be bringing back material from previous weeks
+(particularly Week 3 - Spatial Data and Week 5 - Merging and Joining) to
+show how the different things we've learned fit together. First, as
+always, we must import the libraries we'll need for this project.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\#!pip install linearmodels}
+\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
+\ImportTok{import}\NormalTok{ seaborn }\ImportTok{as}\NormalTok{ sns}
 \ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
-\ImportTok{import}\NormalTok{ matplotlib}
+\ImportTok{import}\NormalTok{ plotly}
+\ImportTok{import}\NormalTok{ plotly.express }\ImportTok{as}\NormalTok{ px}
+\ImportTok{import}\NormalTok{ warnings}
+\ImportTok{from}\NormalTok{ statsmodels.formula.api }\ImportTok{import}\NormalTok{ ols}
+\ImportTok{from}\NormalTok{ statsmodels.iolib.summary2 }\ImportTok{import}\NormalTok{ summary\_col}
+\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
+
+\NormalTok{warnings.filterwarnings(}\StringTok{\textquotesingle{}ignore\textquotesingle{}}\NormalTok{)}
+\NormalTok{sns.}\BuiltInTok{set}\NormalTok{(font\_scale}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
+\NormalTok{sns.set\_style(}\StringTok{"white"}\NormalTok{)}
+\NormalTok{plt.rcParams[}\StringTok{\textquotesingle{}figure.figsize\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ (}\DecValTok{12}\NormalTok{, }\DecValTok{8}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+This workshop is going to involve combining a number of different
+datasets:
+
+\begin{itemize}
+\item
+  \texttt{did.csv}: survey data on restaurant workers in Pennsylvania
+  and New Jersey in 1992 collected by
+  \href{https://davidcard.berkeley.edu/papers/njmin-aer.pdf}{Card and
+  Krueger (1994)} to measure to the impact of a minimum wage increase on
+  employment.
+\item
+  \texttt{unemployment.csv}: Monthly state-level unemployment data from
+  the \href{www.bls.gov}{Bureau of Labor Statistics (BLS)} spanning
+  1976-2022
+\item
+  \texttt{elections.csv}: county-level U.S. Presidential election
+  results spanning 2000-2020 from the
+  \href{https://electionlab.mit.edu/data}{MIT Election Lab}
+\item
+  \texttt{minwage.csv}: state-level minimum wage data from
+  \href{https://www.kaggle.com/datasets/lislejoem/us-minimum-wage-by-state-from-1968-to-2017}{Kaggle}
+  spanning 1968-2020
+\end{itemize}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-
-\CommentTok{\# Convenience functions for working with colour ramps and bars}
-\KeywordTok{def}\NormalTok{ colorbar\_index(ncolors, cmap, labels}\OperatorTok{=}\VariableTok{None}\NormalTok{, }\OperatorTok{**}\NormalTok{kwargs):}
-    \CommentTok{"""}
-\CommentTok{    This is a convenience function to stop you making off{-}by{-}one errors}
-\CommentTok{    Takes a standard colour ramp, and discretizes it,}
-\CommentTok{    then draws a colour bar with correctly aligned labels}
-\CommentTok{    """}
-\NormalTok{    cmap }\OperatorTok{=}\NormalTok{ cmap\_discretize(cmap, ncolors)}
-\NormalTok{    mappable }\OperatorTok{=}\NormalTok{ plt.cm.ScalarMappable(cmap}\OperatorTok{=}\NormalTok{cmap)}
-\NormalTok{    mappable.set\_array([])}
-\NormalTok{    mappable.set\_clim(}\OperatorTok{{-}}\FloatTok{0.5}\NormalTok{, ncolors}\OperatorTok{+}\FloatTok{0.5}\NormalTok{)}
-\NormalTok{    colorbar }\OperatorTok{=}\NormalTok{ matplotlib.pyplot.colorbar(mappable, }\OperatorTok{**}\NormalTok{kwargs)}
-\NormalTok{    colorbar.set\_ticks(np.linspace(}\DecValTok{0}\NormalTok{, ncolors, ncolors))}
-\NormalTok{    colorbar.set\_ticklabels(}\BuiltInTok{range}\NormalTok{(ncolors))}
-    \ControlFlowTok{if}\NormalTok{ labels:}
-\NormalTok{        colorbar.set\_ticklabels(labels)}
-    \ControlFlowTok{return}\NormalTok{ colorbar}
-
-\KeywordTok{def}\NormalTok{ cmap\_discretize(cmap, N):}
-    \CommentTok{"""}
-\CommentTok{    Return a discrete colormap from the continuous colormap cmap.}
-
-\CommentTok{        cmap: colormap instance, eg. cm.jet. }
-\CommentTok{        N: number of colors.}
-
-\CommentTok{    Example}
-\CommentTok{        x = resize(arange(100), (5,100))}
-\CommentTok{        djet = cmap\_discretize(cm.jet, 5)}
-\CommentTok{        imshow(x, cmap=djet)}
-
-\CommentTok{    """}
-    \ControlFlowTok{if} \BuiltInTok{type}\NormalTok{(cmap) }\OperatorTok{==} \BuiltInTok{str}\NormalTok{:}
-\NormalTok{        cmap }\OperatorTok{=}\NormalTok{ get\_cmap(cmap)}
-\NormalTok{    colors\_i }\OperatorTok{=}\NormalTok{ np.concatenate((np.linspace(}\DecValTok{0}\NormalTok{, }\FloatTok{1.}\NormalTok{, N), (}\FloatTok{0.}\NormalTok{, }\FloatTok{0.}\NormalTok{, }\FloatTok{0.}\NormalTok{, }\FloatTok{0.}\NormalTok{)))}
-\NormalTok{    colors\_rgba }\OperatorTok{=}\NormalTok{ cmap(colors\_i)}
-\NormalTok{    indices }\OperatorTok{=}\NormalTok{ np.linspace(}\DecValTok{0}\NormalTok{, }\FloatTok{1.}\NormalTok{, N }\OperatorTok{+} \DecValTok{1}\NormalTok{)}
-\NormalTok{    cdict }\OperatorTok{=}\NormalTok{ \{\}}
-    \ControlFlowTok{for}\NormalTok{ ki, key }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{((}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{)):}
-\NormalTok{        cdict[key] }\OperatorTok{=}\NormalTok{ [(indices[i], colors\_rgba[i }\OperatorTok{{-}} \DecValTok{1}\NormalTok{, ki], colors\_rgba[i, ki]) }\ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(N}\OperatorTok{+}\DecValTok{1}\NormalTok{)]}
-    \ControlFlowTok{return}\NormalTok{ matplotlib.colors.LinearSegmentedColormap(cmap.name }\OperatorTok{+} \StringTok{"\_}\SpecialCharTok{\%d}\StringTok{"} \OperatorTok{\%}\NormalTok{ N, cdict, }\DecValTok{1024}\NormalTok{)}
+\OperatorTok{!}\NormalTok{mkdir data}
+\OperatorTok{!}\NormalTok{mkdir data}\OperatorTok{/}\NormalTok{wk10}
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{state\_data.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{state\_data.csv}
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{elections.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{elections.csv}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+mkdir: data: File exists
+mkdir: data/wk10: File exists
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  4626  100  4626    0     0   8979      0 --:--:-- --:--:-- --:--:--  9070
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 1160k  100 1160k    0     0  2486k      0 --:--:-- --:--:-- --:--:-- 2501k
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   184  100   184    0     0   1240      0 --:--:-- --:--:-- --:--:--  1277
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   184  100   184    0     0   1265      0 --:--:-- --:--:-- --:--:--  1304
+\end{verbatim}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\#\# Panel Regression
+\end{minipage} \\
+\midrule()
+\endhead
+Intercept 65.608*** 74.605*** 68.971*** 73.383*** 70.706***
+81.721\textbf{\emph{ (0.572) (0.684) (0.680) (0.727) (0.788) (0.797)
+unemployment -1.782}} -2.351*** -1.891*** -1.618*** -1.101***
+-2.322\textbf{\emph{ (0.122) (0.114) (0.109) (0.088) (0.142) (0.114)
+population -0.021}} -0.021*** -0.023*** -0.024*** -0.034***
+-0.029\textbf{\emph{ (0.001) (0.001) (0.001) (0.002) (0.002) (0.002)
+R-squared 0.118 0.172 0.148 0.165 0.142 0.230 R-squared Adj. 0.117 0.171
+0.148 0.165 0.141 0.229 N 3113 3114 3114 3114 3115 3114
+==========================================================================
+Standard errors in parentheses. } p\textless.1, } p\textless.05,
+***p\textless.01 ``` ::: ::: \\
+This table is pretty informative. Using what we learned from last week,
+we can say that for the 2020 election, \\
+* A 1\% increase in the unemployment rate was associated with a 2.3\%
+\emph{decrease} in republican voteshare. * A 1000-person increase in
+population was associated with 0.029\% decrease in republican voteshare.
+* both of these results are statistically signifiant at the 0.01 level.
+* 23\% of the variation in republican voteshare can be explained by
+unemployment and population. \\
+Crucially, ``increase'' in this context pertains to \emph{differences in
+between counties}! \\
+We can also compare these results across different elections. The
+coefficient for the unemployment variable in 2020 is over twice the size
+of the same coefficient in 2016! So it looks like actually unemployment
+and republican voteshare are \emph{negatively} related, contrary to
+popular belief. \\
+But is this the whole story? \\
+Below, i've isolated West Virginia, one of the states with the highest
+unemployment rates in America. Instead of drawing a new regression line
+every year, i've drawn a new regression line for each county over the
+six elections. \\
+::: \{.cell\} \\
+::: \{.cell-output .cell-output-display execution\_count=30\} \\
+::: \{.cell-output .cell-output-display\}
+\includegraphics{notebooks/W10. Causal Inference_files/figure-pdf/cell-10-output-2.png}
+::: ::: \\
+Within a given county, an increase in the unemployment rate is
+associated with an \textbf{increase} in republican voteshare! This is
+where the second question comes in (variation within counties). \\
+We got away with doing a series of cross-sectional analyses (a new
+regression for each election) because we have over 3000 counties, so
+\(n>3000\) for each of those regressions (though even so, we're still
+splitting our data up and it would be better to leverage the full
+dataset of \textgreater18000 observations in one regression). It also
+provides relatively useful information about the importance of
+unemployment across the country for each election. We can't really apply
+the same thinking to this situation, since we only have six time
+periods. If we ran a separate regression for each county, we would only
+have six observations per regression-- nowhere near enough to satisfy
+the central limit theorem (at least n\textgreater30). The insights would
+also be of limited utility; we would get over 3000 unique estimates for
+the realtionship between county-level employment and election results.
+Imagine trying to fit \emph{that} into one table. \\
+Luckily, there's a way of modeling this relationship that allows us to
+account for differences in between counties, while also capturing the
+variation within counties. This is called a \textbf{Fixed Effect
+regression} \\
+\textgreater{} \textbf{Fixed Effects Models}: In experimental research,
+unmeasured differences between subjects are often controlled for via
+random assignment to treatment and control groups. Hence, even if a
+variable like Socio-Economic Status is not explicitly measured, because
+of random assignment, we can be reasonably confident that the effects of
+SES are approximately equal for all groups. Of course, random assignment
+is usually not possible with most survey research. If we want to control
+for the effect of a variable, we must explicitly measure it. If we don't
+measure it, we can't control for it. In practice, there will almost
+certainly be some variables we have failed to measure (or have measured
+poorly), so our models will likely suffer from some degree of omitted
+variable bias. \textgreater When we have panel data (the same
+people/states/counties. etc. measured at two or more points in time)
+another alternative presents itself: we can use the subjects as their
+own controls. With panel data we can control for stable characteristics
+(i.e.~characteristics that do not change across time) whether they are
+measured or not. These include such things as sex, race, and ethnicity
+for individuals, or urban/rural, topography, economic structure for
+geographic areas. The idea is that, whatever effect these variables have
+at one point in time, they will have the same effect at a different
+point in time because the values of such variables do not change. \\
+A fixed effect regression takes the following form: \\
+\(\huge Y_{it}=\alpha_i+\beta X_{it}+\epsilon_{it}\) \\
+Where: * \(X_{it}\) are the independent variables (e.g.~population and
+unemployment) whose values vary over time. * \(\beta\) is the slope
+coefficient for variable \(x\) (e.g.~unemployment). The model assumes
+that these effects are time-invariant, e.g.~the effect of \(x\) is the
+same at same 1 as it is at time 4 (although the value of \(x\) can be
+different at different time periods). * \(\alpha_i\) and
+\(\epsilon_{it}\) are both error terms. \(\epsilon_{it}\) is different
+for each individual at each point in time. \(\alpha_i\) only varies
+across individuals but not across time. We can think of \(\alpha_i\) as
+representing the effects of all the time invariant/stable variables that
+have NOT been included in the model. So, given that we have 6 time
+periods for each county then the six records for county 1 would all have
+the same value for \(\alpha_1\), the six records for county 2 would all
+have the same value for \(\alpha_2\), etc. But, \(\epsilon_{it}\) is
+free to be different for every case at every time period. \\
+A fixed effect regression allows us to account for \(\alpha_i\) through
+a technique called \textbf{demeaning} \\
+\textgreater{}\textbf{Demeaning}: After demeaning, all variables for all
+cases have a mean of 0. That means that all the between-subject
+variability has been eliminated. All that is left is the within-subject
+variability. So, with a fixed effects model, we are analyzing what
+causes individual's values to change across time. Variables whose values
+do not change (like race or gender) cannot cause changes across time
+(unless their effects change across time as well). However, whatever
+effect they have at one time is the same effect that they have at other
+times, so the effects of such stable characteristics are controlled. \\
+In essence, you can picture this as allowing you to draw a separate
+regression line through each set of observations from the same group in
+your data (in this case, one county over time); however, while the
+\emph{intercept} of these lines can vary (their absolute position), they
+will all have the same \emph{slope} and will therefore be parallel. This
+is important, as we want to find one slope-- one common effect of x--
+that fits \emph{all} groups. \\
+::: \{.cell\} ``` \{.python .cell-code\} from linearmodels import
+PanelOLS from linearmodels import RandomEffects import
+statsmodels.formula.api as smf from linearmodels.panel import compare \\
+df\_c=df\_c.set\_index({[}`county\_fips',`year'{]}) \# set the index to
+the county fips code and the year panel =
+PanelOLS.from\_formula(`r\_votes \textasciitilde{} 1 + population +
+unemployment + EntityEffects',df\_c).fit() \# run a fixed effects model
+print(compare(\{`Fixed Effects': panel,\}, stars=True)) \# print the
+model formatted as a regression table ``` \\
+::: \{.cell-output .cell-output-stdout\} ``` Model Comparison
+====================================== Fixed Effects \\
+\bottomrule()
+\end{longtable}
+
+Dep. Variable r\_votes Estimator PanelOLS No.~Observations 18684 Cov.
+Est. Unadjusted R-squared 0.0227 R-Squared (Within) 0.0227 R-Squared
+(Between) -0.1949 R-Squared (Overall) -0.1627 F-statistic 180.40 P-value
+(F-stat) 0.0000 ===================== ============ Intercept
+61.986\textbf{\emph{ (246.29) population -0.0698}} (-17.332)
+unemployment 0.2829*** (9.6749) ======================= ==============
+Effects Entity --------------------------------------
+
+T-stats reported in parentheses
+
+\begin{verbatim}
+:::
+:::
+
+
+When accounting for time-invariant differences between counties, the effect of population remains negative. This suggests that counties in which the population is *decreasing* tend to experience an increase in republican voteshare. More specifically, for every 1000 people that leave a county, republican voteshare increases by 0.06%. 
+
+The really interesting part of this regression table, however, is the coefficient on the unemployment variable, which is now positive. This suggests that-- once we account for the differences between counties-- an increase in the unemployment rate *within* a county is *positively* associated with republican voteshare. Indeed, a 1% increase in the unemployment rate leads to a 0.28% increase in republican voteshare. 
+
+This regression output even gives us three separate $R^2$ values-- one for between-variation, another for within, and one overall. 
+
+---------------------------
+## 2. Difference in Difference
+
+One of the reasons that we observe a signficant relationship between unemployment and voting behaviour is that the Republican and Democratic parties have opposing views on what to do about unemployment. Democratic lawmakers have historically been in favour of increasing the minimum wage to benefit low-income workers, while Republicans have generally opposed this on the basis that it would hurt these very workers by increase unemployment. Indeed, classical economic theory holds that an increase in wages would lead to a reduction in employment; A business that makes $100k in revenue per year and spends all of it on employing 20 people can't suddenly start paying their workers double their salaries-- unless it fires half of its workers. This is obviously a simplified model though-- minimum wage laws typically don't double wages, and businesses don't operate at-cost, they turn a profit which they could use to pay their workers more. In the rest of this workshop, we're going to be investigating this question empirically: 
+
+### Do minimum wage laws increase unemployment?
+
+Note that this is a *causal* question; i'm not asking if they're correlated-- i'm asking if one causes the other. The burden of proof here is much higher than observing correlations, and we have to think seriously about **endogeneity**. In partiuclar, we need to account for the influence of omitted variables (e.g. a recession, or the economic composition of a state), the potential for reverse causality (states implementing minimum wage laws in response to unemployment crises), and selection bias.
+
+In a lab, you can conduct causal inference by running an experiment. You can randomly select individuals, split them into a control group and a treatment group, measure their values in an outcome variable prior to a treatment, administer a treatment, and measure their respective values after the treatment. If you observe a change in the outcome variable in the treatment group after having administered the treatment, you can interpert that as the causal effect of treatment. This is because we're able to make a plausible argument that the **control group can act as a counterfactual (a stand-in) for the treatment group in the absence of treatment**. Both groups had the same values before the treatment, then the only thing that changed between them was the treatment, so if we observe a change in the outcome variable, it must be due to treatment.
+
+In the real world, we rarely get to run expermients of this kind. Instead, we have to hunt for **natural experiments**: situations in which there is a **treatment** which we're interested in measuring the effect of, and two groups that can plausibly act as a treatment and control group. 
+
+> **[Difference in Difference](https://www.publichealth.columbia.edu/research/population-health-methods/difference-difference-estimation#:~:text=DID%20relies%20on%20a%20less,individual%20level%20is%20not%20possible.)** is a quasi-experimental design that makes use of longitudinal data from treatment and control groups to obtain an appropriate counterfactual to estimate a causal effect. DID is typically used to estimate the effect of a specific intervention or treatment (such as a passage of law, enactment of policy, or large-scale program implementation) by comparing the changes in outcomes over time between a population that is enrolled in a program (the intervention group) and a population that is not (the control group).
+
+The Difference in Difference model can be estimated as a simple regression model of the following form: 
+
+$$\huge Y_{it} = \beta_0 + \beta_1 Treatment_i + \beta_2 Post_t + \beta_3 (Treatment_i \times Post_t) + \varepsilon_{it}$$
+
+- $Treatment_i$ is 0 for the control group and 1 for the treatment group
+- $Post_t$ is 0 for before and 1 for after
+
+we can insert the values of $Treatment$ and $Post$ using the table below and see that coefficient ($\beta_3$) of the interaction of $Treatment$ and $Post$ is the Difference in Differences (DID) estimator:
+
+|              | Control Group  | Treatment Group                    |    Difference              |
+|--------------|---------------------|-----------------------------------------|-----------------|
+| Before  | $\beta_0$           | $\beta_0 + \beta_1$                     | $\beta_1$                |
+| After   | $\beta_0 + \beta_2$ | $\beta_0 + \beta_1 + \beta_2 + \beta_3$ | $\beta_1 + \beta_3$                |
+| Difference   | $\beta_2$           | $\beta_2 + \beta_3$                     | **$\beta_3$** (DID) |
+
+
+[Card and Krueger (1994)](https://davidcard.berkeley.edu/papers/njmin-aer.pdf) found one such natural experiment, allowing them to estimate the causal effect of an increase in the state minimum wage on unemployment using a DiD model; In 1992, New Jersey raised the state minimum wage from \$4.25 to \$5.05 while the minimum wage in neighbouring Pennsylvania stayed the same at \$4.25. 
+   
+* Treatmeng Group: New Jersey 
+* Control Group: Pennsylvania
+* Pre-Treatment Period: before 1992
+* Post-Treatment Period: after 1992
+
+They conducted a survey of 384 fast-food restaurants across both states, right before and right after the law came into effect in New Jersey, asking them how many people they employed. They ran a Difference-in-Differences model, and found that the coefficient $\beta_3$ was positive but not statistically significant. In other words, the average total employees per restaurant *increased* after the minimum wage increased, but this could have been due to random chance. 
+
+That was a long time ago. Things have changed since then, including the fact that we have access to a lot more data and computational power. Let's see if we can replicate Card and Krueger's results with more recent data. I've downloaded data on unemployment, minimum wage levels, and Gross Domestic Product at the state level going back to 1976. Let's have a look at minimum wages in New Jersey and Pennsylvania over time:
+
+::: {.cell}
+``` {.python .cell-code}
+df_s=pd.read_csv('data/wk10/state_data.csv', parse_dates=['date']) # read in the state-level data
+did=df_s[df_s['state'].isin(['pennsylvania', 'new jersey'])] # subset the data to only include pennsylvania and new jersey
+
+px.line(did, x='date', y='minwage', color='state', title="Minimum Wages in New Jersey and Pennsylvania") # plot the minimum wage over time
+\end{verbatim}
+
+\begin{verbatim}
+Unable to display output for mime type(s): application/vnd.plotly.v1+json
+\end{verbatim}
+
+:::
+
+The plot above sort of looks like a set of descending staircases; this
+is for two reasons. The plateaus exist because each row in the dataframe
+\texttt{df\_s} is the value of a state in a given \emph{month}, but we
+only have minimum wage data for every \emph{year}. So we get 12
+consecutive values of minimum wage every year. The reason that the
+staircases are descending is because these minimum wages are adjusted
+for inflation. No matter where you're from, you've probably heard a
+grandparent say something along the lines of ``My parents would send me
+to the shops with 25 cents to buy groceries for the week'', but now it
+costs £9 for a bag of chips. That's inflation-- every year things tend
+to get slightly more expensive, so if the same \emph{absolute} minimum
+wage actually diminishes in ``real'' terms, which is what the variable
+\texttt{minwage} measures. Incidentally, this is one of the main reasons
+University staff have been on
+\href{https://www.ucu.org.uk/article/11830/University-staff-pay-cut-by-20-new-figures-show}{strike}.
+Anyway. Back to minimum wages.
+
+This plot shows that for the past fifty years, New Jersey and
+Pennsylvania have had largely similar minimum wage policies. There have
+been a couple moments of divergence, including in the 1990s when the
+Card and Krueger study was conducted. However, the biggest divergence
+actually started taking place in 2014 when New Jersey seems to have
+begun taking a wildly different approach. While Pennsylvania has had the
+same minimum wage since 2008 (and therefore seen a decline in
+inflation-adjusted wages), New Jersey has raised the minimum wage
+significantly twice. In 2020, New Jersey's minimum wage was around 50\%
+higher than Pennsylvania's. We can exploit the fact that these two
+states have historically had similar minimum wage laws but have recently
+experienced a big divergence to see if that change in minimum wages has
+resulted in a change in employment levels.
+
+Our Difference-in-Differences setup is as follows:
+
+\[\large Unemployment_{state, year} = \beta_0 + \beta_1 Treatment_{state} + \beta_2 Post_{year} + \beta_3 (Treatment_{state} \times Post_{year}) + \beta_4 GDP_{state,year} + \varepsilon_{it}\]
+
+\begin{itemize}
+\tightlist
+\item
+  New Jersey is the \textbf{treatment group}
+\item
+  Pennsylvania is the \textbf{control group}
+\item
+  Years before 2014 is the \textbf{pre-treatment period}
+\item
+  Years after 2014 is the \textbf{post-treatment period}
+\end{itemize}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ pysal.viz.mapclassify }\ImportTok{import}\NormalTok{ Quantiles}
+\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a variable that is 1 if the date is after the minimum wage increase and 0 otherwise}
+\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a variable that is 1 if the state is new jersey (i.e., the treatment group) and 0 for pennsylvania (the control group)}
+\NormalTok{did[}\StringTok{\textquotesingle{}post\_treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{*}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{] }\CommentTok{\# create a variable that is 1 if the date is after the minimum wage increase and the state is new jersey and 0 otherwise}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{thems-the-breaks}{%
-\section{Them's the breaks}\label{thems-the-breaks}}
+Before we proceed with the analysis, though, we need to satisfy two
+assumptions that will allow us to argue that Pennsylvania can act as a
+valid control group for New Jersey:
 
-There are various ways to split the data, the default of which is
-quantiles - to order the data and then split the N data values we have
-evenly into q chunks, each of which has N/q data points. Consider the
-median - this splits the dataset into two chunks of size N/2; quartiles
-split the data into four chunks of size N/4; \emph{quantiles} split the
-data into q chunks with N/q points. We will specify 5 chunks using the
-k=5 argument.
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  No simultaneous treatments:
 
-(The documentation is here, if you're interested in finding out more:
-https://github.com/pysal/pysal/blob/master/pysal/contrib/viz/mapping.py)
+  \begin{itemize}
+  \tightlist
+  \item
+    If, for example, New Jersey suddenly entered a massive recession in
+    2014 as well, we couldn't really argue that resulting effects on
+    employment are due solely to the minimum wage law. To account for
+    this, we'll be including state-level GDP as an additional
+    independent variable in our DiD model.
+  \end{itemize}
+\item
+  Parallel Trends:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Both states have to have been experiencing similar trends in the
+    \textbf{dependent variable} (unemployment) prior to the treatment
+    (minimum wage law). If they were trending in opposite directions for
+    unobserved reasons, ensuing differences in unemployment may be due
+    to those unobserved reasons rather than the treatment.
+  \item
+    We can check this by plotting the dependent variable for both groups
+    over time, and indicating the timing of the treatment.
+  \end{itemize}
+\end{enumerate}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{breaks }\OperatorTok{=}\NormalTok{ Quantiles(geopeople[}\StringTok{\textquotesingle{}density\textquotesingle{}}\NormalTok{].values, k}\OperatorTok{=}\DecValTok{5}\NormalTok{)}
-\BuiltInTok{print}\NormalTok{(breaks)}
+\NormalTok{did}\OperatorTok{=}\NormalTok{did[(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2008{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}=}\StringTok{\textquotesingle{}2020{-}01{-}01\textquotesingle{}}\NormalTok{)]}
+
+\NormalTok{sns.lineplot(data}\OperatorTok{=}\NormalTok{did,x}\OperatorTok{=}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{,y}\OperatorTok{=}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{,hue}\OperatorTok{=}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.axvline(pd.to\_datetime(}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{),color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{,linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}NJ Minimum Wage Increase\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Unemployment in Pennsylvania and New Jersey\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.legend()}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+<matplotlib.legend.Legend at 0x171b8cfd0>
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Causal Inference_files/figure-pdf/cell-14-output-2.png}
+
+}
+
+\end{figure}
+
+This plot shows a big spike in unemployment occurring for both
+Pennsylvania and New Jersey as a result of the 2008 financial crisis.
+New jersey had a higher unemployment rate than Pennsylvania, but their
+trends are largely parallel and decreasing after 2012. In the years
+following the minimum wage law, New Jersey's unemployment rate actually
+dips below Pennsylvania's for the first time in years. Let's look at
+this in the form of boxplots:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\BuiltInTok{print}\NormalTok{(breaks.bins)}
+\NormalTok{did[}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{str}\NormalTok{)}\OperatorTok{+}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{str}\NormalTok{) }\CommentTok{\# this variable is just for the plot below}
+\NormalTok{sns.boxplot(x}\OperatorTok{=}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{, hue}\OperatorTok{=}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{, data}\OperatorTok{=}\NormalTok{did).set\_xticklabels([}\StringTok{"Pre x Treatment"}\NormalTok{, }\StringTok{"Pre x Control"}\NormalTok{,}\StringTok{\textquotesingle{}Post x Treatment\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Post x Control\textquotesingle{}}\NormalTok{]) }
+\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Unemployment Rates by Treatment and Post Treatment\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.show()}
 \end{Highlighting}
 \end{Shaded}
 
-We'll create a set of labels; again, this is a bit beyond what we've
-done before so don't worry if it appears a bit mysterious.
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Causal Inference_files/figure-pdf/cell-15-output-1.png}
+
+}
+
+\end{figure}
+
+This plot is fascinating in and of itself. The two box plots on the left
+show the unemployment values of the counties prior to the minimum wage
+law in 2014, while the two on the right show their values after the
+minimum wage increases. Pennsylvania (the ``control'' group) is colored
+in blue, and New Jersey (the ``treatment'' group) is colored orange.
+Prior to the minimum wage increase in 2014, Pennsylvania (blue) has a
+lower unemployment rate than New Jersey (orange). In the years following
+New Jersey's passage of the minimum wage law, New Jersey actually has a
+\emph{lower} unemployment rate than Pennsylvania! This is the only
+boxplot where the ``treatment'' (a minimum wage law) is being applied,
+and it has the lowest unemployment rate.
+
+Let's see if this difference is statistically signfiicant, and calculate
+a treatment effect:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{bar\_labels }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}\textless{}=}\SpecialCharTok{\%i}\StringTok{\textquotesingle{}}\OperatorTok{\%}\NormalTok{ b }\ControlFlowTok{for}\NormalTok{ b }\KeywordTok{in}\NormalTok{ breaks.bins]}
-\BuiltInTok{print}\NormalTok{(bar\_labels)}
+\NormalTok{did\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{} gdp+ post + treatment + post\_treatment\textquotesingle{}}\NormalTok{, did).fit()}
+\BuiltInTok{print}\NormalTok{(did\_model.summary())}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:           unemployment   R-squared:                       0.704
+Model:                            OLS   Adj. R-squared:                  0.699
+Method:                 Least Squares   F-statistic:                     169.1
+Date:                Fri, 16 Dec 2022   Prob (F-statistic):           5.70e-74
+Time:                        11:28:30   Log-Likelihood:                -420.68
+No. Observations:                 290   AIC:                             851.4
+Df Residuals:                     285   BIC:                             869.7
+Df Model:                           4                                         
+Covariance Type:            nonrobust                                         
+==================================================================================
+                     coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------
+Intercept         15.6515      1.277     12.254      0.000      13.137      18.166
+gdp            -1.343e-05   2.05e-06     -6.544      0.000   -1.75e-05   -9.39e-06
+post              -0.5845      0.307     -1.904      0.058      -1.189       0.020
+treatment         -0.3641      0.295     -1.234      0.218      -0.945       0.217
+post_treatment    -1.9532      0.258     -7.581      0.000      -2.460      -1.446
+==============================================================================
+Omnibus:                      111.434   Durbin-Watson:                   0.319
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              320.366
+Skew:                          -1.772   Prob(JB):                     2.71e-70
+Kurtosis:                       6.735   Cond. No.                     1.34e+07
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.34e+07. This might indicate that there are
+strong multicollinearity or other numerical problems.
+\end{verbatim}
+
+There are some really interesting results from this model-- let's
+interpret the coefficients one by one.
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{gdp}: GDP is inversely related to unemployment. This makes
+  sense: GDP basically measures the total amount of economic activity,
+  so more economic activity = more employment.
+\item
+  \texttt{post}: this coefficient is negative, but statistically
+  insignificant at the 0.05 level; it indicates that unemployment
+  \emph{generally} decreased for both groups, but that this could be due
+  to random chance.
+\item
+  \texttt{treatment}: again negative but insignficant, meaning that
+  there is no significant difference in unemployment levels between NJ
+  and PA over the entire period.
+\item
+  \texttt{post\_treatment}: this is our difference-in-differences
+  estimator, and reflects the causal effect of treatment. It is negative
+  and statistically significant. If we believe that the asusmptions of
+  our model are satisfied, we can claim that:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{The introduction of a minimum wage in New Jersey led to a
+    1.95\% decrease in unemployment relative to Pennsylvania}
+  \end{itemize}
+\end{itemize}
+
+This is a bold claim. We should do our best to back it up. Notice that
+i've sort of arbitrarily chosen a window of dates around the minimum
+wage law-- maybe this result is a fluke, due to the timespan ive chosen.
+
+To address this concern, I'll run the same model 10 times, starting with
+a really small time window-- just one year on either side of the law--
+and progressively expand it.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{projected\_geopeople.plot(column}\OperatorTok{=}\StringTok{\textquotesingle{}density\textquotesingle{}}\NormalTok{, cmap}\OperatorTok{=}\StringTok{\textquotesingle{}Greens\textquotesingle{}}\NormalTok{, scheme}\OperatorTok{=}\StringTok{\textquotesingle{}quantiles\textquotesingle{}}\NormalTok{, k}\OperatorTok{=}\DecValTok{5}\NormalTok{)}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}2011 population by Ward\textquotesingle{}}\NormalTok{)}
+\NormalTok{models}\OperatorTok{=}\NormalTok{[] }\CommentTok{\# create empty list to store the models}
+\NormalTok{names}\OperatorTok{=}\NormalTok{[] }\CommentTok{\# create empty list to store the names of the models}
 
-\NormalTok{cmap }\OperatorTok{=}\NormalTok{ plt.get\_cmap(}\StringTok{\textquotesingle{}Greens\textquotesingle{}}\NormalTok{)}
-\NormalTok{colorbar\_index(ncolors}\OperatorTok{=}\DecValTok{5}\NormalTok{, cmap}\OperatorTok{=}\NormalTok{cmap, shrink}\OperatorTok{=}\FloatTok{0.5}\NormalTok{, labels}\OperatorTok{=}\NormalTok{bar\_labels)}
+\ControlFlowTok{for}\NormalTok{ window }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{): }\CommentTok{\# loop through years from 2000 to 2020 in increments of 4}
+\NormalTok{    did}\OperatorTok{=}\NormalTok{df\_s[(df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\BuiltInTok{str}\NormalTok{(}\DecValTok{2014}\OperatorTok{{-}}\NormalTok{window)}\OperatorTok{+}\StringTok{\textquotesingle{}{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}=}\BuiltInTok{str}\NormalTok{(}\DecValTok{2014}\OperatorTok{+}\NormalTok{window)}\OperatorTok{+}\StringTok{\textquotesingle{}{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ df\_s[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}pennsylvania\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{])] }\CommentTok{\# subset the data within the window of interest around 2014}
+\NormalTok{    did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a dummy variable indicating the period after the minimum wage increase}
+\NormalTok{    did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a dummy variable for treatment}
+\NormalTok{    did[}\StringTok{\textquotesingle{}post\_treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{*}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{] }\CommentTok{\# create an interaction term between the post and treatment variables}
+\NormalTok{    did\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{} gdp+ post + treatment + post\_treatment\textquotesingle{}}\NormalTok{, did).fit() }\CommentTok{\# run the difference in difference model}
+
+\NormalTok{    models.append(did\_model) }\CommentTok{\# append the model to the list of models}
+\NormalTok{    names.append(}\StringTok{\textquotesingle{}± \textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(window)}\OperatorTok{+}\StringTok{\textquotesingle{} Year\textquotesingle{}}\NormalTok{) }\CommentTok{\# append the name of the model to the list of names}
+
+\NormalTok{table}\OperatorTok{=}\NormalTok{summary\_col( }\CommentTok{\# create a regression table }
+\NormalTok{    models, }\CommentTok{\# pass the models to the summary\_col function}
+\NormalTok{    stars}\OperatorTok{=}\VariableTok{True}\NormalTok{, }\CommentTok{\# add stars denoting the p{-}values of the coefficient to the table; * p\textless{}0.05, ** p\textless{}0.01, *** p\textless{}0.001}
+\NormalTok{    float\_format}\OperatorTok{=}\StringTok{\textquotesingle{}}\SpecialCharTok{\%0.3f}\StringTok{\textquotesingle{}}\NormalTok{, }\CommentTok{\# set the decimal places to 3}
+\NormalTok{    model\_names}\OperatorTok{=}\NormalTok{names, }\CommentTok{\# set the names of the model}
+\NormalTok{    info\_dict }\OperatorTok{=}\NormalTok{ \{}\StringTok{"N"}\NormalTok{:}\KeywordTok{lambda}\NormalTok{ x: }\StringTok{"}\SpecialCharTok{\{0:d\}}\StringTok{"}\NormalTok{.}\BuiltInTok{format}\NormalTok{(}\BuiltInTok{int}\NormalTok{(x.nobs))\}) }\CommentTok{\# add the number of observations to the table}
+
+\BuiltInTok{print}\NormalTok{(table) }\CommentTok{\# print the table}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{working-with-point-data-and-choropleths}{%
-\section{Working with Point Data and
-Choropleths}\label{working-with-point-data-and-choropleths}}
+\begin{verbatim}
 
-Let's now go back to our twitter data and plot it on the same
-axes\ldots{}
+=======================================================================================================
+               ± 1 Year  ± 2 Year  ± 3 Year  ± 4 Year  ± 5 Year  ± 6 Year  ± 7 Year  ± 8 Year  ± 9 Year
+-------------------------------------------------------------------------------------------------------
+Intercept      21.423** 33.130*** 24.228*** 22.751*** 19.711*** 15.651*** 2.327     -0.580    -2.340*  
+               (9.399)  (2.324)   (1.333)   (0.876)   (0.746)   (1.277)   (2.183)   (1.579)   (1.398)  
+gdp            -0.000   -0.000*** -0.000*** -0.000*** -0.000*** -0.000*** 0.000**   0.000***  0.000*** 
+               (0.000)  (0.000)   (0.000)   (0.000)   (0.000)   (0.000)   (0.000)   (0.000)   (0.000)  
+post           -0.619   0.100     -0.262    -0.256*   -0.483*** -0.585*   -2.277*** -2.792*** -3.205***
+               (0.411)  (0.194)   (0.162)   (0.140)   (0.154)   (0.307)   (0.576)   (0.501)   (0.479)  
+treatment      -1.604   -3.686*** -1.850*** -1.466*** -0.903*** -0.364    1.825***  2.139***  2.241*** 
+               (1.896)  (0.479)   (0.285)   (0.190)   (0.169)   (0.295)   (0.509)   (0.402)   (0.363)  
+post_treatment -0.837** -1.707*** -1.848*** -2.108*** -2.111*** -1.953*** -0.780*   -0.375    -0.030   
+               (0.323)  (0.158)   (0.134)   (0.115)   (0.130)   (0.258)   (0.469)   (0.426)   (0.409)  
+R-squared      0.856    0.934     0.938     0.952     0.933     0.704     0.194     0.167     0.165    
+R-squared Adj. 0.844    0.931     0.936     0.951     0.932     0.699     0.184     0.158     0.157    
+N              50       98        146       194       242       290       338       384       408      
+=======================================================================================================
+Standard errors in parentheses.
+* p<.1, ** p<.05, ***p<.01
+\end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{data\_path }\OperatorTok{=} \StringTok{"./data/wk9/tweet\_data.csv"}
+The row we're mainly interested in is the \texttt{post\_treatment}
+coefficient, the treatment effect. It remains significant and negative
+in all time periods smaller than 8 years, after which point it becomes
+insignificant;
 
-\NormalTok{tweets }\OperatorTok{=}\NormalTok{ pd.read\_csv(data\_path, parse\_dates }\OperatorTok{=}\NormalTok{ [}\DecValTok{1}\NormalTok{], infer\_datetime\_format }\OperatorTok{=} \VariableTok{True}\NormalTok{, encoding }\OperatorTok{=} \StringTok{\textquotesingle{}latin1\textquotesingle{}}\NormalTok{)}
-\NormalTok{tweets.head()}
-\end{Highlighting}
-\end{Shaded}
+How do you think this affects our conclusion?
 
-We will convert these points to a geometry object - previously, the
-geometry column stored data associated with the polygons for the wards -
-we'll build geometries representing points and then convert the
-dataframe to a geodataframe. Again, the code below is a bit opaque -
-it's a recipe for creating these geometries.
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\#\# Regression Discontinuity
+\end{minipage} \\
+\midrule()
+\endhead
+Intercept 7.7976 0.284 27.430 0.000 7.237 8.358 post -1.7190 0.376
+-4.571 0.000 -2.460 -0.978 treatment 0.6315 0.389 1.622 0.106 -0.136
+1.399 post\_treatment -1.3226 0.515 -2.569 0.011 -2.338 -0.307
+==============================================================================
+Omnibus: 7.076 Durbin-Watson: 0.833 Prob(Omnibus): 0.029 Jarque-Bera
+(JB): 6.876 Skew: 0.433 Prob(JB): 0.0321 Kurtosis: 3.187 Cond. No.~7.63
+============================================================================== \\
+Notes: \href{http://www.literateprogramming.com/lpquotes.html}{1}
+Standard Errors assume that the covariance matrix of the errors is
+correctly specified. ``` ::: ::: \\
+The treatment effect here (-1.32) is strikingly similar to the one
+estimated using state-level difference in differences (-1.95). It's
+slighly smaller, which may have to do with the fact that we're comparing
+more similar units, and thus reducing the variation caused by unobserved
+factors. This is a good thing. \\
+::: \{.cell\} \\
+::: \{.cell-output .cell-output-stdout\} ``` OLS Regression Results
+==============================================================================
+Dep. Variable: unemployment R-squared: 0.047 Model: OLS Adj. R-squared:
+0.038 Method: Least Squares F-statistic: 5.078 Date: Fri, 16 Dec 2022
+Prob (F-statistic): 0.0264 Time: 12:34:12 Log-Likelihood: -213.30
+No.~Observations: 105 AIC: 430.6 Df Residuals: 103 BIC: 435.9 Df Model:
+1 Covariance Type: nonrobust
+==================================================================================
+coef std err t P\textgreater\textbar t\textbar{} {[}0.025 0.975{]} \\
+\bottomrule()
+\end{longtable}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ shapely.geometry }\ImportTok{import}\NormalTok{ Point}
-\NormalTok{tweets[}\StringTok{\textquotesingle{}geometry\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ tweets.}\BuiltInTok{apply}\NormalTok{(}\KeywordTok{lambda}\NormalTok{ x: Point(x[}\StringTok{\textquotesingle{}Lon\textquotesingle{}}\NormalTok{], x[}\StringTok{\textquotesingle{}Lat\textquotesingle{}}\NormalTok{]), axis}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+Intercept 5.2054 0.249 20.910 0.000 4.712 5.699 C(state){[}T.42{]}
+0.8212 0.364 2.253 0.026 0.098 1.544
+==============================================================================
+Omnibus: 22.707 Durbin-Watson: 0.642 Prob(Omnibus): 0.000 Jarque-Bera
+(JB): 29.073 Skew: 1.166 Prob(JB): 4.86e-07 Kurtosis: 4.100 Cond.
+No.~2.55
+==============================================================================
 
-\hypertarget{project-points-into-the-same-basis}{%
-\section{Project points into the same
-basis}\label{project-points-into-the-same-basis}}
+Notes: \href{http://www.literateprogramming.com/lpquotes.html}{1}
+Standard Errors assume that the covariance matrix of the errors is
+correctly specified.
 
-In the next steps, we will 1) convert the dataframe to a geodataframe.
-2) sets the CRS (co-ordinate reference system, remember) to the original
-CRS that we got from the wards data, and 3) projects into the same
-projection (using mercator, as before)
+\begin{verbatim}
+:::
+:::
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{geotweets }\OperatorTok{=}\NormalTok{ gp.GeoDataFrame(tweets)}
-\NormalTok{geotweets.crs }\OperatorTok{=}\NormalTok{ original\_crs}
-\NormalTok{geotweets.to\_crs(crs}\OperatorTok{=}\NormalTok{target\_crs, inplace}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{geotweets.head()}
-\end{Highlighting}
-\end{Shaded}
+::: {.cell}
+``` {.python .cell-code}
+elections=pd.read_csv('data/wk10/countypres_2000-2020.csv')
+elections=elections[elections['party'].isin(['DEMOCRAT','REPUBLICAN'])]
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{geotweets.plot()}
-\end{Highlighting}
-\end{Shaded}
+missing=elections[elections['mode']!='TOTAL'].groupby(['county_fips', 'year', 'party'])[['candidatevotes','totalvotes']].agg({'candidatevotes':'sum','totalvotes':'mean'}).reset_index()
+elections=elections[elections['mode']=='TOTAL']
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ax }\OperatorTok{=}\NormalTok{ projected\_geopeople.plot(column}\OperatorTok{=}\StringTok{\textquotesingle{}density\textquotesingle{}}\NormalTok{, cmap}\OperatorTok{=}\StringTok{\textquotesingle{}Greens\textquotesingle{}}\NormalTok{, scheme}\OperatorTok{=}\StringTok{\textquotesingle{}quantiles\textquotesingle{}}\NormalTok{, k}\OperatorTok{=}\DecValTok{5}\NormalTok{)}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}2011 population by Ward\textquotesingle{}}\NormalTok{)}
+elections=pd.concat([elections,missing], ignore_index=True)
 
-\NormalTok{cmap }\OperatorTok{=}\NormalTok{ plt.get\_cmap(}\StringTok{\textquotesingle{}Greens\textquotesingle{}}\NormalTok{)}
-\NormalTok{colorbar\_index(ncolors}\OperatorTok{=}\DecValTok{5}\NormalTok{, cmap}\OperatorTok{=}\NormalTok{cmap, shrink}\OperatorTok{=}\FloatTok{0.5}\NormalTok{, labels}\OperatorTok{=}\NormalTok{bar\_labels)}
+elections = elections[~elections.index.duplicated()]
+elections['county_fips']=pd.to_numeric(elections['county_fips'], errors='coerce').dropna().astype(int).astype(str).str.zfill(5).astype(str)
+elections['voteshare']=(elections['candidatevotes']/elections['totalvotes'])*100
+elections=elections.pivot_table(index=['county_fips', 'year'], columns='party')['voteshare'].reset_index().rename(columns={'DEMOCRAT':'d_votes','REPUBLICAN':'r_votes'})
+elections.to_csv('data/wk10/elections.csv', index=False)
 
-\NormalTok{geotweets.plot(ax}\OperatorTok{=}\NormalTok{ax)}
-\end{Highlighting}
-\end{Shaded}
+unemp=pd.read_csv('data/wk10/unemployment.csv')
 
-\hypertarget{extension-5}{%
-\section{Extension:}\label{extension-5}}
+## create month of year variable datetime
+unemp['date']=pd.to_datetime({'year':unemp['year'],'month':unemp['month'],'day':1})
 
-We can make these points a bit bigger by using a `buffer' - this creates
-a geometry of circles rather than points:
+state_codes=pd.read_html('https://www.ssa.gov/international/coc-docs/states.html')[0].rename(columns={0:'state',1:'code'})
+state_codes['state']=state_codes['state'].str.lower()
+unemp['state']=unemp['state'].str.lower()
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{geotweets[}\StringTok{\textquotesingle{}points\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ geotweets[}\StringTok{\textquotesingle{}geometry\textquotesingle{}}\NormalTok{]}
-\NormalTok{geotweets[}\StringTok{\textquotesingle{}geometry\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ gp.GeoSeries(tweets[}\StringTok{\textquotesingle{}points\textquotesingle{}}\NormalTok{]).}\BuiltInTok{buffer}\NormalTok{(}\DecValTok{200}\NormalTok{)}
-\NormalTok{geotweets.head()}
-\end{Highlighting}
-\end{Shaded}
+df_s=pd.merge(unemp, state_codes, on='state', how='left')
+df_s=pd.merge(df_s, minw, on=['state', 'year'], how='left')
+df_s.to_csv('data/wk10/unemp_minwage.csv', index=False)
+\end{verbatim}
 
-And we'll add in a dummy variable we can use to make them all the same
-colour. Again, a bit clunky but means when we put them on a colormap
-(the object which converts a value to a color), it will give the same
-colour for each circle.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{geotweets[}\StringTok{\textquotesingle{}dummy\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\DecValTok{1}
-\end{Highlighting}
-\end{Shaded}
-
-Now we can plot this in the same projection, putting geopeople (which
-has the borough boundaries) on the same axes as the point twitter data.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ax }\OperatorTok{=}\NormalTok{ projected\_geopeople.plot(column}\OperatorTok{=}\StringTok{\textquotesingle{}density\textquotesingle{}}\NormalTok{, cmap}\OperatorTok{=}\StringTok{\textquotesingle{}Greens\textquotesingle{}}\NormalTok{, scheme}\OperatorTok{=}\StringTok{\textquotesingle{}quantiles\textquotesingle{}}\NormalTok{, k}\OperatorTok{=}\DecValTok{5}\NormalTok{)}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}2011 population by Ward\textquotesingle{}}\NormalTok{)}
-
-\NormalTok{cmap }\OperatorTok{=}\NormalTok{ plt.get\_cmap(}\StringTok{\textquotesingle{}Greens\textquotesingle{}}\NormalTok{)}
-\NormalTok{colorbar\_index(ncolors}\OperatorTok{=}\DecValTok{5}\NormalTok{, cmap}\OperatorTok{=}\NormalTok{cmap, shrink}\OperatorTok{=}\FloatTok{0.5}\NormalTok{, labels}\OperatorTok{=}\NormalTok{bar\_labels)}
-
-\NormalTok{geotweets.plot(column}\OperatorTok{=}\StringTok{\textquotesingle{}dummy\textquotesingle{}}\NormalTok{, cmap}\OperatorTok{=}\StringTok{\textquotesingle{}RdBu\textquotesingle{}}\NormalTok{, ax}\OperatorTok{=}\NormalTok{ax)}
-\end{Highlighting}
-\end{Shaded}
-
-This has been a bit fiddly, but we have a tweet map with a choropleth of
-underlying residential population densities. You could look at
-evening-time tweets only and then we're starting to get somewhere. But
-this is just an example, so you can now use this as a recipe for your
-own maps. Or\ldots{}
-
-\hypertarget{alternatives-to-python}{%
-\section{Alternatives to Python}\label{alternatives-to-python}}
-
-It's worth experimenting with alternatives if you intend to create more
-complex maps. For example, \textbf{Carto} is an option for producing
-choropleths. Here is a brief tutorial of how to map population density
-based on the csv we created (\emph{borough\_density.csv}) that has the
-unprojected borough polygons and their associated population densities.
-It's still sensible to do data linking and processing here in python, as
-it makes the final stages fairly straightforward - note that Carto works
-with latlon (unprojected) data rather than the projected/OSGB data.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ IPython.display }\ImportTok{import}\NormalTok{ YouTubeVideo}
-\NormalTok{YouTubeVideo(}\StringTok{"fofRRwZjiyg"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
+:::
 
 
 
