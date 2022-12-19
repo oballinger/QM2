@@ -139,6 +139,7 @@ ga('send', {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
@@ -311,7 +312,7 @@ ga('send', {
 <li>Regression Discontinuity</li>
 </ol>
 <p>Our focus area will be the United States, where we’ll be looking at the relationship between electoral outcomes, unemployment, and the minimum wage. We’ll also be bringing back material from previous weeks (particularly Week 3 - Spatial Data and Week 5 - Merging and Joining) to show how the different things we’ve learned fit together. First, as always, we must import the libraries we’ll need for this project.</p>
-<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-12T14:51:36.716574Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-12T14:51:36.716022Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-12T14:51:36.721783Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-12T14:51:36.720896Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2022-12-12T14:51:36.716532Z&quot;}" data-trusted="true">
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-12T14:51:36.716574Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-12T14:51:36.716022Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-12T14:51:36.721783Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-12T14:51:36.720896Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2022-12-12T14:51:36.716532Z&quot;}" data-trusted="true" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!pip install linearmodels</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -330,31 +331,28 @@ ga('send', {
 </div>
 <p>This workshop is going to involve combining a number of different datasets:</p>
 <ul>
-<li><p><code>did.csv</code>: survey data on restaurant workers in Pennsylvania and New Jersey in 1992 collected by <a href="https://davidcard.berkeley.edu/papers/njmin-aer.pdf">Card and Krueger (1994)</a> to measure to the impact of a minimum wage increase on employment.</p></li>
-<li><p><code>unemployment.csv</code>: Monthly state-level unemployment data from the <a href="www.bls.gov">Bureau of Labor Statistics (BLS)</a> spanning 1976-2022</p></li>
-<li><p><code>elections.csv</code>: county-level U.S. Presidential election results spanning 2000-2020 from the <a href="https://electionlab.mit.edu/data">MIT Election Lab</a></p></li>
-<li><p><code>minwage.csv</code>: state-level minimum wage data from <a href="https://www.kaggle.com/datasets/lislejoem/us-minimum-wage-by-state-from-1968-to-2017">Kaggle</a> spanning 1968-2020</p></li>
+<li><p><code>state_data.csv</code>: Monthly state-level unemployment data from the <a href="www.bls.gov">Bureau of Labor Statistics (BLS)</a> spanning 1976-2022, and state-level minimum wage data from <a href="https://www.kaggle.com/datasets/lislejoem/us-minimum-wage-by-state-from-1968-to-2017">Kaggle</a> spanning 1968-2020.</p></li>
+<li><p><code>elections.csv</code>: county-level U.S. Presidential election results spanning 2000-2020 from the <a href="https://electionlab.mit.edu/data">MIT Election Lab</a>.</p></li>
+<li><p><code>geojson-counties-fips.json</code>: a county-level geospatial file used for making maps.</p></li>
 </ul>
-<div class="cell">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data<span class="op">/</span>wk10</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>storage.googleapis.com<span class="op">/</span>qm2<span class="op">/</span>wk10<span class="op">/</span>state_data.csv <span class="op">-</span>o data<span class="op">/</span>wk10<span class="op">/</span>state_data.csv</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>storage.googleapis.com<span class="op">/</span>qm2<span class="op">/</span>wk10<span class="op">/</span>elections.csv <span class="op">-</span>o data<span class="op">/</span>wk10<span class="op">/</span>elections.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>storage.googleapis.com<span class="op">/</span>qm2<span class="op">/</span>wk10<span class="op">/</span>elections.csv <span class="op">-</span>o data<span class="op">/</span>wk10<span class="op">/</span>elections.csv</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>storage.googleapis.com<span class="op">/</span>qm2<span class="op">/</span>wk10<span class="op">/</span>geojson<span class="op">-</span>counties<span class="op">-</span>fips.json <span class="op">-</span>o data<span class="op">/</span>wk10<span class="op">/</span>geojson<span class="op">-</span>counties<span class="op">-</span>fips.json</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>mkdir: data: File exists
 mkdir: data/wk10: File exists
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  4626  100  4626    0     0   8979      0 --:--:-- --:--:-- --:--:--  9070
+100 2424k  100 2424k    0     0  4878k      0 --:--:-- --:--:-- --:--:-- 4917k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 1160k  100 1160k    0     0  2486k      0 --:--:-- --:--:-- --:--:-- 2501k
+100  875k  100  875k    0     0  2506k      0 --:--:-- --:--:-- --:--:-- 2529k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   184  100   184    0     0   1240      0 --:--:-- --:--:-- --:--:--  1277
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   184  100   184    0     0   1265      0 --:--:-- --:--:-- --:--:--  1304</code></pre>
+100 3141k  100 3141k    0     0  6498k      0 --:--:-- --:--:-- --:--:-- 6558k</code></pre>
 </div>
 </div>
 <table class="table">
@@ -389,10 +387,10 @@ mkdir: data/wk10: File exists
 <td style="text-align: left;">Below, i’ve isolated West Virginia, one of the states with the highest unemployment rates in America. Instead of drawing a new regression line every year, i’ve drawn a new regression line for each county over the six elections.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">::: {.cell}</td>
+<td style="text-align: left;">::: {.cell execution_count=11}</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">::: {.cell-output .cell-output-display execution_count=30}</td>
+<td style="text-align: left;">::: {.cell-output .cell-output-display execution_count=11}</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">::: {.cell-output .cell-output-display} <img src="W10. Causal Inference_files/figure-html/cell-10-output-2.png" class="img-fluid"> ::: :::</td>
@@ -428,7 +426,7 @@ mkdir: data/wk10: File exists
 <td style="text-align: left;">In essence, you can picture this as allowing you to draw a separate regression line through each set of observations from the same group in your data (in this case, one county over time); however, while the <em>intercept</em> of these lines can vary (their absolute position), they will all have the same <em>slope</em> and will therefore be parallel. This is important, as we want to find one slope– one common effect of x– that fits <em>all</em> groups.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">::: {.cell} ``` {.python .cell-code} from linearmodels import PanelOLS from linearmodels import RandomEffects import statsmodels.formula.api as smf from linearmodels.panel import compare</td>
+<td style="text-align: left;">::: {.cell execution_count=12} ``` {.python .cell-code} from linearmodels import PanelOLS from linearmodels import RandomEffects import statsmodels.formula.api as smf from linearmodels.panel import compare</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">df_c=df_c.set_index([‘county_fips’,‘year’]) # set the index to the county fips code and the year panel = PanelOLS.from_formula(‘r_votes ~ 1 + population + unemployment + EntityEffects’,df_c).fit() # run a fixed effects model print(compare({‘Fixed Effects’: panel,}, stars=True)) # print the model formatted as a regression table ```</td>
@@ -492,7 +490,7 @@ They conducted a survey of 384 fast-food restaurants across both states, right b
 
 That was a long time ago. Things have changed since then, including the fact that we have access to a lot more data and computational power. Let's see if we can replicate Card and Krueger's results with more recent data. I've downloaded data on unemployment, minimum wage levels, and Gross Domestic Product at the state level going back to 1976. Let's have a look at minimum wages in New Jersey and Pennsylvania over time:
 
-::: {.cell}
+::: {.cell execution_count=13}
 ``` {.python .cell-code}
 df_s=pd.read_csv('data/wk10/state_data.csv', parse_dates=['date']) # read in the state-level data
 did=df_s[df_s['state'].isin(['pennsylvania', 'new jersey'])] # subset the data to only include pennsylvania and new jersey
@@ -512,7 +510,7 @@ px.line(did, x='date', y='minwage', color='state', title="Minimum Wages in New J
 <li>Years before 2014 is the <strong>pre-treatment period</strong></li>
 <li>Years after 2014 is the <strong>post-treatment period</strong></li>
 </ul>
-<div class="cell">
+<div class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>did[<span class="st">'post'</span>]<span class="op">=</span>np.where(did[<span class="st">'date'</span>]<span class="op">&gt;=</span><span class="st">'2014-01-01'</span>,<span class="dv">1</span>,<span class="dv">0</span>) <span class="co"># create a variable that is 1 if the date is after the minimum wage increase and 0 otherwise</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>did[<span class="st">'treatment'</span>]<span class="op">=</span>np.where(did[<span class="st">'state'</span>]<span class="op">==</span><span class="st">'new jersey'</span>,<span class="dv">1</span>,<span class="dv">0</span>) <span class="co"># create a variable that is 1 if the state is new jersey (i.e., the treatment group) and 0 for pennsylvania (the control group)</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>did[<span class="st">'post_treatment'</span>]<span class="op">=</span>did[<span class="st">'post'</span>]<span class="op">*</span>did[<span class="st">'treatment'</span>] <span class="co"># create a variable that is 1 if the date is after the minimum wage increase and the state is new jersey and 0 otherwise</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -529,22 +527,22 @@ px.line(did, x='date', y='minwage', color='state', title="Minimum Wages in New J
 <li>We can check this by plotting the dependent variable for both groups over time, and indicating the timing of the treatment.</li>
 </ul></li>
 </ol>
-<div class="cell">
+<div class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>did<span class="op">=</span>did[(did[<span class="st">'date'</span>]<span class="op">&gt;=</span><span class="st">'2008-01-01'</span>) <span class="op">&amp;</span> (did[<span class="st">'date'</span>]<span class="op">&lt;=</span><span class="st">'2020-01-01'</span>)]</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>did,x<span class="op">=</span><span class="st">'date'</span>,y<span class="op">=</span><span class="st">'unemployment'</span>,hue<span class="op">=</span><span class="st">'state'</span>)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>plt.axvline(pd.to_datetime(<span class="st">'2014-01-01'</span>),color<span class="op">=</span><span class="st">'black'</span>,linestyle<span class="op">=</span><span class="st">'dashed'</span>, label<span class="op">=</span><span class="st">'NJ Minimum Wage Increase'</span>)</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Unemployment in Pennsylvania and New Jersey'</span>)</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="245">
-<pre><code>&lt;matplotlib.legend.Legend at 0x171b8cfd0&gt;</code></pre>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>&lt;matplotlib.legend.Legend at 0x174874b20&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="W10. Causal Inference_files/figure-html/cell-14-output-2.png" class="img-fluid"></p>
 </div>
 </div>
 <p>This plot shows a big spike in unemployment occurring for both Pennsylvania and New Jersey as a result of the 2008 financial crisis. New jersey had a higher unemployment rate than Pennsylvania, but their trends are largely parallel and decreasing after 2012. In the years following the minimum wage law, New Jersey’s unemployment rate actually dips below Pennsylvania’s for the first time in years. Let’s look at this in the form of boxplots:</p>
-<div class="cell">
+<div class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>did[<span class="st">'category'</span>]<span class="op">=</span>did[<span class="st">'treatment'</span>].astype(<span class="bu">str</span>)<span class="op">+</span>did[<span class="st">'post'</span>].astype(<span class="bu">str</span>) <span class="co"># this variable is just for the plot below</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span><span class="st">'category'</span>, y<span class="op">=</span><span class="st">'unemployment'</span>, hue<span class="op">=</span><span class="st">'treatment'</span>, data<span class="op">=</span>did).set_xticklabels([<span class="st">"Pre x Treatment"</span>, <span class="st">"Pre x Control"</span>,<span class="st">'Post x Treatment'</span>,<span class="st">'Post x Control'</span>]) </span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">''</span>)</span>
@@ -556,7 +554,7 @@ px.line(did, x='date', y='minwage', color='state', title="Minimum Wages in New J
 </div>
 <p>This plot is fascinating in and of itself. The two box plots on the left show the unemployment values of the counties prior to the minimum wage law in 2014, while the two on the right show their values after the minimum wage increases. Pennsylvania (the “control” group) is colored in blue, and New Jersey (the “treatment” group) is colored orange. Prior to the minimum wage increase in 2014, Pennsylvania (blue) has a lower unemployment rate than New Jersey (orange). In the years following New Jersey’s passage of the minimum wage law, New Jersey actually has a <em>lower</em> unemployment rate than Pennsylvania! This is the only boxplot where the “treatment” (a minimum wage law) is being applied, and it has the lowest unemployment rate.</p>
 <p>Let’s see if this difference is statistically signfiicant, and calculate a treatment effect:</p>
-<div class="cell">
+<div class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>did_model <span class="op">=</span> ols(<span class="st">'unemployment ~ gdp+ post + treatment + post_treatment'</span>, did).fit()</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(did_model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -565,8 +563,8 @@ px.line(did, x='date', y='minwage', color='state', title="Minimum Wages in New J
 Dep. Variable:           unemployment   R-squared:                       0.704
 Model:                            OLS   Adj. R-squared:                  0.699
 Method:                 Least Squares   F-statistic:                     169.1
-Date:                Fri, 16 Dec 2022   Prob (F-statistic):           5.70e-74
-Time:                        11:28:30   Log-Likelihood:                -420.68
+Date:                Mon, 19 Dec 2022   Prob (F-statistic):           5.70e-74
+Time:                        09:20:32   Log-Likelihood:                -420.68
 No. Observations:                 290   AIC:                             851.4
 Df Residuals:                     285   BIC:                             869.7
 Df Model:                           4                                         
@@ -604,7 +602,7 @@ strong multicollinearity or other numerical problems.</code></pre>
 </ul>
 <p>This is a bold claim. We should do our best to back it up. Notice that i’ve sort of arbitrarily chosen a window of dates around the minimum wage law– maybe this result is a fluke, due to the timespan ive chosen.</p>
 <p>To address this concern, I’ll run the same model 10 times, starting with a really small time window– just one year on either side of the law– and progressively expand it.</p>
-<div class="cell">
+<div class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>models<span class="op">=</span>[] <span class="co"># create empty list to store the models</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>names<span class="op">=</span>[] <span class="co"># create empty list to store the names of the models</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -652,67 +650,95 @@ Standard errors in parentheses.
 <p>The row we’re mainly interested in is the <code>post_treatment</code> coefficient, the treatment effect. It remains significant and negative in all time periods smaller than 8 years, after which point it becomes insignificant;</p>
 <p>How do you think this affects our conclusion?</p>
 <table class="table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">## Regression Discontinuity</th>
-</tr>
-</thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Intercept 7.7976 0.284 27.430 0.000 7.237 8.358 post -1.7190 0.376 -4.571 0.000 -2.460 -0.978 treatment 0.6315 0.389 1.622 0.106 -0.136 1.399 post_treatment -1.3226 0.515 -2.569 0.011 -2.338 -0.307 ============================================================================== Omnibus: 7.076 Durbin-Watson: 0.833 Prob(Omnibus): 0.029 Jarque-Bera (JB): 6.876 Skew: 0.433 Prob(JB): 0.0321 Kurtosis: 3.187 Cond. No.&nbsp;7.63 ==============================================================================</td>
+<td>## Regression Discontinuity</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Notes: [1] Standard Errors assume that the covariance matrix of the errors is correctly specified. ``` ::: :::</td>
+<td>Our difference in difference model made causal claims by treating PA as a control group for NJ on the basis that they had similar trends in unemployment before the minimum wage law, and diverging trends after, and no other shock coincided with this policy. We could still poke some holes in that– NJ seems to have fared worse than PA after the 2008 crisis; maybe more people work in finance in NJ. Indeed, Jersey City is across the water from Manhattan, America’s financial centre. Bankers would be hard hit by a financial crisis, but are probably not that affected by minimum wage laws. Conversely, Pennsylvania is the 3rd largest coal-producing state in the U.S.– coal miners are probably less affected by financial crises, but more likely to be earning minimum wage. As such, increasing the minimum wage in a place where most people are bankers probably has less of an effect on unemployment compared to an area where everyone is a coal miner.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">The treatment effect here (-1.32) is strikingly similar to the one estimated using state-level difference in differences (-1.95). It’s slighly smaller, which may have to do with the fact that we’re comparing more similar units, and thus reducing the variation caused by unobserved factors. This is a good thing.</td>
+<td>Running a state-level analysis is subject to this sort of selection bias, since by looking at state averages we’re effectively comparing places like Jersey City to places like <a href="https://en.wikipedia.org/wiki/Centralia,_Pennsylvania">Centralia</a>, a coal-mining town in central Pennsylvania which saw its population decline from 1000 in 1980 to just five residents in 2020. So the next step in our analysis might be to try to compare apples to apples. There are a number of ways of doing this– we could look at the unemployment rate by industry, for example. But what if we didn’t want to rely on pre-trends, or if we didn’t even have data prior to the treatment? This is often the case</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">::: {.cell}</td>
+<td>To build a more valid counterfactual, we can drill even deeper to find even more similar comparison groups using a <strong>Regression Discontinuity Design (RDD)</strong> using county (rather than state) level data.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">::: {.cell-output .cell-output-stdout} ``` OLS Regression Results ============================================================================== Dep. Variable: unemployment R-squared: 0.047 Model: OLS Adj. R-squared: 0.038 Method: Least Squares F-statistic: 5.078 Date: Fri, 16 Dec 2022 Prob (F-statistic): 0.0264 Time: 12:34:12 Log-Likelihood: -213.30 No.&nbsp;Observations: 105 AIC: 430.6 Df Residuals: 103 BIC: 435.9 Df Model: 1 Covariance Type: nonrobust ================================================================================== coef std err t P&gt;|t| [0.025 0.975]</td>
+<td>&gt; <strong><a href="https://www.princeton.edu/~davidlee/wp/RDDEconomics.pdf">Regression Discontinuity Designs</a></strong> are a method of estimating treatment effects in a nonexperimental setting where treatment is determined by whether an observed “assignment” variable exceeds a known cutoff point. If the cutoff is exogenous to the treatment, observations in the vicinity of this cutoff are likely to be very similar, and assignment to the treatment or control group can be considered as good as random.</td>
+</tr>
+<tr class="even">
+<td>RDD models generally take the following form:</td>
+</tr>
+<tr class="odd">
+<td><span class="math display">\[\huge Y_{i} = \beta_0 + \beta_1 X_i + \beta_2 D_i + \varepsilon_{i}\]</span> <span class="math display">\[\large D_i=    \begin{cases}
+1 &amp; X_i&gt;X_k\\
+0 &amp; X_i&lt;X_k\\
+\end{cases} \]</span></td>
+</tr>
+<tr class="even">
+<td>In our case, the treatment is the minimum wage law passed in NJ in 2014. We want to be looking at the period after this to pick up on any changes in employment. The <strong>assignment variable</strong> in this case could be the distance of a county to the border between the two states, and the sharp cutoff would be the border itself. Counties on the border counties are probably much more similar to each other than other, farther away counties: this would exclude both Jersey City (in the far east of NJ) and Centralia (in the centre of PA).</td>
+</tr>
+<tr class="odd">
+<td>Indeed, several cities are divided by the border between these states including Philladelphia, the capital city of Pennsylvania:</td>
+</tr>
+<tr class="even">
+<td>::: {.cell execution_count=19}</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell-output .cell-output-display execution_count=19}</td>
+</tr>
+<tr class="even">
+<td><code>{=html} &lt;script type="application/vnd.jupyter.widget-view+json"&gt; {"model_id":"4e1431195538443db107698312564f13","version_major":2,"version_minor":0} &lt;/script&gt;</code></td>
+</tr>
+<tr class="odd">
+<td>::: :::</td>
+</tr>
+<tr class="even">
+<td>On the left side of the river is Philladelphia, PA, while on the right side is Camden, NJ. The code below uses the county shapefile we used before to isolate the counties in NJ and PA that are on the border.</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell execution_count=20} ``` {.python .cell-code} import geopandas as gpd</td>
+</tr>
+<tr class="even">
+<td>shp = gpd.read_file(‘data/wk10/geojson-counties-fips.json’) # read in the counties shapefile</td>
+</tr>
+<tr class="odd">
+<td>subset=shp[shp[‘STATE’].isin([‘34’,‘42’])] # new jersey = 34, pennsylvania = 42, new york = 36</td>
+</tr>
+<tr class="even">
+<td>subset[‘neighbors’]= 0 # create a new column called neighbors</td>
+</tr>
+<tr class="odd">
+<td>for index, row in subset.iterrows(): # iterate through each row in the counties shapefile buffered= row[‘geometry’].buffer(0.1) # create a buffer around the county so that it overlaps with its neighbors neighbors = list(set(subset[subset.geometry.overlaps(buffered)].STATE.tolist()).difference([row.STATE])) # check which counties overlap with the buffer, grab the state code, and remove the current county’s state code subset.at[index, “neighbors”] = “,”.join(neighbors) # add the list of neighbors to the neighbors column</td>
+</tr>
+<tr class="even">
+<td>subset[‘border’]=np.where(subset[‘neighbors’]==’’,0,1) # create a new column called border that is 1 if the county is on the border and 0 if it is not</td>
+</tr>
+<tr class="odd">
+<td>subset[‘viscol’]=subset[‘STATE’].astype(int)+subset[‘border’] # create a new column that combines the state code and the border column subset.plot(column=‘viscol’,legend=False, figsize=(20,10), cmap=‘RdYlGn’) # plot the counties and color them by the border column plt.title(‘Border Counties in New Jersey and Pennsylvania’, fontsize=20) # add a title ```</td>
+</tr>
+<tr class="even">
+<td>::: {.cell-output .cell-output-display execution_count=20}</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell-output .cell-output-display} <img src="W10. Causal Inference_files/figure-html/cell-19-output-2.png" class="img-fluid"> ::: :::</td>
+</tr>
+<tr class="even">
+<td>The plot above shows counties in Pennsylvania in green, and New Jersey in red. Dark green counties are border counties in PA, while light red counties are border counties in NJ. Under the assumption that these counties are going to be very similar to each other in most ways other than the fact that NJ implemented a minimum wage law, the simplest regression discontinuity desgin would basically just be a regression of the following form:</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell execution_count=30} ``` {.python .cell-code} border_counties=subset[subset[‘border’]==1][‘id’].tolist() # create a list of the border counties rdd=counties[(counties[‘year’]&gt;2007)&amp;(counties[‘county_fips’].isin(border_counties))] # subset the counties data to only include border counties and years after 2007 rdd_model = ols(‘unemployment ~ C(state)’, rdd[rdd[‘year’]&gt;2014]).fit() print(rdd_model.summary())</td>
+</tr>
+<tr class="even">
+<td>```</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell-output .cell-output-stdout} ``` OLS Regression Results ============================================================================== Dep. Variable: unemployment R-squared: 0.047 Model: OLS Adj. R-squared: 0.038 Method: Least Squares F-statistic: 5.078 Date: Mon, 19 Dec 2022 Prob (F-statistic): 0.0264 Time: 09:26:14 Log-Likelihood: -213.30 No.&nbsp;Observations: 105 AIC: 430.6 Df Residuals: 103 BIC: 435.9 Df Model: 1 Covariance Type: nonrobust ================================================================================== coef std err t P&gt;|t| [0.025 0.975]</td>
 </tr>
 </tbody>
 </table>
 <p>Intercept 5.2054 0.249 20.910 0.000 4.712 5.699 C(state)[T.42] 0.8212 0.364 2.253 0.026 0.098 1.544 ============================================================================== Omnibus: 22.707 Durbin-Watson: 0.642 Prob(Omnibus): 0.000 Jarque-Bera (JB): 29.073 Skew: 1.166 Prob(JB): 4.86e-07 Kurtosis: 4.100 Cond. No.&nbsp;2.55 ==============================================================================</p>
-<p>Notes: [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</p>
-<pre><code>:::
-:::
-
-
-::: {.cell}
-``` {.python .cell-code}
-elections=pd.read_csv('data/wk10/countypres_2000-2020.csv')
-elections=elections[elections['party'].isin(['DEMOCRAT','REPUBLICAN'])]
-
-missing=elections[elections['mode']!='TOTAL'].groupby(['county_fips', 'year', 'party'])[['candidatevotes','totalvotes']].agg({'candidatevotes':'sum','totalvotes':'mean'}).reset_index()
-elections=elections[elections['mode']=='TOTAL']
-
-elections=pd.concat([elections,missing], ignore_index=True)
-
-elections = elections[~elections.index.duplicated()]
-elections['county_fips']=pd.to_numeric(elections['county_fips'], errors='coerce').dropna().astype(int).astype(str).str.zfill(5).astype(str)
-elections['voteshare']=(elections['candidatevotes']/elections['totalvotes'])*100
-elections=elections.pivot_table(index=['county_fips', 'year'], columns='party')['voteshare'].reset_index().rename(columns={'DEMOCRAT':'d_votes','REPUBLICAN':'r_votes'})
-elections.to_csv('data/wk10/elections.csv', index=False)
-
-unemp=pd.read_csv('data/wk10/unemployment.csv')
-
-## create month of year variable datetime
-unemp['date']=pd.to_datetime({'year':unemp['year'],'month':unemp['month'],'day':1})
-
-state_codes=pd.read_html('https://www.ssa.gov/international/coc-docs/states.html')[0].rename(columns={0:'state',1:'code'})
-state_codes['state']=state_codes['state'].str.lower()
-unemp['state']=unemp['state'].str.lower()
-
-df_s=pd.merge(unemp, state_codes, on='state', how='left')
-df_s=pd.merge(df_s, minw, on=['state', 'year'], how='left')
-df_s.to_csv('data/wk10/unemp_minwage.csv', index=False)</code></pre>
-<p>:::</p>
+<p>Notes: [1] Standard Errors assume that the covariance matrix of the errors is correctly specified. ``` ::: :::</p>
 
 
 </section>
