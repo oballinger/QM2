@@ -190,7 +190,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, sharp corners, borderline west={3pt}{0pt}{shadecolor}, breakable, enhanced, interior hidden, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, interior hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, frame hidden, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -7411,23 +7411,18 @@ datasets:
 
 \begin{itemize}
 \item
-  \texttt{did.csv}: survey data on restaurant workers in Pennsylvania
-  and New Jersey in 1992 collected by
-  \href{https://davidcard.berkeley.edu/papers/njmin-aer.pdf}{Card and
-  Krueger (1994)} to measure to the impact of a minimum wage increase on
-  employment.
-\item
-  \texttt{unemployment.csv}: Monthly state-level unemployment data from
+  \texttt{state\_data.csv}: Monthly state-level unemployment data from
   the \href{www.bls.gov}{Bureau of Labor Statistics (BLS)} spanning
-  1976-2022
+  1976-2022, and state-level minimum wage data from
+  \href{https://www.kaggle.com/datasets/lislejoem/us-minimum-wage-by-state-from-1968-to-2017}{Kaggle}
+  spanning 1968-2020.
 \item
   \texttt{elections.csv}: county-level U.S. Presidential election
   results spanning 2000-2020 from the
-  \href{https://electionlab.mit.edu/data}{MIT Election Lab}
+  \href{https://electionlab.mit.edu/data}{MIT Election Lab}.
 \item
-  \texttt{minwage.csv}: state-level minimum wage data from
-  \href{https://www.kaggle.com/datasets/lislejoem/us-minimum-wage-by-state-from-1968-to-2017}{Kaggle}
-  spanning 1968-2020
+  \texttt{geojson-counties-fips.json}: a county-level geospatial file
+  used for making maps.
 \end{itemize}
 
 \begin{Shaded}
@@ -7436,6 +7431,7 @@ datasets:
 \OperatorTok{!}\NormalTok{mkdir data}\OperatorTok{/}\NormalTok{wk10}
 \OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{state\_data.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{state\_data.csv}
 \OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{elections.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{elections.csv}
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{geojson}\OperatorTok{{-}}\NormalTok{counties}\OperatorTok{{-}}\NormalTok{fips.json }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk10}\OperatorTok{/}\NormalTok{geojson}\OperatorTok{{-}}\NormalTok{counties}\OperatorTok{{-}}\NormalTok{fips.json}
 \end{Highlighting}
 \end{Shaded}
 
@@ -7444,16 +7440,13 @@ mkdir: data: File exists
 mkdir: data/wk10: File exists
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  4626  100  4626    0     0   8979      0 --:--:-- --:--:-- --:--:--  9070
+100 2424k  100 2424k    0     0  4878k      0 --:--:-- --:--:-- --:--:-- 4917k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 1160k  100 1160k    0     0  2486k      0 --:--:-- --:--:-- --:--:-- 2501k
+100  875k  100  875k    0     0  2506k      0 --:--:-- --:--:-- --:--:-- 2529k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   184  100   184    0     0   1240      0 --:--:-- --:--:-- --:--:--  1277
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   184  100   184    0     0   1265      0 --:--:-- --:--:-- --:--:--  1304
+100 3141k  100 3141k    0     0  6498k      0 --:--:-- --:--:-- --:--:-- 6558k
 \end{verbatim}
 
 \begin{longtable}[]{@{}
@@ -7495,8 +7488,8 @@ Below, i've isolated West Virginia, one of the states with the highest
 unemployment rates in America. Instead of drawing a new regression line
 every year, i've drawn a new regression line for each county over the
 six elections. \\
-::: \{.cell\} \\
-::: \{.cell-output .cell-output-display execution\_count=30\} \\
+::: \{.cell execution\_count=11\} \\
+::: \{.cell-output .cell-output-display execution\_count=11\} \\
 ::: \{.cell-output .cell-output-display\}
 \includegraphics{notebooks/W10. Causal Inference_files/figure-pdf/cell-10-output-2.png}
 ::: ::: \\
@@ -7577,9 +7570,10 @@ your data (in this case, one county over time); however, while the
 will all have the same \emph{slope} and will therefore be parallel. This
 is important, as we want to find one slope-- one common effect of x--
 that fits \emph{all} groups. \\
-::: \{.cell\} ``` \{.python .cell-code\} from linearmodels import
-PanelOLS from linearmodels import RandomEffects import
-statsmodels.formula.api as smf from linearmodels.panel import compare \\
+::: \{.cell execution\_count=12\} ``` \{.python .cell-code\} from
+linearmodels import PanelOLS from linearmodels import RandomEffects
+import statsmodels.formula.api as smf from linearmodels.panel import
+compare \\
 df\_c=df\_c.set\_index({[}`county\_fips',`year'{]}) \# set the index to
 the county fips code and the year panel =
 PanelOLS.from\_formula(`r\_votes \textasciitilde{} 1 + population +
@@ -7654,7 +7648,7 @@ They conducted a survey of 384 fast-food restaurants across both states, right b
 
 That was a long time ago. Things have changed since then, including the fact that we have access to a lot more data and computational power. Let's see if we can replicate Card and Krueger's results with more recent data. I've downloaded data on unemployment, minimum wage levels, and Gross Domestic Product at the state level going back to 1976. Let's have a look at minimum wages in New Jersey and Pennsylvania over time:
 
-::: {.cell}
+::: {.cell execution_count=13}
 ``` {.python .cell-code}
 df_s=pd.read_csv('data/wk10/state_data.csv', parse_dates=['date']) # read in the state-level data
 did=df_s[df_s['state'].isin(['pennsylvania', 'new jersey'])] # subset the data to only include pennsylvania and new jersey
@@ -7771,7 +7765,7 @@ valid control group for New Jersey:
 \end{Shaded}
 
 \begin{verbatim}
-<matplotlib.legend.Legend at 0x171b8cfd0>
+<matplotlib.legend.Legend at 0x174874b20>
 \end{verbatim}
 
 \begin{figure}[H]
@@ -7836,8 +7830,8 @@ a treatment effect:
 Dep. Variable:           unemployment   R-squared:                       0.704
 Model:                            OLS   Adj. R-squared:                  0.699
 Method:                 Least Squares   F-statistic:                     169.1
-Date:                Fri, 16 Dec 2022   Prob (F-statistic):           5.70e-74
-Time:                        11:28:30   Log-Likelihood:                -420.68
+Date:                Mon, 19 Dec 2022   Prob (F-statistic):           5.70e-74
+Time:                        09:20:32   Log-Likelihood:                -420.68
 No. Observations:                 290   AIC:                             851.4
 Df Residuals:                     285   BIC:                             869.7
 Df Model:                           4                                         
@@ -7960,34 +7954,118 @@ insignificant;
 How do you think this affects our conclusion?
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{0.1667}}@{}}
 \toprule()
-\begin{minipage}[b]{\linewidth}\raggedright
-\#\# Regression Discontinuity
-\end{minipage} \\
-\midrule()
 \endhead
-Intercept 7.7976 0.284 27.430 0.000 7.237 8.358 post -1.7190 0.376
--4.571 0.000 -2.460 -0.978 treatment 0.6315 0.389 1.622 0.106 -0.136
-1.399 post\_treatment -1.3226 0.515 -2.569 0.011 -2.338 -0.307
-==============================================================================
-Omnibus: 7.076 Durbin-Watson: 0.833 Prob(Omnibus): 0.029 Jarque-Bera
-(JB): 6.876 Skew: 0.433 Prob(JB): 0.0321 Kurtosis: 3.187 Cond. No.~7.63
-============================================================================== \\
-Notes: \href{http://www.literateprogramming.com/lpquotes.html}{1}
-Standard Errors assume that the covariance matrix of the errors is
-correctly specified. ``` ::: ::: \\
-The treatment effect here (-1.32) is strikingly similar to the one
-estimated using state-level difference in differences (-1.95). It's
-slighly smaller, which may have to do with the fact that we're comparing
-more similar units, and thus reducing the variation caused by unobserved
-factors. This is a good thing. \\
-::: \{.cell\} \\
+\#\# Regression Discontinuity \\
+Our difference in difference model made causal claims by treating PA as
+a control group for NJ on the basis that they had similar trends in
+unemployment before the minimum wage law, and diverging trends after,
+and no other shock coincided with this policy. We could still poke some
+holes in that-- NJ seems to have fared worse than PA after the 2008
+crisis; maybe more people work in finance in NJ. Indeed, Jersey City is
+across the water from Manhattan, America's financial centre. Bankers
+would be hard hit by a financial crisis, but are probably not that
+affected by minimum wage laws. Conversely, Pennsylvania is the 3rd
+largest coal-producing state in the U.S.-- coal miners are probably less
+affected by financial crises, but more likely to be earning minimum
+wage. As such, increasing the minimum wage in a place where most people
+are bankers probably has less of an effect on unemployment compared to
+an area where everyone is a coal miner. \\
+Running a state-level analysis is subject to this sort of selection
+bias, since by looking at state averages we're effectively comparing
+places like Jersey City to places like
+\href{https://en.wikipedia.org/wiki/Centralia,_Pennsylvania}{Centralia},
+a coal-mining town in central Pennsylvania which saw its population
+decline from 1000 in 1980 to just five residents in 2020. So the next
+step in our analysis might be to try to compare apples to apples. There
+are a number of ways of doing this-- we could look at the unemployment
+rate by industry, for example. But what if we didn't want to rely on
+pre-trends, or if we didn't even have data prior to the treatment? This
+is often the case \\
+To build a more valid counterfactual, we can drill even deeper to find
+even more similar comparison groups using a \textbf{Regression
+Discontinuity Design (RDD)} using county (rather than state) level
+data. \\
+\textgreater{}
+\textbf{\href{https://www.princeton.edu/~davidlee/wp/RDDEconomics.pdf}{Regression
+Discontinuity Designs}} are a method of estimating treatment effects in
+a nonexperimental setting where treatment is determined by whether an
+observed ``assignment'' variable exceeds a known cutoff point. If the
+cutoff is exogenous to the treatment, observations in the vicinity of
+this cutoff are likely to be very similar, and assignment to the
+treatment or control group can be considered as good as random. \\
+RDD models generally take the following form: \\
+\(\huge Y_{i} = \beta_0 + \beta_1 X_i + \beta_2 D_i + \varepsilon_{i}\)
+\(\large D_i=    \begin{cases}
+1 & X_i>X_k\\
+0 & X_i<X_k\\
+\end{cases} \) \\
+In our case, the treatment is the minimum wage law passed in NJ in 2014.
+We want to be looking at the period after this to pick up on any changes
+in employment. The \textbf{assignment variable} in this case could be
+the distance of a county to the border between the two states, and the
+sharp cutoff would be the border itself. Counties on the border counties
+are probably much more similar to each other than other, farther away
+counties: this would exclude both Jersey City (in the far east of NJ)
+and Centralia (in the centre of PA). \\
+Indeed, several cities are divided by the border between these states
+including Philladelphia, the capital city of Pennsylvania: \\
+::: \{.cell execution\_count=19\} \\
+::: \{.cell-output .cell-output-display execution\_count=19\} \\
+On the left side of the river is Philladelphia, PA, while on the right
+side is Camden, NJ. The code below uses the county shapefile we used
+before to isolate the counties in NJ and PA that are on the border. \\
+::: \{.cell execution\_count=20\} ``` \{.python .cell-code\} import
+geopandas as gpd \\
+shp = gpd.read\_file(`data/wk10/geojson-counties-fips.json') \# read in
+the counties shapefile \\
+subset=shp{[}shp{[}`STATE'{]}.isin({[}`34',`42'{]}){]} \# new jersey =
+34, pennsylvania = 42, new york = 36 \\
+subset{[}`neighbors'{]}= 0 \# create a new column called neighbors \\
+for index, row in subset.iterrows(): \# iterate through each row in the
+counties shapefile buffered= row{[}`geometry'{]}.buffer(0.1) \# create a
+buffer around the county so that it overlaps with its neighbors
+neighbors =
+list(set(subset{[}subset.geometry.overlaps(buffered){]}.STATE.tolist()).difference({[}row.STATE{]}))
+\# check which counties overlap with the buffer, grab the state code,
+and remove the current county's state code subset.at{[}index,
+``neighbors''{]} = ``,''.join(neighbors) \# add the list of neighbors to
+the neighbors column \\
+subset{[}`border'{]}=np.where(subset{[}`neighbors'{]}=='\,',0,1) \#
+create a new column called border that is 1 if the county is on the
+border and 0 if it is not \\
+subset{[}`viscol'{]}=subset{[}`STATE'{]}.astype(int)+subset{[}`border'{]}
+\# create a new column that combines the state code and the border
+column subset.plot(column=`viscol',legend=False, figsize=(20,10),
+cmap=`RdYlGn') \# plot the counties and color them by the border column
+plt.title(`Border Counties in New Jersey and Pennsylvania', fontsize=20)
+\# add a title ``` \\
+::: \{.cell-output .cell-output-display execution\_count=20\} \\
+::: \{.cell-output .cell-output-display\}
+\includegraphics{notebooks/W10. Causal Inference_files/figure-pdf/cell-19-output-2.png}
+::: ::: \\
+The plot above shows counties in Pennsylvania in green, and New Jersey
+in red. Dark green counties are border counties in PA, while light red
+counties are border counties in NJ. Under the assumption that these
+counties are going to be very similar to each other in most ways other
+than the fact that NJ implemented a minimum wage law, the simplest
+regression discontinuity desgin would basically just be a regression of
+the following form: \\
+::: \{.cell execution\_count=30\} ``` \{.python .cell-code\}
+border\_counties=subset{[}subset{[}`border'{]}==1{]}{[}`id'{]}.tolist()
+\# create a list of the border counties
+rdd=counties{[}(counties{[}`year'{]}\textgreater2007)\&(counties{[}`county\_fips'{]}.isin(border\_counties)){]}
+\# subset the counties data to only include border counties and years
+after 2007 rdd\_model = ols(`unemployment \textasciitilde{} C(state)',
+rdd{[}rdd{[}`year'{]}\textgreater2014{]}).fit()
+print(rdd\_model.summary()) \\
+``` \\
 ::: \{.cell-output .cell-output-stdout\} ``` OLS Regression Results
 ==============================================================================
 Dep. Variable: unemployment R-squared: 0.047 Model: OLS Adj. R-squared:
-0.038 Method: Least Squares F-statistic: 5.078 Date: Fri, 16 Dec 2022
-Prob (F-statistic): 0.0264 Time: 12:34:12 Log-Likelihood: -213.30
+0.038 Method: Least Squares F-statistic: 5.078 Date: Mon, 19 Dec 2022
+Prob (F-statistic): 0.0264 Time: 09:26:14 Log-Likelihood: -213.30
 No.~Observations: 105 AIC: 430.6 Df Residuals: 103 BIC: 435.9 Df Model:
 1 Covariance Type: nonrobust
 ==================================================================================
@@ -8005,44 +8083,7 @@ No.~2.55
 
 Notes: \href{http://www.literateprogramming.com/lpquotes.html}{1}
 Standard Errors assume that the covariance matrix of the errors is
-correctly specified.
-
-\begin{verbatim}
-:::
-:::
-
-
-::: {.cell}
-``` {.python .cell-code}
-elections=pd.read_csv('data/wk10/countypres_2000-2020.csv')
-elections=elections[elections['party'].isin(['DEMOCRAT','REPUBLICAN'])]
-
-missing=elections[elections['mode']!='TOTAL'].groupby(['county_fips', 'year', 'party'])[['candidatevotes','totalvotes']].agg({'candidatevotes':'sum','totalvotes':'mean'}).reset_index()
-elections=elections[elections['mode']=='TOTAL']
-
-elections=pd.concat([elections,missing], ignore_index=True)
-
-elections = elections[~elections.index.duplicated()]
-elections['county_fips']=pd.to_numeric(elections['county_fips'], errors='coerce').dropna().astype(int).astype(str).str.zfill(5).astype(str)
-elections['voteshare']=(elections['candidatevotes']/elections['totalvotes'])*100
-elections=elections.pivot_table(index=['county_fips', 'year'], columns='party')['voteshare'].reset_index().rename(columns={'DEMOCRAT':'d_votes','REPUBLICAN':'r_votes'})
-elections.to_csv('data/wk10/elections.csv', index=False)
-
-unemp=pd.read_csv('data/wk10/unemployment.csv')
-
-## create month of year variable datetime
-unemp['date']=pd.to_datetime({'year':unemp['year'],'month':unemp['month'],'day':1})
-
-state_codes=pd.read_html('https://www.ssa.gov/international/coc-docs/states.html')[0].rename(columns={0:'state',1:'code'})
-state_codes['state']=state_codes['state'].str.lower()
-unemp['state']=unemp['state'].str.lower()
-
-df_s=pd.merge(unemp, state_codes, on='state', how='left')
-df_s=pd.merge(df_s, minw, on=['state', 'year'], how='left')
-df_s.to_csv('data/wk10/unemp_minwage.csv', index=False)
-\end{verbatim}
-
-:::
+correctly specified. ``` ::: :::
 
 
 
