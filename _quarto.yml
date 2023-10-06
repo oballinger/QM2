@@ -5,7 +5,7 @@ project:
 book:
   title: "Quantitative Methods 2"
   author: "Ollie Ballinger"
-  date: "10/10/2022"
+  date: "10/10/2023"
   google-analytics: UA-154866877-2
   chapters:
     - index.qmd
@@ -16,15 +16,15 @@ book:
     - ./notebooks/W05. Merging and Joining.ipynb
     - Week 6.qmd
     - ./notebooks/W07. Distributions and Basic Statistics.ipynb
-    - Week 8.qmd
-    - ./notebooks/W09. Linear Regression.ipynb
-    - ./notebooks/W10. Causal Inference.ipynb
+    - ./notebooks/W08. Linear Regression.ipynb
+    - ./notebooks/W09. Causal Inference.ipynb
+    - ./notebooks/W10. Machine Learning.ipynb
   repo-url: https://github.com/oballinger/QM2/
   repo-actions: [edit]
   downloads: [pdf, epub]
   sharing: [twitter, facebook]
   sidebar:
-    logo: logo.png
+    logo: logo2.png
 bibliography: references.bib
 
 format:

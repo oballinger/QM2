@@ -9,7 +9,6 @@
   numbers=noendperiod]{scrreprt}
 
 \usepackage{amsmath,amssymb}
-\usepackage{lmodern}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
@@ -19,6 +18,10 @@
   \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -161,10 +164,12 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 \makeatletter
-\@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \makeatother
 \makeatletter
 \@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
+\makeatother
+\makeatletter
 \makeatother
 \makeatletter
 \makeatother
@@ -186,11 +191,11 @@
 
 \title{Quantitative Methods 2}
 \author{Ollie Ballinger}
-\date{10/10/22}
+\date{2023-10-10}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, interior hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, frame hidden, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, sharp corners, breakable, frame hidden, borderline west={3pt}{0pt}{shadecolor}, interior hidden, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -227,7 +232,7 @@ connect their datasets and analyses to explore and decide wider
 arguments, and link their results to these contextual considerations.
 Below is an outline of the course:
 
-\includegraphics{./outline.png}
+\includegraphics{outline.png}
 
 \bookmarksetup{startatroot}
 
@@ -237,6 +242,34 @@ Below is an outline of the course:
 \hypertarget{workshop-1-open-in-colab}{%
 \section[\emph{Workshop 1} ]{\texorpdfstring{\emph{Workshop 1}
 \href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W01.\%20Python\%20Recap.ipynb}{\protect\includegraphics{notebooks/../colab-badge.png}}}{Workshop 1 Open In Colab}}\label{workshop-1-open-in-colab}}
+
+\hypertarget{registering-a-github-account}{%
+\section{Registering a GitHub
+account}\label{registering-a-github-account}}
+
+Before we get started, we need to set a few things up. GitHub is a
+platform for software development and version control using Git,
+allowing developers to store and manage their code. Think of it as
+google docs but for code-- it will be very useful for collaborating on
+your group projects later in the term, and in your future as a data
+analyst.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Use \href{https://github.com/join}{this link} to register for a GitHub
+  account if you don't already have one.
+\item
+  Once that's done, \href{https://github.com/new}{create a new github}
+  repository called ``QM2''.
+\item
+  In this notebook, click ``File'' and then ``Save a copy in GitHub''.
+\end{enumerate}
+
+Voila! You now have a version of this notebook saved to your own GitHub
+account. \emph{You will need to do step 3 for all the workshops!} Now,
+on to python.
 
 \hypertarget{using-python}{%
 \section{Using Python}\label{using-python}}
@@ -484,10 +517,6 @@ following code to upload a CSV or similar data file.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-ModuleNotFoundError: No module named 'google.colab'
-\end{verbatim}
-
 Or you can use the following cell to fetch the data directly from the
 QM2 server.
 
@@ -510,10 +539,10 @@ Let's create a folder that we can store all our data for this session
 \begin{verbatim}
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   203  100   203    0     0    527      0 --:--:-- --:--:-- --:--:--   527
+100   203  100   203    0     0   2872      0 --:--:-- --:--:-- --:--:--  3029
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   297  100   297    0     0    838      0 --:--:-- --:--:-- --:--:--   836
+100   297  100   297    0     0   1844      0 --:--:-- --:--:-- --:--:--  1879
 \end{verbatim}
 
 \hypertarget{storing-and-importing-data}{%
@@ -590,16 +619,17 @@ code.
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & Name & First Appearance & Approx height & Gender & Law Enforcement \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & Bob & 1.2 & 6.0 & Male & False \\
 1 & Mike & 1.2 & 5.5 & Male & False \\
 2 & Coop & 1.1 & 6.0 & Male & True \\
 3 & Maddy & 1.3 & 5.5 & Female & False \\
 4 & Giant & 2.1 & 7.5 & Male & False \\
-\bottomrule()
 \end{longtable}
 
 What we've done here is read in a .csv file into a dataframe, the object
@@ -608,6 +638,33 @@ slicing and dicing data, as we will see over the coming weeks. The
 head() command tells iPython to show the first few columns/rows of the
 data, so we can start to get a sense of what the data looks like and
 what sort of type of objects is represents.
+
+A common first step for exploring our data is to sort it. In Pandas,
+this can be done easily with the \texttt{sort\_values()} function. We
+can specify which column to sort the data by, and whether we want to
+sort in ascending or descending order, using the optional arguments
+\texttt{by} and \texttt{ascending}, respectively. In the example below,
+we're sorting in \emph{descending} order of height:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data.sort\_values(by}\OperatorTok{=}\StringTok{\textquotesingle{}Approx height\textquotesingle{}}\NormalTok{, ascending}\OperatorTok{=}\VariableTok{False}\NormalTok{).head()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& Name & First Appearance & Approx height & Gender & Law Enforcement \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+4 & Giant & 2.1 & 7.5 & Male & False \\
+0 & Bob & 1.2 & 6.0 & Male & False \\
+2 & Coop & 1.1 & 6.0 & Male & True \\
+1 & Mike & 1.2 & 5.5 & Male & False \\
+3 & Maddy & 1.3 & 5.5 & Female & False \\
+\end{longtable}
 
 \bookmarksetup{startatroot}
 
@@ -621,6 +678,29 @@ try working your way through the five
 programming notebooks on Kaggle}. These cover a range of skills that
 we'll be using throughout the term. Kaggle is a very useful resource for
 learning data science, so making an account may not be a bad idea!
+
+\bookmarksetup{startatroot}
+
+\hypertarget{assessed-question}{%
+\chapter{Assessed Question}\label{assessed-question}}
+
+The URL below contains a dataset of the most streamed songs on spotify
+in 2023: https://storage.googleapis.com/qm2/wk1/spotify-2023.csv
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Download the dataset and save it in the \texttt{./data/wk1/}
+  directory. (hint: curl)
+\item
+  Load the dataset as a pandas dataframe. (hint: pandas.read\_csv)
+\item
+  Sort the dataframe in descending order of streams. (hint:
+  sort\_values)
+\end{enumerate}
+
+QUESTION: what song has the highest number of streams in this dataset?
 
 \bookmarksetup{startatroot}
 
@@ -741,7 +821,7 @@ mkdir: data/wk2: File exists
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllllllllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & Net equivalised household income in 2010-11, week & Childless couple,
 annual income & Couple, two children under 14 & Couple, three children
 under 14 & Couple with one child under 14 & Couple with two children
@@ -750,8 +830,10 @@ Single adult & Lone parent, one child under 14 & Lone parent, two
 children under 14 & Lone parent, two children aged 15-18 & ANNOTATIONS &
 1979 to 1996-97 & 1996-97 to 2009-10 & 1996-97 to 2010-11 \\
 Percentile Point & & & & & & & & & & & & & & & \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 1 & 33.50 & 1,746.92 & 2,445.69 & 2,795.08 & 2,096.31 & 2,899.89 &
 3,022.18 & 1,170.44 & 1,519.82 & 1,869.21 & 2,323.41 & NaN & NaN & NaN &
 NaN \\
@@ -767,7 +849,6 @@ NaN \\
 5 & 166.32 & 8,671.91 & 12,140.68 & 13,875.06 & 10,406.30 & 14,395.38 &
 15,002.41 & 5,810.18 & 7,544.57 & 9,278.95 & 11,533.65 & NaN & 0.70\% &
 1.00\% & 0.90\% \\
-\bottomrule()
 \end{longtable}
 
 This is a simple dataframe - we see the percentile and an income. Note
@@ -785,7 +866,7 @@ category, 99\% (which is really binned, so 99\%\textless n\(\leq\)
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllllllllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & Net equivalised household income in 2010-11, week & Childless couple,
 annual income & Couple, two children under 14 & Couple, three children
 under 14 & Couple with one child under 14 & Couple with two children
@@ -794,8 +875,10 @@ Single adult & Lone parent, one child under 14 & Lone parent, two
 children under 14 & Lone parent, two children aged 15-18 & ANNOTATIONS &
 1979 to 1996-97 & 1996-97 to 2009-10 & 1996-97 to 2010-11 \\
 Percentile Point & & & & & & & & & & & & & & & \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 95 & 1075.73 & 56,088.56 & 78,523.99 & 89,741.70 & 67,306.27 & 93,107.01
 & 97,033.21 & 37,579.34 & 48,797.05 & 60,014.76 & 74,597.79 & NaN &
 2.90\% & 2.00\% & 1.30\% \\
@@ -811,7 +894,6 @@ Percentile Point & & & & & & & & & & & & & & & \\
 99 & 2090.35 & 108,990.74 & 152,587.04 & 174,385.19 & 130,788.89 &
 180,924.64 & 188,553.99 & 73,023.80 & 94,821.95 & 116,620.10 &
 144,957.69 & NaN & NaN & NaN & NaN \\
-\bottomrule()
 \end{longtable}
 
 Well, they we have it - the 1\% earn, on average, about £2000 a week.
@@ -855,7 +937,7 @@ will select the 90-95th percentiles, for example:
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllllllllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & Net equivalised household income in 2010-11, week & Childless couple,
 annual income & Couple, two children under 14 & Couple, three children
 under 14 & Couple with one child under 14 & Couple with two children
@@ -864,8 +946,10 @@ Single adult & Lone parent, one child under 14 & Lone parent, two
 children under 14 & Lone parent, two children aged 15-18 & ANNOTATIONS &
 1979 to 1996-97 & 1996-97 to 2009-10 & 1996-97 to 2010-11 \\
 Percentile Point & & & & & & & & & & & & & & & \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 90 & 845.54 & 44,086.54 & 61,721.15 & 70,538.46 & 52,903.85 & 73,183.65
 & 76,269.71 & 29,537.98 & 38,355.29 & 47,172.60 & 58,635.10 & NaN &
 2.50\% & 1.70\% & 1.20\% \\
@@ -884,7 +968,6 @@ Percentile Point & & & & & & & & & & & & & & & \\
 95 & 1075.73 & 56,088.56 & 78,523.99 & 89,741.70 & 67,306.27 & 93,107.01
 & 97,033.21 & 37,579.34 & 48,797.05 & 60,014.76 & 74,597.79 & NaN &
 2.90\% & 2.00\% & 1.30\% \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{accessing-parts-of-a-dataframe}{%
@@ -1151,17 +1234,18 @@ do that by creating a new dataframe:
 \end{Shaded}
 
 \begin{longtable}[]{@{}lll@{}}
-\toprule()
+\toprule\noalign{}
 & Childless couple, annual income & Couple, two children under 14 \\
 Percentile Point & & \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 1 & 1,746.92 & 2,445.69 \\
 2 & 5,141.01 & 7,197.41 \\
 3 & 6,703.11 & 9,384.36 \\
 4 & 7,875.75 & 11,026.05 \\
 5 & 8,671.91 & 12,140.68 \\
-\bottomrule()
 \end{longtable}
 
 We see those pesky commas. Now we can get on with cleaning up the data:
@@ -1178,17 +1262,18 @@ We see those pesky commas. Now we can get on with cleaning up the data:
 \end{Shaded}
 
 \begin{longtable}[]{@{}lll@{}}
-\toprule()
+\toprule\noalign{}
 & Childless couple, annual income & Couple, two children under 14 \\
 Percentile Point & & \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 1 & 1746.92 & 2445.69 \\
 2 & 5141.01 & 7197.41 \\
 3 & 6703.11 & 9384.36 \\
 4 & 7875.75 & 11026.05 \\
 5 & 8671.91 & 12140.68 \\
-\bottomrule()
 \end{longtable}
 
 \textbf{Extension}: ``\textbf{Regex}'' refers to ``\textbf{Reg}ular
@@ -1518,7 +1603,7 @@ wanted to calculate the average of a specific column.
 
 \hypertarget{workshop-3-open-in-colab}{%
 \section[\emph{Workshop 3} ]{\texorpdfstring{\emph{Workshop 3}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W03.\%20Spatial\%20Data.ipynb}{\protect\includegraphics{https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1}}}{Workshop 3 Open In Colab}}\label{workshop-3-open-in-colab}}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W03.\%20Spatial\%20Data.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 3 Open In Colab}}\label{workshop-3-open-in-colab}}
 
 Sometimes the data we work with references points on the earth's
 surface, unlocking a rich set of analytical possibilities. In today's
@@ -1544,7 +1629,7 @@ largest state.
 \hypertarget{background}{%
 \section{Background}\label{background}}
 
-\includegraphics{https://image.cnbcfm.com/api/v1/image/106695701-1599664926959-gettyimages-1228423382-AFP_8PL8JF.jpeg?v=1599664969}
+\includegraphics{index_files/mediabag/106695701-1599664926.jpg}
 
 The \href{https://en.wikipedia.org/wiki/2020_California_wildfires}{2020
 California wildfire season} was record-setting. By the end of the year,
@@ -1641,11 +1726,13 @@ Let's open the .csv file and have a look at it:
 \end{Shaded}
 
 \begin{longtable}[]{@{}lllllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & Date & Site ID & POC & PM & AQI & Site Name & CBSA\_NAME & COUNTY &
 latitude & longitude \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 1/1/20 & 60010007 & 3 & 8.6 & 36 & Livermore & San
 Francisco-Oakland-Hayward, CA & Alameda & 37.687526 & -121.784217 \\
 1 & 1/2/20 & 60010007 & 3 & 4.5 & 19 & Livermore & San
@@ -1672,7 +1759,6 @@ Sacramento-\/-Roseville-\/-Arden-Arcade, CA & Yolo & 38.661210 &
 55690 & 12/29/20 & 61131003 & 1 & 5.6 & 23 & Woodland-Gibson Road &
 Sacramento-\/-Roseville-\/-Arden-Arcade, CA & Yolo & 38.661210 &
 -121.732690 \\
-\bottomrule()
 \end{longtable}
 
 Each row in this dataset is an individual reading from an air quality
@@ -1913,10 +1999,12 @@ Let's store this new dataframe and call it ``county\_daily'':
 \end{Shaded}
 
 \begin{longtable}[]{@{}llll@{}}
-\toprule()
+\toprule\noalign{}
 & Day & COUNTY & AQI \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 1 & Alameda & 44.500000 \\
 1 & 1 & Butte & 66.666667 \\
 2 & 1 & Calaveras & 63.000000 \\
@@ -1928,7 +2016,6 @@ Let's store this new dataframe and call it ``county\_daily'':
 17316 & 366 & Tulare & 62.666667 \\
 17317 & 366 & Ventura & 23.666667 \\
 17318 & 366 & Yolo & 35.000000 \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{exercise-6}{%
@@ -2440,7 +2527,7 @@ Processing}\label{natural-language-processing}}
 
 \hypertarget{workshop-4-open-in-colab}{%
 \section[\emph{Workshop 4} ]{\texorpdfstring{\emph{Workshop 4}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W04.\%20Natural\%20Language\%20Processing.ipynb}{\protect\includegraphics{https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1}}}{Workshop 4 Open In Colab}}\label{workshop-4-open-in-colab}}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W04.\%20Natural\%20Language\%20Processing.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 4 Open In Colab}}\label{workshop-4-open-in-colab}}
 
 \hypertarget{background-1}{%
 \section{Background}\label{background-1}}
@@ -2487,7 +2574,7 @@ million words; that's like reading the Harry Potter series 10 times.
 Then, we'll look at a sample of 100,000 tweets that use the \#ExxonKnew
 hashtag, and analyze public pressure on the company.
 
-\includegraphics{https://haha.business/business.jpg}
+\includegraphics{index_files/mediabag/business.jpg}
 
 \hypertarget{downloading-the-data-1}{%
 \section{Downloading the Data}\label{downloading-the-data-1}}
@@ -2637,13 +2724,14 @@ call:
 \end{Shaded}
 
 \begin{longtable}[]{@{}llll@{}}
-\toprule()
+\toprule\noalign{}
 & Date & Title & Text \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 2022-05-04 16:51:56 & 1Q22 XOM Earnings Call Transcript 4-29-22 &
 \textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n\textbackslash n... \\
-\bottomrule()
 \end{longtable}
 
 Now, if we were so inclined, we could use a loop to repeat this process
@@ -2661,10 +2749,12 @@ words' worth of earnings calls. Let's take a peek:
 \end{Shaded}
 
 \begin{longtable}[]{@{}llll@{}}
-\toprule()
+\toprule\noalign{}
 & Title & Date & Text \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & Exxon Mobil Corp at Barclays CEO EnergyPower ... & 2019-09-04 & Mr.
 Woods joined ExxonMobil International in 1... \\
 1 & Q2 2019 Exxon Mobil Corp Earnings Call - Final & 2019-08-02 & NEIL
@@ -2688,7 +2778,6 @@ OVERVIEW \textbackslash n\textbackslash n XOM: 2Q02 net income was
 \$2.64b.... \\
 181 & Exxon Mobil Corporation First Quarter 2002 Re... & 2002-04-23 & We
 also signed a memorandum of understanding t... \\
-\bottomrule()
 \end{longtable}
 
 Great-- we've got a structured dataset of earnings calls. But even
@@ -3398,11 +3487,13 @@ and analyze this dataset.
 \end{Shaded}
 
 \begin{longtable}[]{@{}lllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & Unnamed: 0 & text & created\_at & author\_id & lang & geo & latitude &
 longitude \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 0 & \#ClimateChangeIsReal \#climateChange \#PutinPupp... &
 2016-12-31T22:45:29.000Z & 22220344.0 & qme & NaN & NaN & NaN \\
 1 & 1 & What you should know about @latimes connection... &
@@ -3424,7 +3515,6 @@ longitude \\
 2016-01-01T00:06:10.000Z & 4182290233.0 & en & NaN & NaN & NaN \\
 89100 & 89089 & RT @billmckibben: Thanks to @democracynow for ... &
 2016-01-01T00:01:39.000Z & 11186572.0 & en & NaN & NaN & NaN \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{sentiment-analysis}{%
@@ -3576,7 +3666,7 @@ SyntaxError: ignored
 
 \hypertarget{workshop-5-open-in-colab}{%
 \section[\emph{Workshop 5} ]{\texorpdfstring{\emph{Workshop 5}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W05.\%20Merging\%20and\%20Joining.ipynb}{\protect\includegraphics{https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1}}}{Workshop 5 Open In Colab}}\label{workshop-5-open-in-colab}}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W05.\%20Merging\%20and\%20Joining.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 5 Open In Colab}}\label{workshop-5-open-in-colab}}
 
 Sometimes, we will want to combine data from different sources about the
 same subject - perhaps we want to compare the GDP in a country with life
@@ -3678,17 +3768,18 @@ researchers and don't want information about real people leaking out.
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & units of alcohol drunk & cigarettes smoked & sleep per night & height
 & BMI \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 4.589208 & 5.052479 & 5.514619 & 4.721543 & 6.076186 \\
 1 & 5.091470 & 4.275959 & 6.630442 & 7.084920 & 4.787786 \\
 2 & 5.751082 & 4.630197 & 5.286618 & 5.058565 & 3.803777 \\
 3 & 6.219418 & 6.131729 & 4.359941 & 5.165182 & 3.270455 \\
 4 & 5.930070 & 3.745579 & 4.980880 & 6.670358 & 5.003252 \\
-\bottomrule()
 \end{longtable}
 
 \begin{Shaded}
@@ -3705,15 +3796,16 @@ researchers and don't want information about real people leaking out.
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & units of alcohol drunk & cigarettes smoked & sleep per night & height
 & BMI \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 3.657942 & 5.022931 & 5.657866 & 5.342434 & 4.768451 \\
 1 & 5.801720 & 6.528911 & 3.863262 & 3.918306 & 3.233783 \\
 2 & 4.937641 & 4.726278 & 4.398084 & 5.610086 & 4.368852 \\
-\bottomrule()
 \end{longtable}
 
 \bookmarksetup{startatroot}
@@ -3740,11 +3832,13 @@ We'll use the \emph{concat} command, which is short for
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & units of alcohol drunk & cigarettes smoked & sleep per night & height
 & BMI \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 4.656973 & 3.732003 & 5.204398 & 5.592159 & 3.964027 \\
 1 & 5.023007 & 3.480838 & 4.677067 & 5.065464 & 4.795884 \\
 2 & 7.415662 & 4.302678 & 3.746028 & 5.616205 & 4.797184 \\
@@ -3753,7 +3847,6 @@ We'll use the \emph{concat} command, which is short for
 0 & 3.657942 & 5.022931 & 5.657866 & 5.342434 & 4.768451 \\
 1 & 5.801720 & 6.528911 & 3.863262 & 3.918306 & 3.233783 \\
 2 & 4.937641 & 4.726278 & 4.398084 & 5.610086 & 4.368852 \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{what-is-the-problem-above}{%
@@ -3773,11 +3866,13 @@ above?}\label{what-is-the-problem-above}}
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & units of alcohol drunk & cigarettes smoked & sleep per night & height
 & BMI \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 4.656973 & 3.732003 & 5.204398 & 5.592159 & 3.964027 \\
 1 & 5.023007 & 3.480838 & 4.677067 & 5.065464 & 4.795884 \\
 2 & 7.415662 & 4.302678 & 3.746028 & 5.616205 & 4.797184 \\
@@ -3786,7 +3881,6 @@ above?}\label{what-is-the-problem-above}}
 5 & 3.657942 & 5.022931 & 5.657866 & 5.342434 & 4.768451 \\
 6 & 5.801720 & 6.528911 & 3.863262 & 3.918306 & 3.233783 \\
 7 & 4.937641 & 4.726278 & 4.398084 & 5.610086 & 4.368852 \\
-\bottomrule()
 \end{longtable}
 
 \texttt{ignore\_index} is very useful when we want a new DataFrame which
@@ -3816,16 +3910,17 @@ fine, because the names would not repeat in the way the index has above.
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 4.150726 & 6.091615 & 5.638999 & 4.033120 & 5.312239 \\
 Paris & 6.406381 & 5.192887 & 5.165797 & 4.642474 & 5.776229 \\
 Beijing & 5.300187 & 4.790422 & 5.425208 & 4.857182 & 4.830031 \\
 Medellin & 5.248481 & 4.734017 & 4.762919 & 5.325021 & 4.415028 \\
 Port Elizabeth & 3.663045 & 5.555412 & 5.418251 & 4.369018 & 5.411102 \\
-\bottomrule()
 \end{longtable}
 
 \begin{Shaded}
@@ -3843,14 +3938,15 @@ Port Elizabeth & 3.663045 & 5.555412 & 5.418251 & 4.369018 & 5.411102 \\
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 Mumbai & 7.023555 & 4.045827 & 4.536805 & 5.383593 & 5.707156 \\
 Sydney & 5.444850 & 4.930251 & 3.803988 & 5.578729 & 6.248074 \\
 Boston & 3.380747 & 3.468165 & 4.166799 & 4.950791 & 5.094166 \\
-\bottomrule()
 \end{longtable}
 
 \begin{Shaded}
@@ -3866,10 +3962,12 @@ Boston & 3.380747 & 3.468165 & 4.166799 & 4.950791 & 5.094166 \\
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 4.150726 & 6.091615 & 5.638999 & 4.033120 & 5.312239 \\
 Paris & 6.406381 & 5.192887 & 5.165797 & 4.642474 & 5.776229 \\
 Beijing & 5.300187 & 4.790422 & 5.425208 & 4.857182 & 4.830031 \\
@@ -3878,7 +3976,6 @@ Port Elizabeth & 3.663045 & 5.555412 & 5.418251 & 4.369018 & 5.411102 \\
 Mumbai & 7.023555 & 4.045827 & 4.536805 & 5.383593 & 5.707156 \\
 Sydney & 5.444850 & 4.930251 & 3.803988 & 5.578729 & 6.248074 \\
 Boston & 3.380747 & 3.468165 & 4.166799 & 4.950791 & 5.094166 \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{exercise-concat-continued}{%
@@ -3908,16 +4005,17 @@ Consider the same df1
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 6.216092 & 4.902209 & 3.726599 & 4.628916 & 6.348860 \\
 Paris & 6.041971 & 3.477545 & 3.075159 & 2.630728 & 5.945750 \\
 Beijing & 4.117056 & 5.939825 & 5.166189 & 6.534852 & 4.581087 \\
 Medellin & 4.186988 & 5.007498 & 5.732247 & 5.746915 & 2.452759 \\
 Port Elizabeth & 5.755107 & 6.332844 & 5.603563 & 5.072384 & 6.222260 \\
-\bottomrule()
 \end{longtable}
 
 But a new dataframe df4, which details the same locations, but has
@@ -3938,16 +4036,17 @@ different information about them:
 \end{Shaded}
 
 \begin{longtable}[]{@{}llll@{}}
-\toprule()
+\toprule\noalign{}
 & Mean House Price & median income & walkability score \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 6.041301 & 4.795007 & 5.916860 \\
 Paris & 6.125245 & 3.869070 & 4.279607 \\
 Beijing & 4.853104 & 5.725823 & 4.187186 \\
 Medellin & 5.482517 & 3.667043 & 3.928093 \\
 Port Elizabeth & 5.565643 & 5.884004 & 5.007168 \\
-\bottomrule()
 \end{longtable}
 
 We have to join ``on'' the index - meaning when merging the records,
@@ -3966,11 +4065,13 @@ python will look at the index column.
 \end{Shaded}
 
 \begin{longtable}[]{@{}lllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall &
 Mean House Price & median income & walkability score \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 6.216092 & 4.902209 & 3.726599 & 4.628916 & 6.348860 & 6.041301
 & 4.795007 & 5.916860 \\
 Paris & 6.041971 & 3.477545 & 3.075159 & 2.630728 & 5.945750 & 6.125245
@@ -3981,7 +4082,6 @@ Medellin & 4.186988 & 5.007498 & 5.732247 & 5.746915 & 2.452759 &
 5.482517 & 3.667043 & 3.928093 \\
 Port Elizabeth & 5.755107 & 6.332844 & 5.603563 & 5.072384 & 6.222260 &
 5.565643 & 5.884004 & 5.007168 \\
-\bottomrule()
 \end{longtable}
 
 Note that this joins on the \emph{index}, not the row number - so if the
@@ -4002,16 +4102,17 @@ order of elements in df4 is different, it should still work.
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 6.216092 & 4.902209 & 3.726599 & 4.628916 & 6.348860 \\
 Paris & 6.041971 & 3.477545 & 3.075159 & 2.630728 & 5.945750 \\
 Beijing & 4.117056 & 5.939825 & 5.166189 & 6.534852 & 4.581087 \\
 Medellin & 4.186988 & 5.007498 & 5.732247 & 5.746915 & 2.452759 \\
 Port Elizabeth & 5.755107 & 6.332844 & 5.603563 & 5.072384 & 6.222260 \\
-\bottomrule()
 \end{longtable}
 
 \begin{Shaded}
@@ -4021,16 +4122,17 @@ Port Elizabeth & 5.755107 & 6.332844 & 5.603563 & 5.072384 & 6.222260 \\
 \end{Shaded}
 
 \begin{longtable}[]{@{}llll@{}}
-\toprule()
+\toprule\noalign{}
 & Mean House Price & median income & walkability score \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 Paris & 0.425225 & -0.446028 & -0.381586 \\
 Port Elizabeth & -0.918616 & 1.274748 & 0.355480 \\
 Beijing & 0.918480 & 1.060849 & -1.040598 \\
 Medellin & 1.414231 & 0.914922 & -0.393816 \\
 London & -1.036150 & -0.902475 & -0.417904 \\
-\bottomrule()
 \end{longtable}
 
 \begin{Shaded}
@@ -4046,11 +4148,13 @@ London & -1.036150 & -0.902475 & -0.417904 \\
 \end{Shaded}
 
 \begin{longtable}[]{@{}lllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall &
 Mean House Price & median income & walkability score \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 6.216092 & 4.902209 & 3.726599 & 4.628916 & 6.348860 &
 -1.036150 & -0.902475 & -0.417904 \\
 Paris & 6.041971 & 3.477545 & 3.075159 & 2.630728 & 5.945750 & 0.425225
@@ -4061,7 +4165,6 @@ Medellin & 4.186988 & 5.007498 & 5.732247 & 5.746915 & 2.452759 &
 1.414231 & 0.914922 & -0.393816 \\
 Port Elizabeth & 5.755107 & 6.332844 & 5.603563 & 5.072384 & 6.222260 &
 -0.918616 & 1.274748 & 0.355480 \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{merge-records}{%
@@ -4077,16 +4180,17 @@ df1 stil has data for these 5 cities:
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 4.898594 & 6.625739 & 3.587877 & 6.063331 & 4.342769 \\
 Paris & 6.032702 & 3.479265 & 2.383832 & 5.251509 & 5.158178 \\
 Beijing & 4.368419 & 4.993774 & 2.942992 & 3.761624 & 6.002863 \\
 Medellin & 7.437921 & 5.228150 & 3.902431 & 4.437361 & 5.563400 \\
 Port Elizabeth & 7.053265 & 5.936734 & 5.842155 & 6.042136 & 7.057592 \\
-\bottomrule()
 \end{longtable}
 
 But our new table, df5, contains data for three cities:
@@ -4106,14 +4210,15 @@ But our new table, df5, contains data for three cities:
 \end{Shaded}
 
 \begin{longtable}[]{@{}llll@{}}
-\toprule()
+\toprule\noalign{}
 & Mean House Price & median income & walkability score \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 4.848734 & 6.598818 & 5.442444 \\
 Paris & 5.294294 & 4.282418 & 5.741057 \\
 Glasgow & 5.375804 & 4.697775 & 4.393675 \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{exercise-13}{%
@@ -4167,16 +4272,17 @@ tables. Let's see what that looks like:
 \end{Shaded}
 
 \begin{longtable}[]{@{}lllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall &
 Mean House Price & median income & walkability score \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 4.898594 & 6.625739 & 3.587877 & 6.063331 & 4.342769 & 4.848734
 & 6.598818 & 5.442444 \\
 Paris & 6.032702 & 3.479265 & 2.383832 & 5.251509 & 5.158178 & 5.294294
 & 4.282418 & 5.741057 \\
-\bottomrule()
 \end{longtable}
 
 Here, we have a couple of arguments specifying the manner of the join -
@@ -4208,16 +4314,17 @@ calculated by changing the text in the optional argument ``how'':
 \end{Shaded}
 
 \begin{longtable}[]{@{}lllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall &
 Mean House Price & median income & walkability score \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 4.898594 & 6.625739 & 3.587877 & 6.063331 & 4.342769 & 4.848734
 & 6.598818 & 5.442444 \\
 Paris & 6.032702 & 3.479265 & 2.383832 & 5.251509 & 5.158178 & 5.294294
 & 4.282418 & 5.741057 \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{the-future-of-the-left}{%
@@ -4260,11 +4367,13 @@ optional argument to create a left join:
 \end{Shaded}
 
 \begin{longtable}[]{@{}lllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & area & population & mean temperature & elevation & annual rainfall &
 Mean House Price & median income & walkability score \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 London & 4.898594 & 6.625739 & 3.587877 & 6.063331 & 4.342769 & 4.848734
 & 6.598818 & 5.442444 \\
 Paris & 6.032702 & 3.479265 & 2.383832 & 5.251509 & 5.158178 & 5.294294
@@ -4275,7 +4384,6 @@ Medellin & 7.437921 & 5.228150 & 3.902431 & 4.437361 & 5.563400 & NaN &
 NaN & NaN \\
 Port Elizabeth & 7.053265 & 5.936734 & 5.842155 & 6.042136 & 7.057592 &
 NaN & NaN & NaN \\
-\bottomrule()
 \end{longtable}
 
 As we see, the missing data appears as \textbf{NaN} - Not a Number.
@@ -4325,11 +4433,13 @@ Let's load up data on city population - this set contains data for
 \end{Shaded}
 
 \begin{longtable}[]{@{}lllllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & Year & Area & Sex & City & City type & Record Type & Reliability &
 Source Year & Value & Value Footnotes \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 2013 & Total & Both Sexes & MARIEHAMN & City proper & Estimate - de
 jure & Final figure, complete & 2014 & 11370.0 & NaN \\
 1 & 2013 & Total & Male & MARIEHAMN & City proper & Estimate - de jure &
@@ -4340,7 +4450,6 @@ Final figure, complete & 2014 & 5445.0 & NaN \\
 jure & Final figure, complete & 2013 & 11304.5 & NaN \\
 4 & 2012 & Total & Male & MARIEHAMN & City proper & Estimate - de jure &
 Final figure, complete & 2013 & 5408.0 & NaN \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{exercise-15}{%
@@ -4523,7 +4632,7 @@ Statistics}\label{distributions-and-basic-statistics}}
 
 \hypertarget{workshop-7-open-in-colab}{%
 \section[\emph{Workshop 7} ]{\texorpdfstring{\emph{Workshop 7}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W07.\%20Distributions\%20and\%20Basic\%20Statistics.ipynb}{\protect\includegraphics{https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1}}}{Workshop 7 Open In Colab}}\label{workshop-7-open-in-colab}}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W07.\%20Distributions\%20and\%20Basic\%20Statistics.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 7 Open In Colab}}\label{workshop-7-open-in-colab}}
 
 For the rest of this course, we'll be working with data from the U.S.
 Census \href{https://www.census.gov/programs-surveys/cps.html}{Current
@@ -4629,11 +4738,13 @@ import the data:
 \end{Shaded}
 
 \begin{longtable}[]{@{}llllllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & year & state & age & sex & race & sch & ind & union & incwage &
 realhrwage & occupation \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 0 & 1990 & 36 & 58 & 1 & 3 & 12.0 & 871 & 0.0 & 14200.0 & 12.269874 &
 Office and Admin Support \\
 1 & 2009 & 5 & 28 & 1 & 1 & 12.0 & 8660 & 1.0 & 17680.0 & 8.635149 &
@@ -4644,7 +4755,6 @@ Office and Admin Support \\
 Computer and Math Technicians \\
 4 & 1981 & 51 & 38 & 1 & 4 & 13.0 & 798 & NaN & 17000.0 & 18.892282 &
 Managers \\
-\bottomrule()
 \end{longtable}
 
 Our dataframe has 10 columns:
@@ -4739,11 +4849,13 @@ numerical variables in our entire dataframe:
 \end{Shaded}
 
 \begin{longtable}[]{@{}lllllllllll@{}}
-\toprule()
+\toprule\noalign{}
 & year & state & age & sex & race & sch & ind & union & incwage &
 realhrwage \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 count & 344287.000000 & 344287.000000 & 344287.000000 & 344287.000000 &
 344287.000000 & 344287.000000 & 344287.000000 & 301908.000000 &
 3.442870e+05 & 344287.000000 \\
@@ -4761,7 +4873,6 @@ min & 1981.000000 & 1.000000 & 25.000000 & 1.000000 & 1.000000 &
 16.000000 & 7860.000000 & 0.000000 & 5.000000e+04 & 26.442308 \\
 max & 2013.000000 & 56.000000 & 64.000000 & 2.000000 & 4.000000 &
 18.000000 & 9590.000000 & 3.000000 & 1.259999e+06 & 294610.968750 \\
-\bottomrule()
 \end{longtable}
 
 \texttt{describe} returns a dataframe with the same columns as the
@@ -6036,14 +6147,9 @@ significant increase in hate speech following Elon Musk's tweet.
 \hypertarget{regression}{%
 \chapter{Regression}\label{regression}}
 
-\bookmarksetup{startatroot}
-
-\hypertarget{linear-regression}{%
-\chapter{Linear Regression}\label{linear-regression}}
-
-\hypertarget{workshop-9-open-in-colab}{%
-\section[\emph{Workshop 9} ]{\texorpdfstring{\emph{Workshop 9}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W09.\%20Linear\%20Regression.ipynb}{\protect\includegraphics{https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1}}}{Workshop 9 Open In Colab}}\label{workshop-9-open-in-colab}}
+\hypertarget{workshop-6-open-in-colab}{%
+\section[\emph{Workshop 6} ]{\texorpdfstring{\emph{Workshop 6}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W09.\%20Linear\%20Regression.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 6 Open In Colab}}\label{workshop-6-open-in-colab}}
 
 \hypertarget{aims-4}{%
 \subsection{Aims:}\label{aims-4}}
@@ -6116,7 +6222,7 @@ As always we'll start by importing the libraries I need
 \ImportTok{import}\NormalTok{ statistics }
 \ImportTok{import}\NormalTok{ seaborn }\ImportTok{as}\NormalTok{ sns}
 \ImportTok{from}\NormalTok{ IPython.display }\ImportTok{import}\NormalTok{ display, Math, Latex, display\_latex}
-
+\ImportTok{import}\NormalTok{ plotly.express }\ImportTok{as}\NormalTok{ px}
 \ImportTok{import}\NormalTok{ pylab}
 \ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
 \ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
@@ -6128,11 +6234,6 @@ As always we'll start by importing the libraries I need
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-/Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages/pandas/compat/__init__.py:97: UserWarning: Could not import the lzma module. Your installed Python is incomplete. Attempting to use lzma compression will result in a RuntimeError.
-  warnings.warn(msg)
-\end{verbatim}
-
 \begin{Shaded}
 \begin{Highlighting}[]
 \OperatorTok{!}\NormalTok{mkdir data}
@@ -6140,14 +6241,6 @@ As always we'll start by importing the libraries I need
 \OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{cps.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk8}\OperatorTok{/}\NormalTok{cps.csv}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-mkdir: data: File exists
-mkdir: data/wk8: File exists
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 22.4M  100 22.4M    0     0  18.7M      0  0:00:01 --:--:--  0:00:01 14.2M  0  0:00:01  0:00:01 --:--:-- 18.8M
-\end{verbatim}
 
 Now that I've imported the libraries I'm going to be using, I'm ready to
 import the data:
@@ -6158,25 +6251,6 @@ import the data:
 \NormalTok{df.head()}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{longtable}[]{@{}llllllllllll@{}}
-\toprule()
-& year & state & age & sex & race & sch & ind & union & incwage &
-realhrwage & occupation \\
-\midrule()
-\endhead
-0 & 1990 & 36 & 58 & 1 & 3 & 12.0 & 871 & 0.0 & 14200.0 & 12.269874 &
-Office and Admin Support \\
-1 & 2009 & 5 & 28 & 1 & 1 & 12.0 & 8660 & 1.0 & 17680.0 & 8.635149 &
-Office and Admin Support \\
-2 & 1990 & 36 & 37 & 1 & 1 & 14.0 & 380 & 1.0 & 28000.0 & 21.169851 &
-. \\
-3 & 1990 & 6 & 34 & 1 & 1 & 18.0 & 740 & 1.0 & 27500.0 & 20.447746 &
-Computer and Math Technicians \\
-4 & 1981 & 51 & 38 & 1 & 4 & 13.0 & 798 & NaN & 17000.0 & 18.892282 &
-Managers \\
-\bottomrule()
-\end{longtable}
 
 Our dataframe has 10 columns:
 
@@ -6288,20 +6362,6 @@ measures of the variables make sense.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{longtable}[]{@{}lllllllll@{}}
-\toprule()
-& count & mean & std & min & 25\% & 50\% & 75\% & max \\
-\midrule()
-\endhead
-age & 53790.0 & 42.91 & 10.56 & 25.00 & 34.00 & 43.00 & 51.00 & 64.0 \\
-sch & 53790.0 & 13.93 & 2.74 & 0.00 & 12.00 & 13.00 & 16.00 & 18.0 \\
-incwage & 53790.0 & 51821.86 & 60163.45 & 38.00 & 24000.00 & 40000.00 &
-63000.00 & 1102999.0 \\
-realhrwage & 53790.0 & 24.38 & 151.90 & 2.01 & 12.17 & 18.44 & 28.12 &
-34760.8 \\
-\bottomrule()
-\end{longtable}
-
 This table is already informative. I now know that the average person in
 this dataset is 42 years old, has around 14 years of schooling, and
 makes \$24/hour (or \$51,821/year). However, it's also useful to spot
@@ -6338,10 +6398,6 @@ understand'').
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-Dropped 1040 observations
-\end{verbatim}
-
 We can see that this operation dropped 1040 observations that had
 extreme values in the ``realhrwage'' variable. Let's re-generate the
 table of summary statistics and only keep four columns: count, mean,
@@ -6353,18 +6409,6 @@ standard deviaiton, minimum, and maximum.
 \NormalTok{summary[[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}std\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}min\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}max\textquotesingle{}}\NormalTok{]]}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{longtable}[]{@{}llllll@{}}
-\toprule()
-& count & mean & std & min & max \\
-\midrule()
-\endhead
-age & 52750.0 & 42.84 & 10.57 & 25.00 & 64.00 \\
-sch & 52750.0 & 13.88 & 2.73 & 0.00 & 18.00 \\
-incwage & 52750.0 & 46849.39 & 33376.96 & 38.00 & 353000.00 \\
-realhrwage & 52750.0 & 21.59 & 13.03 & 2.01 & 75.81 \\
-\bottomrule()
-\end{longtable}
 
 \hypertarget{visualization}{%
 \section{2. Visualization}\label{visualization}}
@@ -6402,14 +6446,6 @@ Let's start with the race category:
 \NormalTok{plt.show() }\CommentTok{\# show the plot}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W09. Linear Regression_files/figure-pdf/cell-9-output-1.png}
-
-}
-
-\end{figure}
 
 \hypertarget{exercise-25}{%
 \subsection{Exercise}\label{exercise-25}}
@@ -6512,18 +6548,6 @@ potential heteroscedasticity:
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-Text(53.625, 0.5, 'Hourly Wage')
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W09. Linear Regression_files/figure-pdf/cell-10-output-2.png}
-
-}
-
-\end{figure}
-
 The plot above is cause for concern. From 0 to 5 years of schooling the
 model has underestimated hourly wages for every single observation.
 Conversely, at the far right tip of the regression line, we can see that
@@ -6564,18 +6588,6 @@ matrix:
 \NormalTok{plt.title(}\StringTok{\textquotesingle{}Correlation Matrix\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-Text(0.5, 1.0, 'Correlation Matrix')
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W09. Linear Regression_files/figure-pdf/cell-11-output-2.png}
-
-}
-
-\end{figure}
 
 This matrix has each of the continuous variables in \texttt{reg\_df} on
 both axes. Each cell denotes the correlation between the corresponding
@@ -6671,12 +6683,6 @@ Now we can implement this on our dataset:
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-Max VIF: 1.0471509029112522
-The columns remaining after VIF selection are:
-Index(['sex', 'age', 'sch', 'union', 'race'], dtype='object')
-\end{verbatim}
-
 The maximum VIF value encountered was 1.04-- well within the acceptable
 range. Accordingly, the function hasn't dropped any of the independent
 variables in our dataset.
@@ -6721,34 +6727,6 @@ specified above, which we will store in an variable called
 \BuiltInTok{print}\NormalTok{(model.summary()) }\CommentTok{\# print the summary}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-                            OLS Regression Results                            
-==============================================================================
-Dep. Variable:             realhrwage   R-squared:                       0.181
-Model:                            OLS   Adj. R-squared:                  0.181
-Method:                 Least Squares   F-statistic:                 1.164e+04
-Date:                Fri, 09 Dec 2022   Prob (F-statistic):               0.00
-Time:                        10:34:30   Log-Likelihood:            -2.0503e+05
-No. Observations:               52750   AIC:                         4.101e+05
-Df Residuals:                   52748   BIC:                         4.101e+05
-Df Model:                           1                                         
-Covariance Type:            nonrobust                                         
-==============================================================================
-                 coef    std err          t      P>|t|      [0.025      0.975]
-------------------------------------------------------------------------------
-Intercept     -6.6246      0.266    -24.858      0.000      -7.147      -6.102
-sch            2.0327      0.019    107.887      0.000       1.996       2.070
-==============================================================================
-Omnibus:                    10230.138   Durbin-Watson:                   1.900
-Prob(Omnibus):                  0.000   Jarque-Bera (JB):            19817.137
-Skew:                           1.187   Prob(JB):                         0.00
-Kurtosis:                       4.838   Cond. No.                         73.7
-==============================================================================
-
-Notes:
-[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
-\end{verbatim}
 
 There's a lot going on in the regression output above. If you want a
 more detailed explanation of what each part means, check out this
@@ -6885,36 +6863,6 @@ Let's see what this looks like in our regression output:
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-                            OLS Regression Results                            
-==============================================================================
-Dep. Variable:             realhrwage   R-squared:                       0.239
-Model:                            OLS   Adj. R-squared:                  0.239
-Method:                 Least Squares   F-statistic:                     5514.
-Date:                Fri, 09 Dec 2022   Prob (F-statistic):               0.00
-Time:                        10:34:31   Log-Likelihood:            -2.0310e+05
-No. Observations:               52750   AIC:                         4.062e+05
-Df Residuals:                   52746   BIC:                         4.062e+05
-Df Model:                           3                                         
-Covariance Type:            nonrobust                                         
-===============================================================================
-                  coef    std err          t      P>|t|      [0.025      0.975]
--------------------------------------------------------------------------------
-Intercept     -12.6722      0.330    -38.392      0.000     -13.319     -12.025
-C(sex)[T.2]    -5.2692      0.099    -52.967      0.000      -5.464      -5.074
-sch             2.1343      0.018    116.995      0.000       2.098       2.170
-age             0.1695      0.005     36.164      0.000       0.160       0.179
-==============================================================================
-Omnibus:                     9831.824   Durbin-Watson:                   1.995
-Prob(Omnibus):                  0.000   Jarque-Bera (JB):            19481.335
-Skew:                           1.131   Prob(JB):                         0.00
-Kurtosis:                       4.935   Cond. No.                         308.
-==============================================================================
-
-Notes:
-[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
-\end{verbatim}
-
 We now have 4 coefficients. In general, we don't always have to
 interpret the Intercept coefficient. It's not really that meaningful in
 this case, since now it denotes the predicted hourly income of someone
@@ -7012,27 +6960,6 @@ p\textless0.01, *** p\textless0.001.
 \BuiltInTok{print}\NormalTok{(table)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-
-=====================================
-               California Mississippi
--------------------------------------
-Intercept      -12.136*** -10.111*** 
-               (1.030)    (3.497)    
-C(sex)[T.2]    -5.154***  -4.980***  
-               (0.350)    (0.924)    
-sch            2.096***   1.850***   
-               (0.053)    (0.205)    
-age            0.217***   0.115**    
-               (0.017)    (0.045)    
-R-squared      0.262      0.199      
-R-squared Adj. 0.262      0.193      
-N              5079       430        
-=====================================
-Standard errors in parentheses.
-* p<.1, ** p<.05, ***p<.01
-\end{verbatim}
 
 This layout lets us clearly explore our regresison results. This lets us
 clearly compare the coefficients of the same variable in different
@@ -7157,18 +7084,6 @@ scatterplot:
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-<seaborn.axisgrid.JointGrid at 0x17f7d84c0>
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W09. Linear Regression_files/figure-pdf/cell-19-output-2.png}
-
-}
-
-\end{figure}
-
 We can more thoroughly diagnose heteroscedasticity \emph{after} having
 run our regression models, since we have access to the model's
 \textbf{residuals} (the difference between the observed values and the
@@ -7199,14 +7114,6 @@ residuals of our model to a normal distribution as follows:
 \end{Highlighting}
 \end{Shaded}
 
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W09. Linear Regression_files/figure-pdf/cell-20-output-1.png}
-
-}
-
-\end{figure}
-
 This Q-Q plot suggests that our residuals are not normally distributed,
 as very few of them are on the red line. This is probably due to the
 fact that the \texttt{realhrwage} variable is itself highly skewed.
@@ -7233,18 +7140,6 @@ Qualitatively, this means
 \NormalTok{sns.jointplot(data}\OperatorTok{=}\NormalTok{reg\_df, x}\OperatorTok{=}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}logwage\textquotesingle{}}\NormalTok{, kind}\OperatorTok{=}\StringTok{"reg"}\NormalTok{,  scatter\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(alpha}\OperatorTok{=}\FloatTok{0.1}\NormalTok{), line\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{), height}\OperatorTok{=}\DecValTok{10}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-<seaborn.axisgrid.JointGrid at 0x17f494850>
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W09. Linear Regression_files/figure-pdf/cell-21-output-2.png}
-
-}
-
-\end{figure}
 
 A few things are noticeably different in this plot. First, the histogram
 of \texttt{logwage} on the far right is a lot less skewed than the
@@ -7273,14 +7168,6 @@ using a model in which \texttt{logwage} is the dependent variable:
 \NormalTok{plt.show() }\CommentTok{\# show the plot}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W09. Linear Regression_files/figure-pdf/cell-22-output-1.png}
-
-}
-
-\end{figure}
 
 It's not perfect, but it's a lot better than the unlogged version; a
 large proportion of the residuals fall on the red line in the Q-Q plot,
@@ -7313,23 +7200,6 @@ First, let's compare the unlogged and logged models:
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-
-=================================
-                Unlogged  Logged 
----------------------------------
-Intercept      -6.625*** 1.573***
-               (0.266)   (0.012) 
-sch            2.033***  0.096***
-               (0.019)   (0.001) 
-R-squared      0.181     0.191   
-R-squared Adj. 0.181     0.191   
-N              52750     52750   
-=================================
-Standard errors in parentheses.
-* p<.1, ** p<.05, ***p<.01
-\end{verbatim}
-
 Interestingly, we can see that we've also got a 1\% increase in \(R^2\)
 just from logging the dependent variable. While the coefficient for
 schooling can be interpreted normally for the unlogged model (every
@@ -7347,10 +7217,6 @@ coefficeint in the logged model as follows:
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-For every additional year of schooling, log wages increase by 10.04%
-\end{verbatim}
-
 \bookmarksetup{startatroot}
 
 \hypertarget{causal-inference}{%
@@ -7358,7 +7224,7 @@ For every additional year of schooling, log wages increase by 10.04%
 
 \hypertarget{workshop-10-open-in-colab}{%
 \section[\emph{Workshop 10} ]{\texorpdfstring{\emph{Workshop 10}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W10.\%20Causal\%20Inference.ipynb}{\protect\includegraphics{https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1}}}{Workshop 10 Open In Colab}}\label{workshop-10-open-in-colab}}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W10.\%20Causal\%20Inference.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 10 Open In Colab}}\label{workshop-10-open-in-colab}}
 
 \hypertarget{aims-5}{%
 \subsection{Aims:}\label{aims-5}}
@@ -7440,524 +7306,65 @@ mkdir: data: File exists
 mkdir: data/wk10: File exists
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 2424k  100 2424k    0     0  4878k      0 --:--:-- --:--:-- --:--:-- 4917k
+100 2424k  100 2424k    0     0  6772k      0 --:--:-- --:--:-- --:--:-- 6848k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  875k  100  875k    0     0  2506k      0 --:--:-- --:--:-- --:--:-- 2529k
+100  875k  100  875k    0     0  1538k      0 --:--:-- --:--:-- --:--:-- 1548k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 3141k  100 3141k    0     0  6498k      0 --:--:-- --:--:-- --:--:-- 6558k
+100 3141k  100 3141k    0     0  8346k      0 --:--:-- --:--:-- --:--:-- 8399k
 \end{verbatim}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
-\toprule()
-\begin{minipage}[b]{\linewidth}\raggedright
-\#\# Panel Regression
-\end{minipage} \\
-\midrule()
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{counties}\OperatorTok{=}\NormalTok{pd.DataFrame() }\CommentTok{\# create empty dataframe to store the county data for each year}
+
+\ControlFlowTok{for}\NormalTok{ year }\KeywordTok{in} \BuiltInTok{range}\NormalTok{ (}\DecValTok{2008}\NormalTok{,}\DecValTok{2022}\NormalTok{): }\CommentTok{\# loop through years from 1990 to 2021}
+\NormalTok{    annual}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}https://www.bls.gov/lau/laucnty\textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(year)[}\OperatorTok{{-}}\DecValTok{2}\NormalTok{:]}\OperatorTok{+}\StringTok{\textquotesingle{}.txt\textquotesingle{}}\NormalTok{, sep}\OperatorTok{=}\StringTok{"\textbackslash{}s\{2,\}"}\NormalTok{, header}\OperatorTok{=}\DecValTok{3}\NormalTok{, on\_bad\_lines}\OperatorTok{=}\StringTok{\textquotesingle{}skip\textquotesingle{}}\NormalTok{, engine}\OperatorTok{=}\StringTok{\textquotesingle{}python\textquotesingle{}}\NormalTok{, skipfooter}\OperatorTok{=}\DecValTok{2}\NormalTok{) }\CommentTok{\# read in the data for each year by adding the last two digits of the year to the url}
+\NormalTok{    annual}\OperatorTok{=}\NormalTok{annual[[}\StringTok{\textquotesingle{}Code\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Code.1\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Year\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Rate\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Force\textquotesingle{}}\NormalTok{]].rename(columns}\OperatorTok{=}\NormalTok{\{}\StringTok{\textquotesingle{}Code\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Code.1\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}county\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Year\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Rate\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Force\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}population\textquotesingle{}}\NormalTok{\}) }\CommentTok{\# rename the columns}
+\NormalTok{    counties}\OperatorTok{=}\NormalTok{pd.concat([counties,annual]) }\CommentTok{\# append the data for each year to the dataframe}
+
+\NormalTok{counties.dropna(inplace}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# drop missing values}
+\NormalTok{counties[}\StringTok{\textquotesingle{}county\_fips\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{counties[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{str}\NormalTok{).}\BuiltInTok{str}\NormalTok{.zfill(}\DecValTok{2}\NormalTok{)}\OperatorTok{+}\NormalTok{counties[}\StringTok{\textquotesingle{}county\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{int}\NormalTok{).astype(}\BuiltInTok{str}\NormalTok{).}\BuiltInTok{str}\NormalTok{.zfill(}\DecValTok{3}\NormalTok{) }\CommentTok{\# create a fips code for each county}
+\NormalTok{counties[}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{pd.to\_numeric(counties[}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{], errors}\OperatorTok{=}\StringTok{\textquotesingle{}coerce\textquotesingle{}}\NormalTok{) }\CommentTok{\# convert the unemployment rate to a numeric variable}
+\NormalTok{counties[}\StringTok{\textquotesingle{}population\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{pd.to\_numeric(counties[}\StringTok{\textquotesingle{}population\textquotesingle{}}\NormalTok{].}\BuiltInTok{str}\NormalTok{.replace(}\StringTok{\textquotesingle{},\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{), errors}\OperatorTok{=}\StringTok{\textquotesingle{}coerce\textquotesingle{}}\NormalTok{)}\OperatorTok{/}\DecValTok{1000} \CommentTok{\# convert the population to a numeric variable and divide by 1000 to get the population in thousands}
+\NormalTok{counties.head()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllll@{}}
+\toprule\noalign{}
+& state & county & year & unemployment & population & county\_fips \\
+\midrule\noalign{}
 \endhead
-Intercept 65.608*** 74.605*** 68.971*** 73.383*** 70.706***
-81.721\textbf{\emph{ (0.572) (0.684) (0.680) (0.727) (0.788) (0.797)
-unemployment -1.782}} -2.351*** -1.891*** -1.618*** -1.101***
--2.322\textbf{\emph{ (0.122) (0.114) (0.109) (0.088) (0.142) (0.114)
-population -0.021}} -0.021*** -0.023*** -0.024*** -0.034***
--0.029\textbf{\emph{ (0.001) (0.001) (0.001) (0.002) (0.002) (0.002)
-R-squared 0.118 0.172 0.148 0.165 0.142 0.230 R-squared Adj. 0.117 0.171
-0.148 0.165 0.141 0.229 N 3113 3114 3114 3114 3115 3114
-==========================================================================
-Standard errors in parentheses. } p\textless.1, } p\textless.05,
-***p\textless.01 ``` ::: ::: \\
-This table is pretty informative. Using what we learned from last week,
-we can say that for the 2020 election, \\
-* A 1\% increase in the unemployment rate was associated with a 2.3\%
-\emph{decrease} in republican voteshare. * A 1000-person increase in
-population was associated with 0.029\% decrease in republican voteshare.
-* both of these results are statistically signifiant at the 0.01 level.
-* 23\% of the variation in republican voteshare can be explained by
-unemployment and population. \\
-Crucially, ``increase'' in this context pertains to \emph{differences in
-between counties}! \\
-We can also compare these results across different elections. The
-coefficient for the unemployment variable in 2020 is over twice the size
-of the same coefficient in 2016! So it looks like actually unemployment
-and republican voteshare are \emph{negatively} related, contrary to
-popular belief. \\
-But is this the whole story? \\
-Below, i've isolated West Virginia, one of the states with the highest
-unemployment rates in America. Instead of drawing a new regression line
-every year, i've drawn a new regression line for each county over the
-six elections. \\
-::: \{.cell execution\_count=11\} \\
-::: \{.cell-output .cell-output-display execution\_count=11\} \\
-::: \{.cell-output .cell-output-display\}
-\includegraphics{notebooks/W10. Causal Inference_files/figure-pdf/cell-10-output-2.png}
-::: ::: \\
-Within a given county, an increase in the unemployment rate is
-associated with an \textbf{increase} in republican voteshare! This is
-where the second question comes in (variation within counties). \\
-We got away with doing a series of cross-sectional analyses (a new
-regression for each election) because we have over 3000 counties, so
-\(n>3000\) for each of those regressions (though even so, we're still
-splitting our data up and it would be better to leverage the full
-dataset of \textgreater18000 observations in one regression). It also
-provides relatively useful information about the importance of
-unemployment across the country for each election. We can't really apply
-the same thinking to this situation, since we only have six time
-periods. If we ran a separate regression for each county, we would only
-have six observations per regression-- nowhere near enough to satisfy
-the central limit theorem (at least n\textgreater30). The insights would
-also be of limited utility; we would get over 3000 unique estimates for
-the realtionship between county-level employment and election results.
-Imagine trying to fit \emph{that} into one table. \\
-Luckily, there's a way of modeling this relationship that allows us to
-account for differences in between counties, while also capturing the
-variation within counties. This is called a \textbf{Fixed Effect
-regression} \\
-\textgreater{} \textbf{Fixed Effects Models}: In experimental research,
-unmeasured differences between subjects are often controlled for via
-random assignment to treatment and control groups. Hence, even if a
-variable like Socio-Economic Status is not explicitly measured, because
-of random assignment, we can be reasonably confident that the effects of
-SES are approximately equal for all groups. Of course, random assignment
-is usually not possible with most survey research. If we want to control
-for the effect of a variable, we must explicitly measure it. If we don't
-measure it, we can't control for it. In practice, there will almost
-certainly be some variables we have failed to measure (or have measured
-poorly), so our models will likely suffer from some degree of omitted
-variable bias. \textgreater When we have panel data (the same
-people/states/counties. etc. measured at two or more points in time)
-another alternative presents itself: we can use the subjects as their
-own controls. With panel data we can control for stable characteristics
-(i.e.~characteristics that do not change across time) whether they are
-measured or not. These include such things as sex, race, and ethnicity
-for individuals, or urban/rural, topography, economic structure for
-geographic areas. The idea is that, whatever effect these variables have
-at one point in time, they will have the same effect at a different
-point in time because the values of such variables do not change. \\
-A fixed effect regression takes the following form: \\
-\(\huge Y_{it}=\alpha_i+\beta X_{it}+\epsilon_{it}\) \\
-Where: * \(X_{it}\) are the independent variables (e.g.~population and
-unemployment) whose values vary over time. * \(\beta\) is the slope
-coefficient for variable \(x\) (e.g.~unemployment). The model assumes
-that these effects are time-invariant, e.g.~the effect of \(x\) is the
-same at same 1 as it is at time 4 (although the value of \(x\) can be
-different at different time periods). * \(\alpha_i\) and
-\(\epsilon_{it}\) are both error terms. \(\epsilon_{it}\) is different
-for each individual at each point in time. \(\alpha_i\) only varies
-across individuals but not across time. We can think of \(\alpha_i\) as
-representing the effects of all the time invariant/stable variables that
-have NOT been included in the model. So, given that we have 6 time
-periods for each county then the six records for county 1 would all have
-the same value for \(\alpha_1\), the six records for county 2 would all
-have the same value for \(\alpha_2\), etc. But, \(\epsilon_{it}\) is
-free to be different for every case at every time period. \\
-A fixed effect regression allows us to account for \(\alpha_i\) through
-a technique called \textbf{demeaning} \\
-\textgreater{}\textbf{Demeaning}: After demeaning, all variables for all
-cases have a mean of 0. That means that all the between-subject
-variability has been eliminated. All that is left is the within-subject
-variability. So, with a fixed effects model, we are analyzing what
-causes individual's values to change across time. Variables whose values
-do not change (like race or gender) cannot cause changes across time
-(unless their effects change across time as well). However, whatever
-effect they have at one time is the same effect that they have at other
-times, so the effects of such stable characteristics are controlled. \\
-In essence, you can picture this as allowing you to draw a separate
-regression line through each set of observations from the same group in
-your data (in this case, one county over time); however, while the
-\emph{intercept} of these lines can vary (their absolute position), they
-will all have the same \emph{slope} and will therefore be parallel. This
-is important, as we want to find one slope-- one common effect of x--
-that fits \emph{all} groups. \\
-::: \{.cell execution\_count=12\} ``` \{.python .cell-code\} from
-linearmodels import PanelOLS from linearmodels import RandomEffects
-import statsmodels.formula.api as smf from linearmodels.panel import
-compare \\
-df\_c=df\_c.set\_index({[}`county\_fips',`year'{]}) \# set the index to
-the county fips code and the year panel =
-PanelOLS.from\_formula(`r\_votes \textasciitilde{} 1 + population +
-unemployment + EntityEffects',df\_c).fit() \# run a fixed effects model
-print(compare(\{`Fixed Effects': panel,\}, stars=True)) \# print the
-model formatted as a regression table ``` \\
-::: \{.cell-output .cell-output-stdout\} ``` Model Comparison
-====================================== Fixed Effects \\
-\bottomrule()
+\bottomrule\noalign{}
+\endlastfoot
+0 & 1 & 1.0 & 2008.0 & 5.3 & 24.687 & 01001 \\
+1 & 1 & 3.0 & 2008.0 & 4.8 & 83.205 & 01003 \\
+2 & 1 & 5.0 & 2008.0 & 9.1 & 10.175 & 01005 \\
+3 & 1 & 7.0 & 2008.0 & 6.0 & 8.751 & 01007 \\
+4 & 1 & 9.0 & 2008.0 & 4.8 & 26.693 & 01009 \\
 \end{longtable}
 
-Dep. Variable r\_votes Estimator PanelOLS No.~Observations 18684 Cov.
-Est. Unadjusted R-squared 0.0227 R-Squared (Within) 0.0227 R-Squared
-(Between) -0.1949 R-Squared (Overall) -0.1627 F-statistic 180.40 P-value
-(F-stat) 0.0000 ===================== ============ Intercept
-61.986\textbf{\emph{ (246.29) population -0.0698}} (-17.332)
-unemployment 0.2829*** (9.6749) ======================= ==============
-Effects Entity --------------------------------------
+Part of the cleaning process in the cell above involves the creation of
+a column called ``county\_fips''-- this stands for
+\href{https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt\#:~:text=FIPS\%20codes\%20are\%20numbers\%20which,to\%20which\%20the\%20county\%20belongs.}{Federal
+Information Processing System}. This is a code that uniquely identifies
+states and counties in the U.S. A two digit FIPS code identifies states
+(e.g.~01: Alabama, 02: Alaska, etc.) and a five digit fips code
+identifies counties (e.g.~010001: Atauga County, Alabama; 02068: Denali
+Borough, Alaska). Notice, the first two digits of the five-digit county
+FIPS code indicates the state. Boring, yes, but these codes are
+imperative in allowing us to join county- and state- level datasets from
+different sources quicky and easily. Imagine what a nightmare it would
+be to try to join them using the names of the counties, having to deal
+with capitalizations, punctuation, etc. Yikes.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{regression-discontinuity}{%
+\section{Regression Discontinuity}\label{regression-discontinuity}}
 
-T-stats reported in parentheses
-
-\begin{verbatim}
-:::
-:::
-
-
-When accounting for time-invariant differences between counties, the effect of population remains negative. This suggests that counties in which the population is *decreasing* tend to experience an increase in republican voteshare. More specifically, for every 1000 people that leave a county, republican voteshare increases by 0.06%. 
-
-The really interesting part of this regression table, however, is the coefficient on the unemployment variable, which is now positive. This suggests that-- once we account for the differences between counties-- an increase in the unemployment rate *within* a county is *positively* associated with republican voteshare. Indeed, a 1% increase in the unemployment rate leads to a 0.28% increase in republican voteshare. 
-
-This regression output even gives us three separate $R^2$ values-- one for between-variation, another for within, and one overall. 
-
----------------------------
-## 2. Difference in Difference
-
-One of the reasons that we observe a signficant relationship between unemployment and voting behaviour is that the Republican and Democratic parties have opposing views on what to do about unemployment. Democratic lawmakers have historically been in favour of increasing the minimum wage to benefit low-income workers, while Republicans have generally opposed this on the basis that it would hurt these very workers by increase unemployment. Indeed, classical economic theory holds that an increase in wages would lead to a reduction in employment; A business that makes $100k in revenue per year and spends all of it on employing 20 people can't suddenly start paying their workers double their salaries-- unless it fires half of its workers. This is obviously a simplified model though-- minimum wage laws typically don't double wages, and businesses don't operate at-cost, they turn a profit which they could use to pay their workers more. In the rest of this workshop, we're going to be investigating this question empirically: 
-
-### Do minimum wage laws increase unemployment?
-
-Note that this is a *causal* question; i'm not asking if they're correlated-- i'm asking if one causes the other. The burden of proof here is much higher than observing correlations, and we have to think seriously about **endogeneity**. In partiuclar, we need to account for the influence of omitted variables (e.g. a recession, or the economic composition of a state), the potential for reverse causality (states implementing minimum wage laws in response to unemployment crises), and selection bias.
-
-In a lab, you can conduct causal inference by running an experiment. You can randomly select individuals, split them into a control group and a treatment group, measure their values in an outcome variable prior to a treatment, administer a treatment, and measure their respective values after the treatment. If you observe a change in the outcome variable in the treatment group after having administered the treatment, you can interpert that as the causal effect of treatment. This is because we're able to make a plausible argument that the **control group can act as a counterfactual (a stand-in) for the treatment group in the absence of treatment**. Both groups had the same values before the treatment, then the only thing that changed between them was the treatment, so if we observe a change in the outcome variable, it must be due to treatment.
-
-In the real world, we rarely get to run expermients of this kind. Instead, we have to hunt for **natural experiments**: situations in which there is a **treatment** which we're interested in measuring the effect of, and two groups that can plausibly act as a treatment and control group. 
-
-> **[Difference in Difference](https://www.publichealth.columbia.edu/research/population-health-methods/difference-difference-estimation#:~:text=DID%20relies%20on%20a%20less,individual%20level%20is%20not%20possible.)** is a quasi-experimental design that makes use of longitudinal data from treatment and control groups to obtain an appropriate counterfactual to estimate a causal effect. DID is typically used to estimate the effect of a specific intervention or treatment (such as a passage of law, enactment of policy, or large-scale program implementation) by comparing the changes in outcomes over time between a population that is enrolled in a program (the intervention group) and a population that is not (the control group).
-
-The Difference in Difference model can be estimated as a simple regression model of the following form: 
-
-$$\huge Y_{it} = \beta_0 + \beta_1 Treatment_i + \beta_2 Post_t + \beta_3 (Treatment_i \times Post_t) + \varepsilon_{it}$$
-
-- $Treatment_i$ is 0 for the control group and 1 for the treatment group
-- $Post_t$ is 0 for before and 1 for after
-
-we can insert the values of $Treatment$ and $Post$ using the table below and see that coefficient ($\beta_3$) of the interaction of $Treatment$ and $Post$ is the Difference in Differences (DID) estimator:
-
-|              | Control Group  | Treatment Group                    |    Difference              |
-|--------------|---------------------|-----------------------------------------|-----------------|
-| Before  | $\beta_0$           | $\beta_0 + \beta_1$                     | $\beta_1$                |
-| After   | $\beta_0 + \beta_2$ | $\beta_0 + \beta_1 + \beta_2 + \beta_3$ | $\beta_1 + \beta_3$                |
-| Difference   | $\beta_2$           | $\beta_2 + \beta_3$                     | **$\beta_3$** (DID) |
-
-
-[Card and Krueger (1994)](https://davidcard.berkeley.edu/papers/njmin-aer.pdf) found one such natural experiment, allowing them to estimate the causal effect of an increase in the state minimum wage on unemployment using a DiD model; In 1992, New Jersey raised the state minimum wage from \$4.25 to \$5.05 while the minimum wage in neighbouring Pennsylvania stayed the same at \$4.25. 
-   
-* Treatmeng Group: New Jersey 
-* Control Group: Pennsylvania
-* Pre-Treatment Period: before 1992
-* Post-Treatment Period: after 1992
-
-They conducted a survey of 384 fast-food restaurants across both states, right before and right after the law came into effect in New Jersey, asking them how many people they employed. They ran a Difference-in-Differences model, and found that the coefficient $\beta_3$ was positive but not statistically significant. In other words, the average total employees per restaurant *increased* after the minimum wage increased, but this could have been due to random chance. 
-
-That was a long time ago. Things have changed since then, including the fact that we have access to a lot more data and computational power. Let's see if we can replicate Card and Krueger's results with more recent data. I've downloaded data on unemployment, minimum wage levels, and Gross Domestic Product at the state level going back to 1976. Let's have a look at minimum wages in New Jersey and Pennsylvania over time:
-
-::: {.cell execution_count=13}
-``` {.python .cell-code}
-df_s=pd.read_csv('data/wk10/state_data.csv', parse_dates=['date']) # read in the state-level data
-did=df_s[df_s['state'].isin(['pennsylvania', 'new jersey'])] # subset the data to only include pennsylvania and new jersey
-
-px.line(did, x='date', y='minwage', color='state', title="Minimum Wages in New Jersey and Pennsylvania") # plot the minimum wage over time
-\end{verbatim}
-
-\begin{verbatim}
-Unable to display output for mime type(s): application/vnd.plotly.v1+json
-\end{verbatim}
-
-:::
-
-The plot above sort of looks like a set of descending staircases; this
-is for two reasons. The plateaus exist because each row in the dataframe
-\texttt{df\_s} is the value of a state in a given \emph{month}, but we
-only have minimum wage data for every \emph{year}. So we get 12
-consecutive values of minimum wage every year. The reason that the
-staircases are descending is because these minimum wages are adjusted
-for inflation. No matter where you're from, you've probably heard a
-grandparent say something along the lines of ``My parents would send me
-to the shops with 25 cents to buy groceries for the week'', but now it
-costs £9 for a bag of chips. That's inflation-- every year things tend
-to get slightly more expensive, so if the same \emph{absolute} minimum
-wage actually diminishes in ``real'' terms, which is what the variable
-\texttt{minwage} measures. Incidentally, this is one of the main reasons
-University staff have been on
-\href{https://www.ucu.org.uk/article/11830/University-staff-pay-cut-by-20-new-figures-show}{strike}.
-Anyway. Back to minimum wages.
-
-This plot shows that for the past fifty years, New Jersey and
-Pennsylvania have had largely similar minimum wage policies. There have
-been a couple moments of divergence, including in the 1990s when the
-Card and Krueger study was conducted. However, the biggest divergence
-actually started taking place in 2014 when New Jersey seems to have
-begun taking a wildly different approach. While Pennsylvania has had the
-same minimum wage since 2008 (and therefore seen a decline in
-inflation-adjusted wages), New Jersey has raised the minimum wage
-significantly twice. In 2020, New Jersey's minimum wage was around 50\%
-higher than Pennsylvania's. We can exploit the fact that these two
-states have historically had similar minimum wage laws but have recently
-experienced a big divergence to see if that change in minimum wages has
-resulted in a change in employment levels.
-
-Our Difference-in-Differences setup is as follows:
-
-\[\large Unemployment_{state, year} = \beta_0 + \beta_1 Treatment_{state} + \beta_2 Post_{year} + \beta_3 (Treatment_{state} \times Post_{year}) + \beta_4 GDP_{state,year} + \varepsilon_{it}\]
-
-\begin{itemize}
-\tightlist
-\item
-  New Jersey is the \textbf{treatment group}
-\item
-  Pennsylvania is the \textbf{control group}
-\item
-  Years before 2014 is the \textbf{pre-treatment period}
-\item
-  Years after 2014 is the \textbf{post-treatment period}
-\end{itemize}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a variable that is 1 if the date is after the minimum wage increase and 0 otherwise}
-\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a variable that is 1 if the state is new jersey (i.e., the treatment group) and 0 for pennsylvania (the control group)}
-\NormalTok{did[}\StringTok{\textquotesingle{}post\_treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{*}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{] }\CommentTok{\# create a variable that is 1 if the date is after the minimum wage increase and the state is new jersey and 0 otherwise}
-\end{Highlighting}
-\end{Shaded}
-
-Before we proceed with the analysis, though, we need to satisfy two
-assumptions that will allow us to argue that Pennsylvania can act as a
-valid control group for New Jersey:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  No simultaneous treatments:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    If, for example, New Jersey suddenly entered a massive recession in
-    2014 as well, we couldn't really argue that resulting effects on
-    employment are due solely to the minimum wage law. To account for
-    this, we'll be including state-level GDP as an additional
-    independent variable in our DiD model.
-  \end{itemize}
-\item
-  Parallel Trends:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Both states have to have been experiencing similar trends in the
-    \textbf{dependent variable} (unemployment) prior to the treatment
-    (minimum wage law). If they were trending in opposite directions for
-    unobserved reasons, ensuing differences in unemployment may be due
-    to those unobserved reasons rather than the treatment.
-  \item
-    We can check this by plotting the dependent variable for both groups
-    over time, and indicating the timing of the treatment.
-  \end{itemize}
-\end{enumerate}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{did}\OperatorTok{=}\NormalTok{did[(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2008{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}=}\StringTok{\textquotesingle{}2020{-}01{-}01\textquotesingle{}}\NormalTok{)]}
-
-\NormalTok{sns.lineplot(data}\OperatorTok{=}\NormalTok{did,x}\OperatorTok{=}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{,y}\OperatorTok{=}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{,hue}\OperatorTok{=}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.axvline(pd.to\_datetime(}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{),color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{,linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}NJ Minimum Wage Increase\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}Unemployment in Pennsylvania and New Jersey\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.legend()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-<matplotlib.legend.Legend at 0x174874b20>
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W10. Causal Inference_files/figure-pdf/cell-14-output-2.png}
-
-}
-
-\end{figure}
-
-This plot shows a big spike in unemployment occurring for both
-Pennsylvania and New Jersey as a result of the 2008 financial crisis.
-New jersey had a higher unemployment rate than Pennsylvania, but their
-trends are largely parallel and decreasing after 2012. In the years
-following the minimum wage law, New Jersey's unemployment rate actually
-dips below Pennsylvania's for the first time in years. Let's look at
-this in the form of boxplots:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{did[}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{str}\NormalTok{)}\OperatorTok{+}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{str}\NormalTok{) }\CommentTok{\# this variable is just for the plot below}
-\NormalTok{sns.boxplot(x}\OperatorTok{=}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{, hue}\OperatorTok{=}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{, data}\OperatorTok{=}\NormalTok{did).set\_xticklabels([}\StringTok{"Pre x Treatment"}\NormalTok{, }\StringTok{"Pre x Control"}\NormalTok{,}\StringTok{\textquotesingle{}Post x Treatment\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Post x Control\textquotesingle{}}\NormalTok{]) }
-\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}Unemployment Rates by Treatment and Post Treatment\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.show()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W10. Causal Inference_files/figure-pdf/cell-15-output-1.png}
-
-}
-
-\end{figure}
-
-This plot is fascinating in and of itself. The two box plots on the left
-show the unemployment values of the counties prior to the minimum wage
-law in 2014, while the two on the right show their values after the
-minimum wage increases. Pennsylvania (the ``control'' group) is colored
-in blue, and New Jersey (the ``treatment'' group) is colored orange.
-Prior to the minimum wage increase in 2014, Pennsylvania (blue) has a
-lower unemployment rate than New Jersey (orange). In the years following
-New Jersey's passage of the minimum wage law, New Jersey actually has a
-\emph{lower} unemployment rate than Pennsylvania! This is the only
-boxplot where the ``treatment'' (a minimum wage law) is being applied,
-and it has the lowest unemployment rate.
-
-Let's see if this difference is statistically signfiicant, and calculate
-a treatment effect:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{did\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{} gdp+ post + treatment + post\_treatment\textquotesingle{}}\NormalTok{, did).fit()}
-\BuiltInTok{print}\NormalTok{(did\_model.summary())}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-                            OLS Regression Results                            
-==============================================================================
-Dep. Variable:           unemployment   R-squared:                       0.704
-Model:                            OLS   Adj. R-squared:                  0.699
-Method:                 Least Squares   F-statistic:                     169.1
-Date:                Mon, 19 Dec 2022   Prob (F-statistic):           5.70e-74
-Time:                        09:20:32   Log-Likelihood:                -420.68
-No. Observations:                 290   AIC:                             851.4
-Df Residuals:                     285   BIC:                             869.7
-Df Model:                           4                                         
-Covariance Type:            nonrobust                                         
-==================================================================================
-                     coef    std err          t      P>|t|      [0.025      0.975]
-----------------------------------------------------------------------------------
-Intercept         15.6515      1.277     12.254      0.000      13.137      18.166
-gdp            -1.343e-05   2.05e-06     -6.544      0.000   -1.75e-05   -9.39e-06
-post              -0.5845      0.307     -1.904      0.058      -1.189       0.020
-treatment         -0.3641      0.295     -1.234      0.218      -0.945       0.217
-post_treatment    -1.9532      0.258     -7.581      0.000      -2.460      -1.446
-==============================================================================
-Omnibus:                      111.434   Durbin-Watson:                   0.319
-Prob(Omnibus):                  0.000   Jarque-Bera (JB):              320.366
-Skew:                          -1.772   Prob(JB):                     2.71e-70
-Kurtosis:                       6.735   Cond. No.                     1.34e+07
-==============================================================================
-
-Notes:
-[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
-[2] The condition number is large, 1.34e+07. This might indicate that there are
-strong multicollinearity or other numerical problems.
-\end{verbatim}
-
-There are some really interesting results from this model-- let's
-interpret the coefficients one by one.
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{gdp}: GDP is inversely related to unemployment. This makes
-  sense: GDP basically measures the total amount of economic activity,
-  so more economic activity = more employment.
-\item
-  \texttt{post}: this coefficient is negative, but statistically
-  insignificant at the 0.05 level; it indicates that unemployment
-  \emph{generally} decreased for both groups, but that this could be due
-  to random chance.
-\item
-  \texttt{treatment}: again negative but insignficant, meaning that
-  there is no significant difference in unemployment levels between NJ
-  and PA over the entire period.
-\item
-  \texttt{post\_treatment}: this is our difference-in-differences
-  estimator, and reflects the causal effect of treatment. It is negative
-  and statistically significant. If we believe that the asusmptions of
-  our model are satisfied, we can claim that:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \textbf{The introduction of a minimum wage in New Jersey led to a
-    1.95\% decrease in unemployment relative to Pennsylvania}
-  \end{itemize}
-\end{itemize}
-
-This is a bold claim. We should do our best to back it up. Notice that
-i've sort of arbitrarily chosen a window of dates around the minimum
-wage law-- maybe this result is a fluke, due to the timespan ive chosen.
-
-To address this concern, I'll run the same model 10 times, starting with
-a really small time window-- just one year on either side of the law--
-and progressively expand it.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{models}\OperatorTok{=}\NormalTok{[] }\CommentTok{\# create empty list to store the models}
-\NormalTok{names}\OperatorTok{=}\NormalTok{[] }\CommentTok{\# create empty list to store the names of the models}
-
-\ControlFlowTok{for}\NormalTok{ window }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{): }\CommentTok{\# loop through years from 2000 to 2020 in increments of 4}
-\NormalTok{    did}\OperatorTok{=}\NormalTok{df\_s[(df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\BuiltInTok{str}\NormalTok{(}\DecValTok{2014}\OperatorTok{{-}}\NormalTok{window)}\OperatorTok{+}\StringTok{\textquotesingle{}{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}=}\BuiltInTok{str}\NormalTok{(}\DecValTok{2014}\OperatorTok{+}\NormalTok{window)}\OperatorTok{+}\StringTok{\textquotesingle{}{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ df\_s[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}pennsylvania\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{])] }\CommentTok{\# subset the data within the window of interest around 2014}
-\NormalTok{    did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a dummy variable indicating the period after the minimum wage increase}
-\NormalTok{    did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a dummy variable for treatment}
-\NormalTok{    did[}\StringTok{\textquotesingle{}post\_treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{*}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{] }\CommentTok{\# create an interaction term between the post and treatment variables}
-\NormalTok{    did\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{} gdp+ post + treatment + post\_treatment\textquotesingle{}}\NormalTok{, did).fit() }\CommentTok{\# run the difference in difference model}
-
-\NormalTok{    models.append(did\_model) }\CommentTok{\# append the model to the list of models}
-\NormalTok{    names.append(}\StringTok{\textquotesingle{}± \textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(window)}\OperatorTok{+}\StringTok{\textquotesingle{} Year\textquotesingle{}}\NormalTok{) }\CommentTok{\# append the name of the model to the list of names}
-
-\NormalTok{table}\OperatorTok{=}\NormalTok{summary\_col( }\CommentTok{\# create a regression table }
-\NormalTok{    models, }\CommentTok{\# pass the models to the summary\_col function}
-\NormalTok{    stars}\OperatorTok{=}\VariableTok{True}\NormalTok{, }\CommentTok{\# add stars denoting the p{-}values of the coefficient to the table; * p\textless{}0.05, ** p\textless{}0.01, *** p\textless{}0.001}
-\NormalTok{    float\_format}\OperatorTok{=}\StringTok{\textquotesingle{}}\SpecialCharTok{\%0.3f}\StringTok{\textquotesingle{}}\NormalTok{, }\CommentTok{\# set the decimal places to 3}
-\NormalTok{    model\_names}\OperatorTok{=}\NormalTok{names, }\CommentTok{\# set the names of the model}
-\NormalTok{    info\_dict }\OperatorTok{=}\NormalTok{ \{}\StringTok{"N"}\NormalTok{:}\KeywordTok{lambda}\NormalTok{ x: }\StringTok{"}\SpecialCharTok{\{0:d\}}\StringTok{"}\NormalTok{.}\BuiltInTok{format}\NormalTok{(}\BuiltInTok{int}\NormalTok{(x.nobs))\}) }\CommentTok{\# add the number of observations to the table}
-
-\BuiltInTok{print}\NormalTok{(table) }\CommentTok{\# print the table}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-=======================================================================================================
-               ± 1 Year  ± 2 Year  ± 3 Year  ± 4 Year  ± 5 Year  ± 6 Year  ± 7 Year  ± 8 Year  ± 9 Year
--------------------------------------------------------------------------------------------------------
-Intercept      21.423** 33.130*** 24.228*** 22.751*** 19.711*** 15.651*** 2.327     -0.580    -2.340*  
-               (9.399)  (2.324)   (1.333)   (0.876)   (0.746)   (1.277)   (2.183)   (1.579)   (1.398)  
-gdp            -0.000   -0.000*** -0.000*** -0.000*** -0.000*** -0.000*** 0.000**   0.000***  0.000*** 
-               (0.000)  (0.000)   (0.000)   (0.000)   (0.000)   (0.000)   (0.000)   (0.000)   (0.000)  
-post           -0.619   0.100     -0.262    -0.256*   -0.483*** -0.585*   -2.277*** -2.792*** -3.205***
-               (0.411)  (0.194)   (0.162)   (0.140)   (0.154)   (0.307)   (0.576)   (0.501)   (0.479)  
-treatment      -1.604   -3.686*** -1.850*** -1.466*** -0.903*** -0.364    1.825***  2.139***  2.241*** 
-               (1.896)  (0.479)   (0.285)   (0.190)   (0.169)   (0.295)   (0.509)   (0.402)   (0.363)  
-post_treatment -0.837** -1.707*** -1.848*** -2.108*** -2.111*** -1.953*** -0.780*   -0.375    -0.030   
-               (0.323)  (0.158)   (0.134)   (0.115)   (0.130)   (0.258)   (0.469)   (0.426)   (0.409)  
-R-squared      0.856    0.934     0.938     0.952     0.933     0.704     0.194     0.167     0.165    
-R-squared Adj. 0.844    0.931     0.936     0.951     0.932     0.699     0.184     0.158     0.157    
-N              50       98        146       194       242       290       338       384       408      
-=======================================================================================================
-Standard errors in parentheses.
-* p<.1, ** p<.05, ***p<.01
-\end{verbatim}
-
-The row we're mainly interested in is the \texttt{post\_treatment}
-coefficient, the treatment effect. It remains significant and negative
-in all time periods smaller than 8 years, after which point it becomes
-insignificant;
-
-How do you think this affects our conclusion?
-
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{0.1667}}@{}}
-\toprule()
-\endhead
-\#\# Regression Discontinuity \\
 Our difference in difference model made causal claims by treating PA as
 a control group for NJ on the basis that they had similar trends in
 unemployment before the minimum wage law, and diverging trends after,
@@ -7971,7 +7378,8 @@ largest coal-producing state in the U.S.-- coal miners are probably less
 affected by financial crises, but more likely to be earning minimum
 wage. As such, increasing the minimum wage in a place where most people
 are bankers probably has less of an effect on unemployment compared to
-an area where everyone is a coal miner. \\
+an area where everyone is a coal miner.
+
 Running a state-level analysis is subject to this sort of selection
 bias, since by looking at state averages we're effectively comparing
 places like Jersey City to places like
@@ -7982,25 +7390,30 @@ step in our analysis might be to try to compare apples to apples. There
 are a number of ways of doing this-- we could look at the unemployment
 rate by industry, for example. But what if we didn't want to rely on
 pre-trends, or if we didn't even have data prior to the treatment? This
-is often the case \\
+is often the case
+
 To build a more valid counterfactual, we can drill even deeper to find
 even more similar comparison groups using a \textbf{Regression
-Discontinuity Design (RDD)} using county (rather than state) level
-data. \\
-\textgreater{}
+Discontinuity Design (RDD)} using county (rather than state) level data.
+
+\begin{quote}
 \textbf{\href{https://www.princeton.edu/~davidlee/wp/RDDEconomics.pdf}{Regression
 Discontinuity Designs}} are a method of estimating treatment effects in
 a nonexperimental setting where treatment is determined by whether an
 observed ``assignment'' variable exceeds a known cutoff point. If the
 cutoff is exogenous to the treatment, observations in the vicinity of
 this cutoff are likely to be very similar, and assignment to the
-treatment or control group can be considered as good as random. \\
-RDD models generally take the following form: \\
-\(\huge Y_{i} = \beta_0 + \beta_1 X_i + \beta_2 D_i + \varepsilon_{i}\)
-\(\large D_i=    \begin{cases}
-1 & X_i>X_k\\
-0 & X_i<X_k\\
-\end{cases} \) \\
+treatment or control group can be considered as good as random.
+\end{quote}
+
+RDD models generally take the following form:
+
+\[\huge Y_{i} = \beta_0 + \beta_1 X_i + \beta_2 D_i + \varepsilon_{i}\]
+\[\large D_i=    \begin{cases}
+      1 & X_i>X_k\\
+      0 & X_i<X_k\\
+    \end{cases} \]
+
 In our case, the treatment is the minimum wage law passed in NJ in 2014.
 We want to be looking at the period after this to pick up on any changes
 in employment. The \textbf{assignment variable} in this case could be
@@ -8008,82 +7421,520 @@ the distance of a county to the border between the two states, and the
 sharp cutoff would be the border itself. Counties on the border counties
 are probably much more similar to each other than other, farther away
 counties: this would exclude both Jersey City (in the far east of NJ)
-and Centralia (in the centre of PA). \\
+and Centralia (in the centre of PA).
+
 Indeed, several cities are divided by the border between these states
-including Philladelphia, the capital city of Pennsylvania: \\
-::: \{.cell execution\_count=19\} \\
-::: \{.cell-output .cell-output-display execution\_count=19\} \\
+including Philladelphia, the capital city of Pennsylvania:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ ipyleaflet }\ImportTok{import}\NormalTok{ Map, Marker, basemaps, basemap\_to\_tiles}
+\NormalTok{Map(basemap}\OperatorTok{=}\NormalTok{basemap\_to\_tiles(}
+\NormalTok{    basemaps.Esri.WorldImagery),}
+\NormalTok{  center}\OperatorTok{=}\NormalTok{(}\FloatTok{39.95279958991338}\NormalTok{, }\OperatorTok{{-}}\FloatTok{75.1341365382268}\NormalTok{),}
+\NormalTok{  zoom}\OperatorTok{=}\DecValTok{14}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Map(center=[39.95279958991338, -75.1341365382268], controls=(ZoomControl(options=['position', 'zoom_in_text', …
+\end{verbatim}
+
 On the left side of the river is Philladelphia, PA, while on the right
 side is Camden, NJ. The code below uses the county shapefile we used
-before to isolate the counties in NJ and PA that are on the border. \\
-::: \{.cell execution\_count=20\} ``` \{.python .cell-code\} import
-geopandas as gpd \\
-shp = gpd.read\_file(`data/wk10/geojson-counties-fips.json') \# read in
-the counties shapefile \\
-subset=shp{[}shp{[}`STATE'{]}.isin({[}`34',`42'{]}){]} \# new jersey =
-34, pennsylvania = 42, new york = 36 \\
-subset{[}`neighbors'{]}= 0 \# create a new column called neighbors \\
-for index, row in subset.iterrows(): \# iterate through each row in the
-counties shapefile buffered= row{[}`geometry'{]}.buffer(0.1) \# create a
-buffer around the county so that it overlaps with its neighbors
-neighbors =
-list(set(subset{[}subset.geometry.overlaps(buffered){]}.STATE.tolist()).difference({[}row.STATE{]}))
-\# check which counties overlap with the buffer, grab the state code,
-and remove the current county's state code subset.at{[}index,
-``neighbors''{]} = ``,''.join(neighbors) \# add the list of neighbors to
-the neighbors column \\
-subset{[}`border'{]}=np.where(subset{[}`neighbors'{]}=='\,',0,1) \#
-create a new column called border that is 1 if the county is on the
-border and 0 if it is not \\
-subset{[}`viscol'{]}=subset{[}`STATE'{]}.astype(int)+subset{[}`border'{]}
-\# create a new column that combines the state code and the border
-column subset.plot(column=`viscol',legend=False, figsize=(20,10),
-cmap=`RdYlGn') \# plot the counties and color them by the border column
-plt.title(`Border Counties in New Jersey and Pennsylvania', fontsize=20)
-\# add a title ``` \\
-::: \{.cell-output .cell-output-display execution\_count=20\} \\
-::: \{.cell-output .cell-output-display\}
-\includegraphics{notebooks/W10. Causal Inference_files/figure-pdf/cell-19-output-2.png}
-::: ::: \\
+before to isolate the counties in NJ and PA that are on the border.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ geopandas }\ImportTok{as}\NormalTok{ gpd}
+
+\NormalTok{shp }\OperatorTok{=}\NormalTok{ gpd.read\_file(}\StringTok{\textquotesingle{}data/wk10/geojson{-}counties{-}fips.json\textquotesingle{}}\NormalTok{) }\CommentTok{\# read in the counties shapefile}
+
+\NormalTok{subset}\OperatorTok{=}\NormalTok{shp[shp[}\StringTok{\textquotesingle{}STATE\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}34\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}42\textquotesingle{}}\NormalTok{])] }\CommentTok{\# new jersey = 34, pennsylvania = 42, new york = 36}
+
+\NormalTok{subset[}\StringTok{\textquotesingle{}neighbors\textquotesingle{}}\NormalTok{]}\OperatorTok{=} \DecValTok{0} \CommentTok{\# create a new column called neighbors}
+
+\ControlFlowTok{for}\NormalTok{ index, row }\KeywordTok{in}\NormalTok{ subset.iterrows():  }\CommentTok{\# iterate through each row in the counties shapefile}
+\NormalTok{    buffered}\OperatorTok{=}\NormalTok{ row[}\StringTok{\textquotesingle{}geometry\textquotesingle{}}\NormalTok{].}\BuiltInTok{buffer}\NormalTok{(}\FloatTok{0.1}\NormalTok{) }\CommentTok{\# create a buffer around the county so that it overlaps with its neighbors}
+\NormalTok{    neighbors }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(}\BuiltInTok{set}\NormalTok{(subset[subset.geometry.overlaps(buffered)].STATE.tolist()).difference([row.STATE])) }\CommentTok{\# check which counties overlap with the buffer, grab the state code, and remove the current county\textquotesingle{}s state code}
+\NormalTok{    subset.at[index, }\StringTok{"neighbors"}\NormalTok{] }\OperatorTok{=} \StringTok{", "}\NormalTok{.join(neighbors) }\CommentTok{\# add the list of neighbors to the neighbors column}
+
+\NormalTok{subset[}\StringTok{\textquotesingle{}border\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(subset[}\StringTok{\textquotesingle{}neighbors\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{) }\CommentTok{\# create a new column called border that is 1 if the county is on the border and 0 if it is not}
+
+\NormalTok{subset[}\StringTok{\textquotesingle{}viscol\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{subset[}\StringTok{\textquotesingle{}STATE\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{int}\NormalTok{)}\OperatorTok{+}\NormalTok{subset[}\StringTok{\textquotesingle{}border\textquotesingle{}}\NormalTok{] }\CommentTok{\# create a new column that combines the state code and the border column}
+\NormalTok{subset.plot(column}\OperatorTok{=}\StringTok{\textquotesingle{}viscol\textquotesingle{}}\NormalTok{,legend}\OperatorTok{=}\VariableTok{False}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{20}\NormalTok{,}\DecValTok{10}\NormalTok{), cmap}\OperatorTok{=}\StringTok{\textquotesingle{}RdYlGn\textquotesingle{}}\NormalTok{) }\CommentTok{\# plot the counties and color them by the border column}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Border Counties in New Jersey and Pennsylvania\textquotesingle{}}\NormalTok{, fontsize}\OperatorTok{=}\DecValTok{20}\NormalTok{) }\CommentTok{\# add a title}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Text(0.5, 1.0, 'Border Counties in New Jersey and Pennsylvania')
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W09. Causal Inference_files/figure-pdf/cell-6-output-2.png}
+
+}
+
+\end{figure}
+
 The plot above shows counties in Pennsylvania in green, and New Jersey
 in red. Dark green counties are border counties in PA, while light red
 counties are border counties in NJ. Under the assumption that these
 counties are going to be very similar to each other in most ways other
 than the fact that NJ implemented a minimum wage law, the simplest
 regression discontinuity desgin would basically just be a regression of
-the following form: \\
-::: \{.cell execution\_count=30\} ``` \{.python .cell-code\}
-border\_counties=subset{[}subset{[}`border'{]}==1{]}{[}`id'{]}.tolist()
-\# create a list of the border counties
-rdd=counties{[}(counties{[}`year'{]}\textgreater2007)\&(counties{[}`county\_fips'{]}.isin(border\_counties)){]}
-\# subset the counties data to only include border counties and years
-after 2007 rdd\_model = ols(`unemployment \textasciitilde{} C(state)',
-rdd{[}rdd{[}`year'{]}\textgreater2014{]}).fit()
-print(rdd\_model.summary()) \\
-``` \\
-::: \{.cell-output .cell-output-stdout\} ``` OLS Regression Results
-==============================================================================
-Dep. Variable: unemployment R-squared: 0.047 Model: OLS Adj. R-squared:
-0.038 Method: Least Squares F-statistic: 5.078 Date: Mon, 19 Dec 2022
-Prob (F-statistic): 0.0264 Time: 09:26:14 Log-Likelihood: -213.30
-No.~Observations: 105 AIC: 430.6 Df Residuals: 103 BIC: 435.9 Df Model:
-1 Covariance Type: nonrobust
-==================================================================================
-coef std err t P\textgreater\textbar t\textbar{} {[}0.025 0.975{]} \\
-\bottomrule()
+the following form:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{border\_counties}\OperatorTok{=}\NormalTok{subset[subset[}\StringTok{\textquotesingle{}border\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{][}\StringTok{\textquotesingle{}id\textquotesingle{}}\NormalTok{].tolist() }\CommentTok{\# create a list of the border counties}
+\NormalTok{rdd}\OperatorTok{=}\NormalTok{counties[(counties[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\DecValTok{2007}\NormalTok{)}\OperatorTok{\&}\NormalTok{(counties[}\StringTok{\textquotesingle{}county\_fips\textquotesingle{}}\NormalTok{].isin(border\_counties))] }\CommentTok{\# subset the counties data to only include border counties and years after 2007}
+\NormalTok{rdd\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{} state\textquotesingle{}}\NormalTok{, rdd[rdd[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\DecValTok{2014}\NormalTok{]).fit()}
+
+\BuiltInTok{print}\NormalTok{(rdd)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+ValueError: mismatch between column_names and columns coded by given terms
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{border\_counties}\OperatorTok{=}\NormalTok{subset[subset[}\StringTok{\textquotesingle{}border\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{][}\StringTok{\textquotesingle{}id\textquotesingle{}}\NormalTok{].tolist() }\CommentTok{\# create a list of the border counties}
+\NormalTok{rdd}\OperatorTok{=}\NormalTok{counties[(counties[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\DecValTok{2007}\NormalTok{)}\OperatorTok{\&}\NormalTok{(counties[}\StringTok{\textquotesingle{}county\_fips\textquotesingle{}}\NormalTok{].isin(border\_counties))] }\CommentTok{\# subset the counties data to only include border counties and years after 2007}
+\NormalTok{rdd\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{} C(state)\textquotesingle{}}\NormalTok{, rdd[rdd[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\DecValTok{2014}\NormalTok{]).fit()}
+\BuiltInTok{print}\NormalTok{(rdd\_model.summary())}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+ValueError: mismatch between column_names and columns coded by given terms
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}data/wk10/elections.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{df}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule\noalign{}
+& county\_fips & year & d\_votes & r\_votes \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 1001 & 2000 & 28.719200 & 69.694328 \\
+1 & 1001 & 2004 & 23.694039 & 75.673522 \\
+2 & 1001 & 2008 & 25.773021 & 73.613637 \\
+3 & 1001 & 2012 & 26.587832 & 72.618252 \\
+4 & 1001 & 2016 & 23.769671 & 72.766588 \\
+... & ... & ... & ... & ... \\
+18922 & 56045 & 2004 & 17.099057 & 80.748821 \\
+18923 & 56045 & 2008 & 19.273579 & 76.684241 \\
+18924 & 56045 & 2012 & 12.563263 & 83.983328 \\
+18925 & 56045 & 2016 & 8.479864 & 86.018151 \\
+18926 & 56045 & 2020 & 10.112360 & 87.275281 \\
 \end{longtable}
 
-Intercept 5.2054 0.249 20.910 0.000 4.712 5.699 C(state){[}T.42{]}
-0.8212 0.364 2.253 0.026 0.098 1.544
-==============================================================================
-Omnibus: 22.707 Durbin-Watson: 0.642 Prob(Omnibus): 0.000 Jarque-Bera
-(JB): 29.073 Skew: 1.166 Prob(JB): 4.86e-07 Kurtosis: 4.100 Cond.
-No.~2.55
-==============================================================================
+\bookmarksetup{startatroot}
 
-Notes: \href{http://www.literateprogramming.com/lpquotes.html}{1}
-Standard Errors assume that the covariance matrix of the errors is
-correctly specified. ``` ::: :::
+\hypertarget{machine-learning}{%
+\chapter{Machine Learning}\label{machine-learning}}
+
+\hypertarget{workshop-9-open-in-colab}{%
+\section[\emph{Workshop 9} ]{\texorpdfstring{\emph{Workshop 9}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W09.\%20Machine\%20Learning.ipynb}{\protect\includegraphics{notebooks/../colab-badge.png}}}{Workshop 9 Open In Colab}}\label{workshop-9-open-in-colab}}
+
+This short introduction uses
+\href{https://www.tensorflow.org/guide/keras/overview}{Keras} to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Load a prebuilt dataset.
+\item
+  Build a neural network machine learning model that classifies images.
+\item
+  Train this neural network.
+\item
+  Evaluate the accuracy of the model.
+\end{enumerate}
+
+\hypertarget{set-up-tensorflow}{%
+\section{Set up TensorFlow}\label{set-up-tensorflow}}
+
+Import TensorFlow into your program to get started:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
+\CommentTok{\#import tensorflow as tf}
+\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
+
+\CommentTok{\#print("TensorFlow version:", tf.\_\_version\_\_)}
+\end{Highlighting}
+\end{Shaded}
+
+If you are following along in your own development environment, rather
+than
+\href{https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/tutorials/quickstart/beginner.ipynb}{Colab},
+see the \href{https://www.tensorflow.org/install}{install guide} for
+setting up TensorFlow for development.
+
+Note: Make sure you have upgraded to the latest \texttt{pip} to install
+the TensorFlow 2 package if you are using your own development
+environment. See the \href{https://www.tensorflow.org/install}{install
+guide} for details.
+
+\hypertarget{load-a-dataset}{%
+\section{Load a dataset}\label{load-a-dataset}}
+
+Load and prepare the \href{http://yann.lecun.com/exdb/mnist/}{MNIST
+dataset}. Convert the sample data from integers to floating-point
+numbers:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mnist }\OperatorTok{=}\NormalTok{ tf.keras.datasets.mnist}
+
+\NormalTok{(x\_train, y\_train), (x\_test, y\_test) }\OperatorTok{=}\NormalTok{ mnist.load\_data()}
+\NormalTok{x\_train, x\_test }\OperatorTok{=}\NormalTok{ x\_train }\OperatorTok{/} \FloatTok{255.0}\NormalTok{, x\_test }\OperatorTok{/} \FloatTok{255.0}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
+11493376/11490434 [==============================] - 0s 0us/step
+11501568/11490434 [==============================] - 0s 0us/step
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\KeywordTok{def}\NormalTok{ plot\_num(number):}
+
+\NormalTok{  item\_index }\OperatorTok{=}\NormalTok{ np.where(y\_train[:}\DecValTok{1000}\NormalTok{]}\OperatorTok{==}\NormalTok{number)}
+\NormalTok{  subset}\OperatorTok{=}\NormalTok{x\_train[item\_index]}
+  
+\NormalTok{  egs}\OperatorTok{=}\DecValTok{5}
+\NormalTok{  fig, axs }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{1}\NormalTok{,egs, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{20}\NormalTok{,}\DecValTok{10}\NormalTok{))}
+
+  \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{,egs):}
+\NormalTok{    axs[i].imshow(subset[i])}
+
+
+\ControlFlowTok{for}\NormalTok{ x }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{):}
+\NormalTok{  plot\_num(x)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-1.png}
+
+}
+
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-2.png}
+
+}
+
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-3.png}
+
+}
+
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-4.png}
+
+}
+
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-5.png}
+
+}
+
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-6.png}
+
+}
+
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-7.png}
+
+}
+
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-8.png}
+
+}
+
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-9.png}
+
+}
+
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-10.png}
+
+}
+
+\end{figure}
+
+\hypertarget{build-a-machine-learning-model}{%
+\section{Build a machine learning
+model}\label{build-a-machine-learning-model}}
+
+Build a \texttt{tf.keras.Sequential} model by stacking layers.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model }\OperatorTok{=}\NormalTok{ tf.keras.models.Sequential([}
+\NormalTok{  tf.keras.layers.Flatten(input\_shape}\OperatorTok{=}\NormalTok{(}\DecValTok{28}\NormalTok{, }\DecValTok{28}\NormalTok{)),}
+\NormalTok{  tf.keras.layers.Dense(}\DecValTok{128}\NormalTok{, activation}\OperatorTok{=}\StringTok{\textquotesingle{}relu\textquotesingle{}}\NormalTok{),}
+\NormalTok{  tf.keras.layers.Dropout(}\FloatTok{0.2}\NormalTok{),}
+\NormalTok{  tf.keras.layers.Dense(}\DecValTok{10}\NormalTok{)}
+\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+For each example, the model returns a vector of
+\href{https://developers.google.com/machine-learning/glossary\#logits}{logits}
+or
+\href{https://developers.google.com/machine-learning/glossary\#log-odds}{log-odds}
+scores, one for each class.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{predictions }\OperatorTok{=}\NormalTok{ model(x\_train[:}\DecValTok{1}\NormalTok{]).numpy()}
+\NormalTok{predictions}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+array([[ 0.33447966,  0.35151538, -0.35632688, -0.2735348 ,  0.8568236 ,
+        -0.8503612 , -0.34408805, -0.40424255,  0.4791569 , -0.00873779]],
+      dtype=float32)
+\end{verbatim}
+
+The \texttt{tf.nn.softmax} function converts these logits to
+\emph{probabilities} for each class:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tf.nn.softmax(predictions).numpy()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+array([[0.12650587, 0.12867945, 0.06340117, 0.0688737 , 0.21328573,
+        0.03868484, 0.06418189, 0.06043489, 0.1461986 , 0.08975388]],
+      dtype=float32)
+\end{verbatim}
+
+Note: It is possible to bake the \texttt{tf.nn.softmax} function into
+the activation function for the last layer of the network. While this
+can make the model output more directly interpretable, this approach is
+discouraged as it's impossible to provide an exact and numerically
+stable loss calculation for all models when using a softmax output.
+
+Define a loss function for training using
+\texttt{losses.SparseCategoricalCrossentropy}, which takes a vector of
+logits and a \texttt{True} index and returns a scalar loss for each
+example.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{loss\_fn }\OperatorTok{=}\NormalTok{ tf.keras.losses.SparseCategoricalCrossentropy(from\_logits}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+This loss is equal to the negative log probability of the true class:
+The loss is zero if the model is sure of the correct class.
+
+This untrained model gives probabilities close to random (1/10 for each
+class), so the initial loss should be close to
+\texttt{-tf.math.log(1/10)\ \textasciitilde{}=\ 2.3}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{loss\_fn(y\_train[:}\DecValTok{1}\NormalTok{], predictions).numpy()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+3.2523074
+\end{verbatim}
+
+Before you start training, configure and compile the model using Keras
+\texttt{Model.compile}. Set the
+\href{https://www.tensorflow.org/api_docs/python/tf/keras/optimizers}{\texttt{optimizer}}
+class to \texttt{adam}, set the \texttt{loss} to the \texttt{loss\_fn}
+function you defined earlier, and specify a metric to be evaluated for
+the model by setting the \texttt{metrics} parameter to
+\texttt{accuracy}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model.}\BuiltInTok{compile}\NormalTok{(optimizer}\OperatorTok{=}\StringTok{\textquotesingle{}adam\textquotesingle{}}\NormalTok{,}
+\NormalTok{              loss}\OperatorTok{=}\NormalTok{loss\_fn,}
+\NormalTok{              metrics}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}accuracy\textquotesingle{}}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{train-and-evaluate-your-model}{%
+\section{Train and evaluate your
+model}\label{train-and-evaluate-your-model}}
+
+Use the \texttt{Model.fit} method to adjust your model parameters and
+minimize the loss:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model.fit(x\_train, y\_train, epochs}\OperatorTok{=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Epoch 1/10
+1875/1875 [==============================] - 6s 3ms/step - loss: 0.2955 - accuracy: 0.9139
+Epoch 2/10
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.1416 - accuracy: 0.9578
+Epoch 3/10
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.1072 - accuracy: 0.9676
+Epoch 4/10
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.0874 - accuracy: 0.9727
+Epoch 5/10
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.0734 - accuracy: 0.9772
+Epoch 6/10
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.0632 - accuracy: 0.9792
+Epoch 7/10
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.0575 - accuracy: 0.9808
+Epoch 8/10
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.0526 - accuracy: 0.9825
+Epoch 9/10
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.0460 - accuracy: 0.9853
+Epoch 10/10
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.0437 - accuracy: 0.9858
+\end{verbatim}
+
+\begin{verbatim}
+<keras.callbacks.History at 0x7fe943384b10>
+\end{verbatim}
+
+The \texttt{Model.evaluate} method checks the models performance,
+usually on a
+``\href{https://developers.google.com/machine-learning/glossary\#validation-set}{Validation-set}''
+or
+``\href{https://developers.google.com/machine-learning/glossary\#test-set}{Test-set}''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model.evaluate(x\_test,  y\_test, verbose}\OperatorTok{=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+313/313 - 1s - loss: 0.0715 - accuracy: 0.9785 - 529ms/epoch - 2ms/step
+\end{verbatim}
+
+\begin{verbatim}
+[0.07152838259935379, 0.9785000085830688]
+\end{verbatim}
+
+The image classifier is now trained to \textasciitilde98\% accuracy on
+this dataset. To learn more, read the
+\href{https://www.tensorflow.org/tutorials/}{TensorFlow tutorials}.
+
+If you want your model to return a probability, you can wrap the trained
+model, and attach the softmax to it:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{probability\_model }\OperatorTok{=}\NormalTok{ tf.keras.Sequential([}
+\NormalTok{  model,}
+\NormalTok{  tf.keras.layers.Softmax()}
+\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#probability\_model(x\_test[:1])}
+\NormalTok{predictions}\OperatorTok{=}\NormalTok{probability\_model.predict(x\_test)}
+
+\NormalTok{index}\OperatorTok{=}\DecValTok{20}
+
+\BuiltInTok{print}\NormalTok{(np.argmax(predictions[index]))}
+\NormalTok{plt.imshow(x\_test[index])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+9
+\end{verbatim}
+
+\begin{verbatim}
+<matplotlib.image.AxesImage at 0x7fe9409c1ad0>
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-15-output-3.png}
+
+}
+
+\end{figure}
+
+\hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
+
+Congratulations! You have trained a machine learning model using a
+prebuilt dataset using the
+\href{https://www.tensorflow.org/guide/keras/overview}{Keras} API.
+
+For more examples of using Keras, check out the
+\href{https://www.tensorflow.org/tutorials/keras/}{tutorials}. To learn
+more about building models with Keras, read the
+\href{https://www.tensorflow.org/guide/keras}{guides}. If you want learn
+more about loading and preparing data, see the tutorials on
+\href{https://www.tensorflow.org/tutorials/load_data/images}{image data
+loading} or
+\href{https://www.tensorflow.org/tutorials/load_data/csv}{CSV data
+loading}.
 
 
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.3.326">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,9 +17,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -46,43 +47,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -141,6 +112,7 @@ ga('send', {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
@@ -149,11 +121,16 @@ ga('send', {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Intro to Pandas</h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notebooks/W02. Pandas.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Intro to Pandas</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -161,113 +138,129 @@ ga('send', {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="../index.html" class="sidebar-logo-link">
-      <img src="../logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      <img src="../logo2.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Quantitative Methods 2</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://github.com/oballinger/QM2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
-    <a href="" title="Download" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-download"></i></a>
-    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
-        <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="../Quantitative-Methods-2.pdf">
-            <i class="bi bi-bi-file-pdf pe-1"></i>
-          Download PDF
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="../Quantitative-Methods-2.epub">
-            <i class="bi bi-bi-journal pe-1"></i>
-          Download ePub
-          </a>
-        </li>
-    </ul>
-    <a href="" title="Share" id="sidebar-tool-dropdown-1" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
-    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-1">
-        <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
-            <i class="bi bi-bi-twitter pe-1"></i>
-          Twitter
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
-            <i class="bi bi-bi-facebook pe-1"></i>
-          Facebook
-          </a>
-        </li>
-    </ul>
+    <a href="https://github.com/oballinger/QM2/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../Quantitative-Methods-2.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="../Quantitative-Methods-2.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link">Welcome</a>
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W01. Python Recap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Python Recap</span></a>
+  <a href="../notebooks/W01. Python Recap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Python Recap</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W02. Pandas.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Intro to Pandas</span></a>
+  <a href="../notebooks/W02. Pandas.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Intro to Pandas</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W03. Spatial Data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Spatiotemporal Data</span></a>
+  <a href="../notebooks/W03. Spatial Data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Spatiotemporal Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W04. Natural Language Processing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></a>
+  <a href="../notebooks/W04. Natural Language Processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W05. Merging and Joining.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging and Joining</span></a>
+  <a href="../notebooks/W05. Merging and Joining.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging and Joining</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Week 6.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Group Presentations</span></a>
+  <a href="../Week 6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Group Presentations</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W07. Distributions and Basic Statistics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Distributions and Basic Statistics</span></a>
+  <a href="../notebooks/W07. Distributions and Basic Statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Distributions and Basic Statistics</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Week 8.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regression</span></a>
+  <a href="../notebooks/W08. Linear Regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W09. Linear Regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Linear Regression</span></a>
+  <a href="../notebooks/W09. Causal Inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Causal Inference</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W10. Causal Inference.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Causal Inference</span></a>
+  <a href="../notebooks/W10. Machine Learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Machine Learning</span></span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -309,7 +302,7 @@ ga('send', {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Intro to Pandas</h1>
+<h1 class="title">Intro to Pandas</h1>
 </div>
 
 
@@ -382,141 +375,142 @@ ga('send', {
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>income <span class="op">=</span>  pandas.read_csv(data_path, index_col<span class="op">=</span><span class="dv">0</span>)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>income.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="42">
-
 <div>
 
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Net equivalised household income in 2010-11, week</th>
-      <th>Childless couple, annual income</th>
-      <th>Couple, two children under 14</th>
-      <th>Couple, three children under 14</th>
-      <th>Couple with one child under 14</th>
-      <th>Couple with two children aged 15 to 18</th>
-      <th>Couple, two children under 14 plus dependent adult</th>
-      <th>Single adult</th>
-      <th>Lone parent, one child under 14</th>
-      <th>Lone parent, two children under 14</th>
-      <th>Lone parent, two children aged 15-18</th>
-      <th>ANNOTATIONS</th>
-      <th>1979 to 1996-97</th>
-      <th>1996-97 to 2009-10</th>
-      <th>1996-97 to 2010-11</th>
-    </tr>
-    <tr>
-      <th>Percentile Point</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>33.50</td>
-      <td>1,746.92</td>
-      <td>2,445.69</td>
-      <td>2,795.08</td>
-      <td>2,096.31</td>
-      <td>2,899.89</td>
-      <td>3,022.18</td>
-      <td>1,170.44</td>
-      <td>1,519.82</td>
-      <td>1,869.21</td>
-      <td>2,323.41</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>98.60</td>
-      <td>5,141.01</td>
-      <td>7,197.41</td>
-      <td>8,225.61</td>
-      <td>6,169.21</td>
-      <td>8,534.07</td>
-      <td>8,893.95</td>
-      <td>3,444.48</td>
-      <td>4,472.68</td>
-      <td>5,500.88</td>
-      <td>6,837.54</td>
-      <td>NaN</td>
-      <td>-0.20%</td>
-      <td>-1.30%</td>
-      <td>-0.50%</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>128.56</td>
-      <td>6,703.11</td>
-      <td>9,384.36</td>
-      <td>10,724.98</td>
-      <td>8,043.74</td>
-      <td>11,127.17</td>
-      <td>11,596.39</td>
-      <td>4,491.09</td>
-      <td>5,831.71</td>
-      <td>7,172.33</td>
-      <td>8,915.14</td>
-      <td>NaN</td>
-      <td>0.40%</td>
-      <td>0.10%</td>
-      <td>0.10%</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>151.05</td>
-      <td>7,875.75</td>
-      <td>11,026.05</td>
-      <td>12,601.20</td>
-      <td>9,450.90</td>
-      <td>13,073.75</td>
-      <td>13,625.05</td>
-      <td>5,276.75</td>
-      <td>6,851.90</td>
-      <td>8,427.05</td>
-      <td>10,474.75</td>
-      <td>NaN</td>
-      <td>0.50%</td>
-      <td>0.80%</td>
-      <td>0.60%</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>166.32</td>
-      <td>8,671.91</td>
-      <td>12,140.68</td>
-      <td>13,875.06</td>
-      <td>10,406.30</td>
-      <td>14,395.38</td>
-      <td>15,002.41</td>
-      <td>5,810.18</td>
-      <td>7,544.57</td>
-      <td>9,278.95</td>
-      <td>11,533.65</td>
-      <td>NaN</td>
-      <td>0.70%</td>
-      <td>1.00%</td>
-      <td>0.90%</td>
-    </tr>
-  </tbody>
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Net equivalised household income in 2010-11, week</th>
+<th data-quarto-table-cell-role="th">Childless couple, annual income</th>
+<th data-quarto-table-cell-role="th">Couple, two children under 14</th>
+<th data-quarto-table-cell-role="th">Couple, three children under 14</th>
+<th data-quarto-table-cell-role="th">Couple with one child under 14</th>
+<th data-quarto-table-cell-role="th">Couple with two children aged 15 to 18</th>
+<th data-quarto-table-cell-role="th">Couple, two children under 14 plus dependent adult</th>
+<th data-quarto-table-cell-role="th">Single adult</th>
+<th data-quarto-table-cell-role="th">Lone parent, one child under 14</th>
+<th data-quarto-table-cell-role="th">Lone parent, two children under 14</th>
+<th data-quarto-table-cell-role="th">Lone parent, two children aged 15-18</th>
+<th data-quarto-table-cell-role="th">ANNOTATIONS</th>
+<th data-quarto-table-cell-role="th">1979 to 1996-97</th>
+<th data-quarto-table-cell-role="th">1996-97 to 2009-10</th>
+<th data-quarto-table-cell-role="th">1996-97 to 2010-11</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Percentile Point</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1</td>
+<td>33.50</td>
+<td>1,746.92</td>
+<td>2,445.69</td>
+<td>2,795.08</td>
+<td>2,096.31</td>
+<td>2,899.89</td>
+<td>3,022.18</td>
+<td>1,170.44</td>
+<td>1,519.82</td>
+<td>1,869.21</td>
+<td>2,323.41</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2</td>
+<td>98.60</td>
+<td>5,141.01</td>
+<td>7,197.41</td>
+<td>8,225.61</td>
+<td>6,169.21</td>
+<td>8,534.07</td>
+<td>8,893.95</td>
+<td>3,444.48</td>
+<td>4,472.68</td>
+<td>5,500.88</td>
+<td>6,837.54</td>
+<td>NaN</td>
+<td>-0.20%</td>
+<td>-1.30%</td>
+<td>-0.50%</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3</td>
+<td>128.56</td>
+<td>6,703.11</td>
+<td>9,384.36</td>
+<td>10,724.98</td>
+<td>8,043.74</td>
+<td>11,127.17</td>
+<td>11,596.39</td>
+<td>4,491.09</td>
+<td>5,831.71</td>
+<td>7,172.33</td>
+<td>8,915.14</td>
+<td>NaN</td>
+<td>0.40%</td>
+<td>0.10%</td>
+<td>0.10%</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">4</td>
+<td>151.05</td>
+<td>7,875.75</td>
+<td>11,026.05</td>
+<td>12,601.20</td>
+<td>9,450.90</td>
+<td>13,073.75</td>
+<td>13,625.05</td>
+<td>5,276.75</td>
+<td>6,851.90</td>
+<td>8,427.05</td>
+<td>10,474.75</td>
+<td>NaN</td>
+<td>0.50%</td>
+<td>0.80%</td>
+<td>0.60%</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">5</td>
+<td>166.32</td>
+<td>8,671.91</td>
+<td>12,140.68</td>
+<td>13,875.06</td>
+<td>10,406.30</td>
+<td>14,395.38</td>
+<td>15,002.41</td>
+<td>5,810.18</td>
+<td>7,544.57</td>
+<td>9,278.95</td>
+<td>11,533.65</td>
+<td>NaN</td>
+<td>0.70%</td>
+<td>1.00%</td>
+<td>0.90%</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
@@ -525,141 +519,142 @@ ga('send', {
 <div class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>income.tail()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="43">
-
 <div>
 
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Net equivalised household income in 2010-11, week</th>
-      <th>Childless couple, annual income</th>
-      <th>Couple, two children under 14</th>
-      <th>Couple, three children under 14</th>
-      <th>Couple with one child under 14</th>
-      <th>Couple with two children aged 15 to 18</th>
-      <th>Couple, two children under 14 plus dependent adult</th>
-      <th>Single adult</th>
-      <th>Lone parent, one child under 14</th>
-      <th>Lone parent, two children under 14</th>
-      <th>Lone parent, two children aged 15-18</th>
-      <th>ANNOTATIONS</th>
-      <th>1979 to 1996-97</th>
-      <th>1996-97 to 2009-10</th>
-      <th>1996-97 to 2010-11</th>
-    </tr>
-    <tr>
-      <th>Percentile Point</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>95</th>
-      <td>1075.73</td>
-      <td>56,088.56</td>
-      <td>78,523.99</td>
-      <td>89,741.70</td>
-      <td>67,306.27</td>
-      <td>93,107.01</td>
-      <td>97,033.21</td>
-      <td>37,579.34</td>
-      <td>48,797.05</td>
-      <td>60,014.76</td>
-      <td>74,597.79</td>
-      <td>NaN</td>
-      <td>2.90%</td>
-      <td>2.00%</td>
-      <td>1.30%</td>
-    </tr>
-    <tr>
-      <th>96</th>
-      <td>1174.48</td>
-      <td>61,237.18</td>
-      <td>85,732.05</td>
-      <td>97,979.49</td>
-      <td>73,484.61</td>
-      <td>101,653.72</td>
-      <td>105,940.32</td>
-      <td>41,028.91</td>
-      <td>53,276.35</td>
-      <td>65,523.78</td>
-      <td>81,445.45</td>
-      <td>NaN</td>
-      <td>3.00%</td>
-      <td>2.00%</td>
-      <td>1.40%</td>
-    </tr>
-    <tr>
-      <th>97</th>
-      <td>1302.74</td>
-      <td>67,925.07</td>
-      <td>95,095.10</td>
-      <td>108,680.12</td>
-      <td>81,510.09</td>
-      <td>112,755.62</td>
-      <td>117,510.37</td>
-      <td>45,509.80</td>
-      <td>59,094.81</td>
-      <td>72,679.83</td>
-      <td>90,340.35</td>
-      <td>NaN</td>
-      <td>3.20%</td>
-      <td>2.20%</td>
-      <td>1.60%</td>
-    </tr>
-    <tr>
-      <th>98</th>
-      <td>1523.31</td>
-      <td>79,425.23</td>
-      <td>111,195.32</td>
-      <td>127,080.36</td>
-      <td>95,310.27</td>
-      <td>131,845.88</td>
-      <td>137,405.64</td>
-      <td>53,214.90</td>
-      <td>69,099.95</td>
-      <td>84,984.99</td>
-      <td>105,635.55</td>
-      <td>NaN</td>
-      <td>3.20%</td>
-      <td>2.70%</td>
-      <td>1.70%</td>
-    </tr>
-    <tr>
-      <th>99</th>
-      <td>2090.35</td>
-      <td>108,990.74</td>
-      <td>152,587.04</td>
-      <td>174,385.19</td>
-      <td>130,788.89</td>
-      <td>180,924.64</td>
-      <td>188,553.99</td>
-      <td>73,023.80</td>
-      <td>94,821.95</td>
-      <td>116,620.10</td>
-      <td>144,957.69</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Net equivalised household income in 2010-11, week</th>
+<th data-quarto-table-cell-role="th">Childless couple, annual income</th>
+<th data-quarto-table-cell-role="th">Couple, two children under 14</th>
+<th data-quarto-table-cell-role="th">Couple, three children under 14</th>
+<th data-quarto-table-cell-role="th">Couple with one child under 14</th>
+<th data-quarto-table-cell-role="th">Couple with two children aged 15 to 18</th>
+<th data-quarto-table-cell-role="th">Couple, two children under 14 plus dependent adult</th>
+<th data-quarto-table-cell-role="th">Single adult</th>
+<th data-quarto-table-cell-role="th">Lone parent, one child under 14</th>
+<th data-quarto-table-cell-role="th">Lone parent, two children under 14</th>
+<th data-quarto-table-cell-role="th">Lone parent, two children aged 15-18</th>
+<th data-quarto-table-cell-role="th">ANNOTATIONS</th>
+<th data-quarto-table-cell-role="th">1979 to 1996-97</th>
+<th data-quarto-table-cell-role="th">1996-97 to 2009-10</th>
+<th data-quarto-table-cell-role="th">1996-97 to 2010-11</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Percentile Point</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">95</td>
+<td>1075.73</td>
+<td>56,088.56</td>
+<td>78,523.99</td>
+<td>89,741.70</td>
+<td>67,306.27</td>
+<td>93,107.01</td>
+<td>97,033.21</td>
+<td>37,579.34</td>
+<td>48,797.05</td>
+<td>60,014.76</td>
+<td>74,597.79</td>
+<td>NaN</td>
+<td>2.90%</td>
+<td>2.00%</td>
+<td>1.30%</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">96</td>
+<td>1174.48</td>
+<td>61,237.18</td>
+<td>85,732.05</td>
+<td>97,979.49</td>
+<td>73,484.61</td>
+<td>101,653.72</td>
+<td>105,940.32</td>
+<td>41,028.91</td>
+<td>53,276.35</td>
+<td>65,523.78</td>
+<td>81,445.45</td>
+<td>NaN</td>
+<td>3.00%</td>
+<td>2.00%</td>
+<td>1.40%</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">97</td>
+<td>1302.74</td>
+<td>67,925.07</td>
+<td>95,095.10</td>
+<td>108,680.12</td>
+<td>81,510.09</td>
+<td>112,755.62</td>
+<td>117,510.37</td>
+<td>45,509.80</td>
+<td>59,094.81</td>
+<td>72,679.83</td>
+<td>90,340.35</td>
+<td>NaN</td>
+<td>3.20%</td>
+<td>2.20%</td>
+<td>1.60%</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">98</td>
+<td>1523.31</td>
+<td>79,425.23</td>
+<td>111,195.32</td>
+<td>127,080.36</td>
+<td>95,310.27</td>
+<td>131,845.88</td>
+<td>137,405.64</td>
+<td>53,214.90</td>
+<td>69,099.95</td>
+<td>84,984.99</td>
+<td>105,635.55</td>
+<td>NaN</td>
+<td>3.20%</td>
+<td>2.70%</td>
+<td>1.70%</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">99</td>
+<td>2090.35</td>
+<td>108,990.74</td>
+<td>152,587.04</td>
+<td>174,385.19</td>
+<td>130,788.89</td>
+<td>180,924.64</td>
+<td>188,553.99</td>
+<td>73,023.80</td>
+<td>94,821.95</td>
+<td>116,620.10</td>
+<td>144,957.69</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
@@ -689,159 +684,160 @@ Name: 90, dtype: object</code></pre>
 <div class="cell" data-execution_count="45">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>income.loc[<span class="dv">90</span>:<span class="dv">95</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="45">
-
 <div>
 
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Net equivalised household income in 2010-11, week</th>
-      <th>Childless couple, annual income</th>
-      <th>Couple, two children under 14</th>
-      <th>Couple, three children under 14</th>
-      <th>Couple with one child under 14</th>
-      <th>Couple with two children aged 15 to 18</th>
-      <th>Couple, two children under 14 plus dependent adult</th>
-      <th>Single adult</th>
-      <th>Lone parent, one child under 14</th>
-      <th>Lone parent, two children under 14</th>
-      <th>Lone parent, two children aged 15-18</th>
-      <th>ANNOTATIONS</th>
-      <th>1979 to 1996-97</th>
-      <th>1996-97 to 2009-10</th>
-      <th>1996-97 to 2010-11</th>
-    </tr>
-    <tr>
-      <th>Percentile Point</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>90</th>
-      <td>845.54</td>
-      <td>44,086.54</td>
-      <td>61,721.15</td>
-      <td>70,538.46</td>
-      <td>52,903.85</td>
-      <td>73,183.65</td>
-      <td>76,269.71</td>
-      <td>29,537.98</td>
-      <td>38,355.29</td>
-      <td>47,172.60</td>
-      <td>58,635.10</td>
-      <td>NaN</td>
-      <td>2.50%</td>
-      <td>1.70%</td>
-      <td>1.20%</td>
-    </tr>
-    <tr>
-      <th>91</th>
-      <td>876.63</td>
-      <td>45,707.74</td>
-      <td>63,990.84</td>
-      <td>73,132.39</td>
-      <td>54,849.29</td>
-      <td>75,874.85</td>
-      <td>79,074.40</td>
-      <td>30,624.19</td>
-      <td>39,765.74</td>
-      <td>48,907.29</td>
-      <td>60,791.30</td>
-      <td>NaN</td>
-      <td>2.60%</td>
-      <td>1.70%</td>
-      <td>1.20%</td>
-    </tr>
-    <tr>
-      <th>92</th>
-      <td>911.29</td>
-      <td>47,514.54</td>
-      <td>66,520.35</td>
-      <td>76,023.26</td>
-      <td>57,017.44</td>
-      <td>78,874.13</td>
-      <td>82,200.15</td>
-      <td>31,834.74</td>
-      <td>41,337.65</td>
-      <td>50,840.55</td>
-      <td>63,194.33</td>
-      <td>NaN</td>
-      <td>2.60%</td>
-      <td>1.80%</td>
-      <td>1.20%</td>
-    </tr>
-    <tr>
-      <th>93</th>
-      <td>957.14</td>
-      <td>49,905.23</td>
-      <td>69,867.32</td>
-      <td>79,848.36</td>
-      <td>59,886.27</td>
-      <td>82,842.68</td>
-      <td>86,336.04</td>
-      <td>33,436.50</td>
-      <td>43,417.55</td>
-      <td>53,398.59</td>
-      <td>66,373.95</td>
-      <td>NaN</td>
-      <td>2.70%</td>
-      <td>1.80%</td>
-      <td>1.30%</td>
-    </tr>
-    <tr>
-      <th>94</th>
-      <td>1016.37</td>
-      <td>52,993.38</td>
-      <td>74,190.73</td>
-      <td>84,789.40</td>
-      <td>63,592.05</td>
-      <td>87,969.00</td>
-      <td>91,678.54</td>
-      <td>35,505.56</td>
-      <td>46,104.24</td>
-      <td>56,702.91</td>
-      <td>70,481.19</td>
-      <td>NaN</td>
-      <td>2.90%</td>
-      <td>1.90%</td>
-      <td>1.30%</td>
-    </tr>
-    <tr>
-      <th>95</th>
-      <td>1075.73</td>
-      <td>56,088.56</td>
-      <td>78,523.99</td>
-      <td>89,741.70</td>
-      <td>67,306.27</td>
-      <td>93,107.01</td>
-      <td>97,033.21</td>
-      <td>37,579.34</td>
-      <td>48,797.05</td>
-      <td>60,014.76</td>
-      <td>74,597.79</td>
-      <td>NaN</td>
-      <td>2.90%</td>
-      <td>2.00%</td>
-      <td>1.30%</td>
-    </tr>
-  </tbody>
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Net equivalised household income in 2010-11, week</th>
+<th data-quarto-table-cell-role="th">Childless couple, annual income</th>
+<th data-quarto-table-cell-role="th">Couple, two children under 14</th>
+<th data-quarto-table-cell-role="th">Couple, three children under 14</th>
+<th data-quarto-table-cell-role="th">Couple with one child under 14</th>
+<th data-quarto-table-cell-role="th">Couple with two children aged 15 to 18</th>
+<th data-quarto-table-cell-role="th">Couple, two children under 14 plus dependent adult</th>
+<th data-quarto-table-cell-role="th">Single adult</th>
+<th data-quarto-table-cell-role="th">Lone parent, one child under 14</th>
+<th data-quarto-table-cell-role="th">Lone parent, two children under 14</th>
+<th data-quarto-table-cell-role="th">Lone parent, two children aged 15-18</th>
+<th data-quarto-table-cell-role="th">ANNOTATIONS</th>
+<th data-quarto-table-cell-role="th">1979 to 1996-97</th>
+<th data-quarto-table-cell-role="th">1996-97 to 2009-10</th>
+<th data-quarto-table-cell-role="th">1996-97 to 2010-11</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Percentile Point</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">90</td>
+<td>845.54</td>
+<td>44,086.54</td>
+<td>61,721.15</td>
+<td>70,538.46</td>
+<td>52,903.85</td>
+<td>73,183.65</td>
+<td>76,269.71</td>
+<td>29,537.98</td>
+<td>38,355.29</td>
+<td>47,172.60</td>
+<td>58,635.10</td>
+<td>NaN</td>
+<td>2.50%</td>
+<td>1.70%</td>
+<td>1.20%</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">91</td>
+<td>876.63</td>
+<td>45,707.74</td>
+<td>63,990.84</td>
+<td>73,132.39</td>
+<td>54,849.29</td>
+<td>75,874.85</td>
+<td>79,074.40</td>
+<td>30,624.19</td>
+<td>39,765.74</td>
+<td>48,907.29</td>
+<td>60,791.30</td>
+<td>NaN</td>
+<td>2.60%</td>
+<td>1.70%</td>
+<td>1.20%</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">92</td>
+<td>911.29</td>
+<td>47,514.54</td>
+<td>66,520.35</td>
+<td>76,023.26</td>
+<td>57,017.44</td>
+<td>78,874.13</td>
+<td>82,200.15</td>
+<td>31,834.74</td>
+<td>41,337.65</td>
+<td>50,840.55</td>
+<td>63,194.33</td>
+<td>NaN</td>
+<td>2.60%</td>
+<td>1.80%</td>
+<td>1.20%</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">93</td>
+<td>957.14</td>
+<td>49,905.23</td>
+<td>69,867.32</td>
+<td>79,848.36</td>
+<td>59,886.27</td>
+<td>82,842.68</td>
+<td>86,336.04</td>
+<td>33,436.50</td>
+<td>43,417.55</td>
+<td>53,398.59</td>
+<td>66,373.95</td>
+<td>NaN</td>
+<td>2.70%</td>
+<td>1.80%</td>
+<td>1.30%</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">94</td>
+<td>1016.37</td>
+<td>52,993.38</td>
+<td>74,190.73</td>
+<td>84,789.40</td>
+<td>63,592.05</td>
+<td>87,969.00</td>
+<td>91,678.54</td>
+<td>35,505.56</td>
+<td>46,104.24</td>
+<td>56,702.91</td>
+<td>70,481.19</td>
+<td>NaN</td>
+<td>2.90%</td>
+<td>1.90%</td>
+<td>1.30%</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">95</td>
+<td>1075.73</td>
+<td>56,088.56</td>
+<td>78,523.99</td>
+<td>89,741.70</td>
+<td>67,306.27</td>
+<td>93,107.01</td>
+<td>97,033.21</td>
+<td>37,579.34</td>
+<td>48,797.05</td>
+<td>60,014.76</td>
+<td>74,597.79</td>
+<td>NaN</td>
+<td>2.90%</td>
+<td>2.00%</td>
+<td>1.30%</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
@@ -982,50 +978,51 @@ Name: Net equivalised household income in 2010-11, week, dtype: float64</code></
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>clean <span class="op">=</span> income[[<span class="st">'Childless couple, annual income'</span>,<span class="st">'Couple, two children under 14'</span>]]</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>clean.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="56">
-
 <div>
 
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Childless couple, annual income</th>
-      <th>Couple, two children under 14</th>
-    </tr>
-    <tr>
-      <th>Percentile Point</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>1,746.92</td>
-      <td>2,445.69</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>5,141.01</td>
-      <td>7,197.41</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>6,703.11</td>
-      <td>9,384.36</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>7,875.75</td>
-      <td>11,026.05</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>8,671.91</td>
-      <td>12,140.68</td>
-    </tr>
-  </tbody>
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Childless couple, annual income</th>
+<th data-quarto-table-cell-role="th">Couple, two children under 14</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Percentile Point</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1</td>
+<td>1,746.92</td>
+<td>2,445.69</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2</td>
+<td>5,141.01</td>
+<td>7,197.41</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3</td>
+<td>6,703.11</td>
+<td>9,384.36</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">4</td>
+<td>7,875.75</td>
+<td>11,026.05</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">5</td>
+<td>8,671.91</td>
+<td>12,140.68</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
@@ -1038,50 +1035,51 @@ Name: Net equivalised household income in 2010-11, week, dtype: float64</code></
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>clean <span class="op">=</span> clean.replace(<span class="st">'-'</span>, <span class="st">'NaN'</span>, regex<span class="op">=</span><span class="va">True</span>).astype(<span class="st">'float'</span>)</span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>clean.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="61">
-
 <div>
 
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Childless couple, annual income</th>
-      <th>Couple, two children under 14</th>
-    </tr>
-    <tr>
-      <th>Percentile Point</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>1746.92</td>
-      <td>2445.69</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>5141.01</td>
-      <td>7197.41</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>6703.11</td>
-      <td>9384.36</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>7875.75</td>
-      <td>11026.05</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>8671.91</td>
-      <td>12140.68</td>
-    </tr>
-  </tbody>
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Childless couple, annual income</th>
+<th data-quarto-table-cell-role="th">Couple, two children under 14</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Percentile Point</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1</td>
+<td>1746.92</td>
+<td>2445.69</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2</td>
+<td>5141.01</td>
+<td>7197.41</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3</td>
+<td>6703.11</td>
+<td>9384.36</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">4</td>
+<td>7875.75</td>
+<td>11026.05</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">5</td>
+<td>8671.91</td>
+<td>12140.68</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
@@ -1292,9 +1290,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1359,6 +1371,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
