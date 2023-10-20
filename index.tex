@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, sharp corners, breakable, frame hidden, borderline west={3pt}{0pt}{shadecolor}, interior hidden, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners, breakable, frame hidden, interior hidden, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -261,8 +261,8 @@ analyst.
   Use \href{https://github.com/join}{this link} to register for a GitHub
   account if you don't already have one.
 \item
-  Once that's done, \href{https://github.com/new}{create a new github}
-  repository called ``QM2''.
+  Once that's done, \href{https://github.com/new}{create a new github
+  repository} called ``QM2''.
 \item
   In this notebook, click ``File'' and then ``Save a copy in GitHub''.
 \end{enumerate}
@@ -701,6 +701,12 @@ in 2023: https://storage.googleapis.com/qm2/wk1/spotify-2023.csv
 \end{enumerate}
 
 QUESTION: what song has the highest number of streams in this dataset?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# use this code cell to answer the question}
+\end{Highlighting}
+\end{Shaded}
 
 \bookmarksetup{startatroot}
 
@@ -1557,8 +1563,10 @@ can select it with \texttt{top10.columns{[}1{]}}
 And there we have it; a nicely formatted dataframe ready for analysis,
 straight from a website.
 
-\hypertarget{exercise-3}{%
-\section{Exercise}\label{exercise-3}}
+\bookmarksetup{startatroot}
+
+\hypertarget{assessed-question-1}{%
+\chapter{Assessed Question}\label{assessed-question-1}}
 
 Using the following URL
 https://en.wikipedia.org/wiki/List\_of\_Nobel\_laureates\_in\_Chemistry
@@ -1595,6 +1603,9 @@ wanted to calculate the average of a specific column.
 \CommentTok{\# finally, plot the top 10 countries }
 \end{Highlighting}
 \end{Shaded}
+
+\emph{QUESTION: What country has the fourth most nobel prizes in
+chemistry?}
 
 \bookmarksetup{startatroot}
 
@@ -1711,9 +1722,11 @@ in data directly into python without having to download a .csv!
 \end{Shaded}
 
 \begin{verbatim}
+mkdir: data: File exists
+mkdir: data/wk3: File exists
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 5586k  100 5586k    0     0  4476k      0  0:00:01  0:00:01 --:--:-- 4479k
+100 5586k  100 5586k    0     0  14.3M      0 --:--:-- --:--:-- --:--:-- 14.5M
 \end{verbatim}
 
 Let's open the .csv file and have a look at it:
@@ -1837,8 +1850,8 @@ column, and a 1 in the day column. The last row in the dataset was a
 sensor reading raken on December 29th, 2020. It has a month of 12, and
 day-of-year value of 364. Great.
 
-\hypertarget{exercise-4}{%
-\subsection{Exercise}\label{exercise-4}}
+\hypertarget{exercise-3}{%
+\subsection{Exercise}\label{exercise-3}}
 
 \href{https://pandas.pydata.org/docs/reference/api/pandas.Series.dt.dayofyear.html}{Here's}
 the documentation for the pandas function that allowed us to extract the
@@ -1939,7 +1952,7 @@ State of Emergency was declared (August 18th).
 \end{Shaded}
 
 \begin{verbatim}
-<matplotlib.legend.Legend at 0x7f6d0e2ab550>
+<matplotlib.legend.Legend at 0x142151040>
 \end{verbatim}
 
 \begin{figure}[H]
@@ -1958,8 +1971,8 @@ about the state of emergency or the wildfires in our dataframe
 observe a relationship between our variables (presence of wildfires and
 air quality) that conforms to our expectations.
 
-\hypertarget{exercise-5}{%
-\subsection{Exercise}\label{exercise-5}}
+\hypertarget{exercise-4}{%
+\subsection{Exercise}\label{exercise-4}}
 
 Now, repeat the above plot but aggregate the dataframe by month rather
 than by day. Store the monthly data as a new dataframe called
@@ -2018,8 +2031,8 @@ Let's store this new dataframe and call it ``county\_daily'':
 17318 & 366 & Yolo & 35.000000 \\
 \end{longtable}
 
-\hypertarget{exercise-6}{%
-\section{Exercise}\label{exercise-6}}
+\hypertarget{exercise-5}{%
+\section{Exercise}\label{exercise-5}}
 
 Using the \texttt{groupby} function, create a new dataframe called
 ``counties'' in which each row is a county, and each value is the
@@ -2067,7 +2080,7 @@ counties individually:
 \end{Shaded}
 
 \begin{verbatim}
-<matplotlib.legend.Legend at 0x7f6d0b4f90d0>
+<matplotlib.legend.Legend at 0x142444c40>
 \end{verbatim}
 
 \begin{figure}[H]
@@ -2167,16 +2180,8 @@ extra library called ``Basemap''
 \end{Shaded}
 
 \begin{verbatim}
-Text(0.5, 1.0, 'Geographic Distribution of AQI sensors in California')
+ImportError: dlopen(/Users/ollieballinger/miniconda3/envs/geo/lib/python3.9/site-packages/_geoslib.cpython-39-darwin.so, 0x0002): tried: '/Users/ollieballinger/miniconda3/envs/geo/lib/python3.9/site-packages/_geoslib.cpython-39-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64')), '/System/Volumes/Preboot/Cryptexes/OS/Users/ollieballinger/miniconda3/envs/geo/lib/python3.9/site-packages/_geoslib.cpython-39-darwin.so' (no such file), '/Users/ollieballinger/miniconda3/envs/geo/lib/python3.9/site-packages/_geoslib.cpython-39-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64'))
 \end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W03. Spatial Data_files/figure-pdf/cell-17-output-2.png}
-
-}
-
-\end{figure}
 
 That's looking a bit better! We now have a much better sense of the
 actual distribution of these sensors within california. People who know
@@ -2289,8 +2294,8 @@ the wildfires on September 9th, 2020. Areas in the central valley
 suffered particularly bad air quality, with AQI reaching hazardous
 levels in some areas.
 
-\hypertarget{exercise-7}{%
-\subsection{Exercise}\label{exercise-7}}
+\hypertarget{exercise-6}{%
+\subsection{Exercise}\label{exercise-6}}
 
 So far, we've been plotting data from one day, using a dataframe we
 generated by filtering the date column like so:
@@ -2327,6 +2332,7 @@ us pull up an interactive map of satellite imagery.
 \begin{Highlighting}[]
 \CommentTok{\# import the map making modules from ipyleaflet}
 \ImportTok{from}\NormalTok{ ipyleaflet }\ImportTok{import}\NormalTok{ Map, Marker, basemaps, basemap\_to\_tiles,Circle}
+\ImportTok{from}\NormalTok{ ipywidgets }\ImportTok{import}\NormalTok{ HTML}
 
 \CommentTok{\# let create an interactive Map object called "satellite\_map"}
 \NormalTok{satellite\_map }\OperatorTok{=}\NormalTok{ Map(}
@@ -2355,8 +2361,8 @@ plumes of brown smoke emanate from wildfires in California and Oregon.
 Use the + - keys in the top left to zoom in, see if you can spot some
 wildfires.
 
-\hypertarget{exercise-8}{%
-\subsection{Exercise}\label{exercise-8}}
+\hypertarget{exercise-7}{%
+\subsection{Exercise}\label{exercise-7}}
 
 Try changing the code in the cell above to display an image from
 September 15th. You could even try importing a different basemap (like
@@ -2494,9 +2500,9 @@ in one line of code.
   \ControlFlowTok{for}\NormalTok{ index, row }\KeywordTok{in}\NormalTok{ one\_day.iterrows():}
 \NormalTok{    color}\OperatorTok{=}\NormalTok{matplotlib.colors.rgb2hex(aqi\_colors(row[}\StringTok{\textquotesingle{}AQI\textquotesingle{}}\NormalTok{]))}
 \NormalTok{    point}\OperatorTok{=}\NormalTok{Circle(location}\OperatorTok{=}\NormalTok{(row[}\StringTok{\textquotesingle{}latitude\textquotesingle{}}\NormalTok{],row[}\StringTok{\textquotesingle{}longitude\textquotesingle{}}\NormalTok{]), color}\OperatorTok{=}\NormalTok{color)}
+\NormalTok{    point.popup }\OperatorTok{=}\NormalTok{ HTML(}\BuiltInTok{str}\NormalTok{(row[}\StringTok{\textquotesingle{}Site Name\textquotesingle{}}\NormalTok{]))    }
 \NormalTok{    satellite\_map.add\_layer(point)}
   \ControlFlowTok{return}\NormalTok{ satellite\_map}
-
 \end{Highlighting}
 \end{Shaded}
 
@@ -2518,6 +2524,32 @@ All the AQI sensors are showing green values, indicating generally good
 air quality. The satellite image shows a few wispy clouds, but no thick
 yellow smoke. Now change the date to September 15th, and see what
 happens!
+
+\bookmarksetup{startatroot}
+
+\hypertarget{assessed-question-2}{%
+\chapter{Assessed Question}\label{assessed-question-2}}
+
+Earlier, we created a dataframe called \texttt{daily} in which we
+calculated the average daily AQI across the state for every day of the
+year. (hint: try re-generating this dataframe using the \texttt{Date}
+column rather than the \texttt{Day} column in the \texttt{.groupby()}
+function)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Sort that dataframe to figure out which day had the worst AQI.
+\item
+  Plug that date into the \texttt{satellite\_plot()} function to
+  visualize the corresponding satellite image. If you've done things
+  correctly so far, you should see a big plume of smoke emanating from
+  the central region of california spreading northwards.
+\item
+  Clicking on a sensor will reveal its name-- three sensors just north
+  of the fire are caught under the plume. What are their names?
+\end{enumerate}
 
 \bookmarksetup{startatroot}
 
@@ -2889,8 +2921,8 @@ Looks like climate change is mentioned 51 times in this earnings call.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\hypertarget{exercise-9}{%
-\subsection{Exercise}\label{exercise-9}}
+\hypertarget{exercise-8}{%
+\subsection{Exercise}\label{exercise-8}}
 
 how many times is the phrase ``global warming'' mentioned?
 
@@ -3020,8 +3052,8 @@ change'' was mentioned in each earnings call.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\hypertarget{exercise-10}{%
-\subsection{Exercise}\label{exercise-10}}
+\hypertarget{exercise-9}{%
+\subsection{Exercise}\label{exercise-9}}
 
 Create three new columns that count the frequency of the terms ``global
 warming'', ``carbon capture'', and another phrase or word of your
@@ -3441,8 +3473,8 @@ the scatterplot.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\hypertarget{exercise-11}{%
-\subsection{Exercise}\label{exercise-11}}
+\hypertarget{exercise-10}{%
+\subsection{Exercise}\label{exercise-10}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -3591,8 +3623,8 @@ is expressing negative sentiment!
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\hypertarget{exercise-12}{%
-\subsection{Exercise}\label{exercise-12}}
+\hypertarget{exercise-11}{%
+\subsection{Exercise}\label{exercise-11}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -4221,8 +4253,8 @@ Paris & 5.294294 & 4.282418 & 5.741057 \\
 Glasgow & 5.375804 & 4.697775 & 4.393675 \\
 \end{longtable}
 
-\hypertarget{exercise-13}{%
-\section{Exercise:}\label{exercise-13}}
+\hypertarget{exercise-12}{%
+\section{Exercise:}\label{exercise-12}}
 
 How many cities appear in: - both dataframes - only df1 - only df5 -
 neither df1 nor df5?
@@ -4388,8 +4420,8 @@ NaN & NaN & NaN \\
 
 As we see, the missing data appears as \textbf{NaN} - Not a Number.
 
-\hypertarget{exercise-14}{%
-\section{Exercise:}\label{exercise-14}}
+\hypertarget{exercise-13}{%
+\section{Exercise:}\label{exercise-13}}
 
 Carry out \emph{right} and \emph{outer} joins on the dataframes df1 and
 df5 and explain how they're filtering and joining the data.
@@ -4452,8 +4484,8 @@ jure & Final figure, complete & 2013 & 11304.5 & NaN \\
 Final figure, complete & 2013 & 5408.0 & NaN \\
 \end{longtable}
 
-\hypertarget{exercise-15}{%
-\section{Exercise}\label{exercise-15}}
+\hypertarget{exercise-14}{%
+\section{Exercise}\label{exercise-14}}
 
 There is a another datafile we downloaded called
 \emph{UN\_Cities\_1214\_country.csv}. This is saved to
@@ -4561,8 +4593,8 @@ http://data.un.org/Data.aspx?d=WDI\&f=Indicator\_Code\%3ASP.DYN.LE00.IN
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{exercise-16}{%
-\section{Exercise:}\label{exercise-16}}
+\hypertarget{exercise-15}{%
+\section{Exercise:}\label{exercise-15}}
 
 In a new cell, clean up the above dataframe by
 
@@ -4591,8 +4623,8 @@ column. This is one way to do that:
 
 \bookmarksetup{startatroot}
 
-\hypertarget{exercise-17}{%
-\chapter{Exercise}\label{exercise-17}}
+\hypertarget{exercise-16}{%
+\chapter{Exercise}\label{exercise-16}}
 
 Now, merge this data with the cities data to show life expectancy for
 each city (based on the country it is in), and show the first 5 rows.
@@ -4907,8 +4939,8 @@ divides that number by 1000 to make it more manageable:
 Name: income, Length: 344287, dtype: float64
 \end{verbatim}
 
-\hypertarget{exercise-18}{%
-\subsection{Exercise}\label{exercise-18}}
+\hypertarget{exercise-17}{%
+\subsection{Exercise}\label{exercise-17}}
 
 Given these summary statistics, answer the following questions:
 
@@ -5117,8 +5149,8 @@ Name: income, dtype: float64
 This histogram is far more informative-- use the questions in the
 exercise below to guide your interpretation of this plot.
 
-\hypertarget{exercise-19}{%
-\subsection{Exercise}\label{exercise-19}}
+\hypertarget{exercise-18}{%
+\subsection{Exercise}\label{exercise-18}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5259,8 +5291,8 @@ the function we just defined:
 If we want to produce lots of similar plots, this really helps us cut
 down on repetition.
 
-\hypertarget{exercise-20}{%
-\subsection{Exercise}\label{exercise-20}}
+\hypertarget{exercise-19}{%
+\subsection{Exercise}\label{exercise-19}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5364,8 +5396,8 @@ the mean of this sample.
 Mean: 38.3604
 \end{verbatim}
 
-\hypertarget{exercise-21}{%
-\subsection{Exercise}\label{exercise-21}}
+\hypertarget{exercise-20}{%
+\subsection{Exercise}\label{exercise-20}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5416,8 +5448,8 @@ samples of 10 observations:
 
 \end{figure}
 
-\hypertarget{exercise-22}{%
-\subsection{Exercise}\label{exercise-22}}
+\hypertarget{exercise-21}{%
+\subsection{Exercise}\label{exercise-21}}
 
 \begin{verbatim}
 1. Edit the code block above so that instead of drawing samples of 10 observations, it draws samples of 1000 observations
@@ -5533,8 +5565,8 @@ called \texttt{men} which only contains male respondents, and one called
 
 \end{figure}
 
-\hypertarget{exercise-23}{%
-\subsection{Exercise}\label{exercise-23}}
+\hypertarget{exercise-22}{%
+\subsection{Exercise}\label{exercise-22}}
 
 \begin{verbatim}
 1. These two histograms may look the same, but look closely at the values. 
@@ -6036,8 +6068,8 @@ T-statistic from our test against the critical values:
 Based on the plot above, can we reject the null hypothesis that there is
 no difference in mean income between men and women?
 
-\hypertarget{exercise-24}{%
-\subsection{Exercise}\label{exercise-24}}
+\hypertarget{exercise-23}{%
+\subsection{Exercise}\label{exercise-23}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -6447,8 +6479,8 @@ Let's start with the race category:
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{exercise-25}{%
-\subsection{Exercise}\label{exercise-25}}
+\hypertarget{exercise-24}{%
+\subsection{Exercise}\label{exercise-24}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -6895,8 +6927,8 @@ can be interpreted as follows:
   increase in hourly income
 \end{itemize}
 
-\hypertarget{exercise-26}{%
-\subsection{Exercise}\label{exercise-26}}
+\hypertarget{exercise-25}{%
+\subsection{Exercise}\label{exercise-25}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -6969,8 +7001,8 @@ Mississippi, and both of these results are statistically significant at
 the 1\% level. This suggests that the wage gap is actually somewhat
 higher in California! Why might this be?
 
-\hypertarget{exercise-27}{%
-\subsection{Exercise}\label{exercise-27}}
+\hypertarget{exercise-26}{%
+\subsection{Exercise}\label{exercise-26}}
 
 \[ Hourly\ Income= \beta_0 + \beta_1 \times Years\ of\ Schooling + \beta_2 \times Age + \beta_3 \times Sex + \beta_4 \times Union\ Membership + \beta_5 \times Race +\epsilon \]
 
@@ -7052,8 +7084,8 @@ schooling such that all observations have 0
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{exercise-28}{%
-\subsubsection{Exercise}\label{exercise-28}}
+\hypertarget{exercise-27}{%
+\subsubsection{Exercise}\label{exercise-27}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
