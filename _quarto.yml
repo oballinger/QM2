@@ -13,9 +13,9 @@ book:
     - ./notebooks/W02. Pandas.ipynb
     - ./notebooks/W03. Spatial Data.ipynb
     - ./notebooks/W04. Natural Language Processing.ipynb
-    - ./notebooks/W05. Merging and Joining.ipynb
-    - Week 6.qmd
-    - ./notebooks/W07. Distributions and Basic Statistics.ipynb
+    - ./notebooks/W05. Distributions and Basic Statistics.ipynb
+    - ./notebooks/W06. Merging and Joining.ipynb
+    - ./notebooks/W07. Hypothesis Testing.ipynb
     - ./notebooks/W08. Linear Regression.ipynb
     - ./notebooks/W09. Causal Inference.ipynb
     - ./notebooks/W10. Machine Learning.ipynb

@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../notebooks/W05. Merging and Joining.html" rel="next">
+<link href="../notebooks/W05. Distributions and Basic Statistics.html" rel="next">
 <link href="../notebooks/W03. Spatial Data.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -221,20 +221,20 @@ ga('send', {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W05. Merging and Joining.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging and Joining</span></span></a>
+  <a href="../notebooks/W05. Distributions and Basic Statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Distributions and Basic Statistics</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Week 6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Group Presentations</span></span></a>
+  <a href="../notebooks/W06. Merging and Joining.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Merging and Joining</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W07. Distributions and Basic Statistics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Distributions and Basic Statistics</span></span></a>
+  <a href="../notebooks/W07. Hypothesis Testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Hypothesis Testing</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -9245,7 +9245,7 @@ Assessments:  [(['good'], 0.7, 0.6000000000000001, None), (['worst'], -1.0, 1.0,
 <li><p>create a dataframe called “sample” which contains the first 1000 tweets from the “tweets” dataframe.</p></li>
 <li><p>Using a lambda function, <code>.apply(lambda x: nlp(x)._.blob.polarity)</code>, create a column in the sample dataframe that contains the polarity of each tweet.</p></li>
 <li><p>Create a column that contains the subjectivity score for each tweet.</p></li>
-<li><p>Filter the dataframe to discard tweets that are not subjective (subjectivity score &lt; 0.5) <em>and</em> tweets that are “positive” (polarity score &lt; 0)</p></li>
+<li><p>Filter the dataframe to discard tweets that are not subjective (subjectivity score &lt; 0.5) <em>and</em> tweets that have negative sentiment (polarity score &lt; 0).</p></li>
 <li><p>Modify the code below to plot the distribution of the #ExxonKnew campaign. Color the points according to sentiment polarity. Only a handful of the tweets have location information, so don’t worry if you don’t see loads of points.</p></li>
 </ol>
 <div class="cell" data-outputid="8e7a8f3d-3de2-4f95-a965-c411a98b55f6">
@@ -9512,8 +9512,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../notebooks/W05. Merging and Joining.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging and Joining</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../notebooks/W05. Distributions and Basic Statistics.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Distributions and Basic Statistics</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
