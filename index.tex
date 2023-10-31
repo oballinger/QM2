@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, frame hidden, breakable, boxrule=0pt, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, boxrule=0pt, interior hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, breakable, enhanced]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -3624,8 +3624,8 @@ In the code cell below:
   Create a column that contains the subjectivity score for each tweet.
 \item
   Filter the dataframe to discard tweets that are not subjective
-  (subjectivity score \textless{} 0.5) \emph{and} tweets that are
-  ``positive'' (polarity score \textless{} 0)
+  (subjectivity score \textless{} 0.5) \emph{and} tweets that have
+  negative sentiment (polarity score \textless{} 0).
 \item
   Modify the code below to plot the distribution of the \#ExxonKnew
   campaign. Color the points according to sentiment polarity. Only a
@@ -3657,20 +3657,1090 @@ In the code cell below:
 
 \bookmarksetup{startatroot}
 
-\hypertarget{merging-and-joining}{%
-\chapter{Merging and Joining}\label{merging-and-joining}}
+\hypertarget{distributions-and-basic-statistics}{%
+\chapter{Distributions and Basic
+Statistics}\label{distributions-and-basic-statistics}}
 
 \hypertarget{workshop-5-open-in-colab}{%
 \section[\emph{Workshop 5} ]{\texorpdfstring{\emph{Workshop 5}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W05.\%20Merging\%20and\%20Joining.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 5 Open In Colab}}\label{workshop-5-open-in-colab}}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W05.\%20Distributions\%20and\%20Basic\%20Statistics.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 5 Open In Colab}}\label{workshop-5-open-in-colab}}
+
+For the rest of this course, we'll be working with data from the U.S.
+Census \href{https://www.census.gov/programs-surveys/cps.html}{Current
+Population Survey (CPS)}.
+
+\hypertarget{aims-2}{%
+\subsection{Aims:}\label{aims-2}}
+
+\begin{itemize}
+\item
+  Choosing appropriate summary statistics for varying distributions
+\item
+  Understanding:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The nature of our dataset, including potential bias
+  \item
+    How to generate summary statistics for our dataset
+  \item
+    The distribution of different variables
+  \item
+    The intuition behind the Central Limit Theorem
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{getting-started-1}{%
+\section{Getting Started}\label{getting-started-1}}
+
+\hypertarget{first-things-first-bias}{%
+\subsection{First Things First: Bias}\label{first-things-first-bias}}
+
+Once we've acquired a dataset, the first step is \emph{always} to
+develop an understanding of where the data has come from. For this
+dataset, use the following
+\href{https://www.census.gov/programs-surveys/cps/technical-documentation/methodology.html}{documentation
+page} to answer the questions below:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\tightlist
+\item
+  What is the population of interest?
+\item
+  What was the sampling strategy?
+\item
+  What are potential sources of selection bias?
+\end{enumerate}
+
+I'll start by importing the libraries I need: matplotlib (for graphs),
+pandas (for data), numpy (for maths) and random (for generating random
+numbers):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#This tells python to draw the graphs "inline" {-} in the notebook}
+\OperatorTok{\%}\NormalTok{matplotlib inline  }
+\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
+\ImportTok{from}\NormalTok{ scipy.stats }\ImportTok{import}\NormalTok{ norm}
+\ImportTok{import}\NormalTok{ statistics}
+\ImportTok{import}\NormalTok{ seaborn }\ImportTok{as}\NormalTok{ sns}
+
+\ImportTok{import}\NormalTok{ pylab}
+\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
+\CommentTok{\# make the plots (graphs) a little wider by default}
+\NormalTok{pylab.rcParams[}\StringTok{\textquotesingle{}figure.figsize\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ (}\FloatTok{10.}\NormalTok{, }\FloatTok{8.}\NormalTok{)}
+\NormalTok{sns.}\BuiltInTok{set}\NormalTok{(font\_scale}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
+\NormalTok{sns.set\_style(}\StringTok{"white"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\OperatorTok{!}\NormalTok{mkdir data}
+\OperatorTok{!}\NormalTok{mkdir data}\OperatorTok{/}\NormalTok{wk7}
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{cps.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{cps.csv}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+mkdir: data: File exists
+mkdir: data/wk7: File exists
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 22.4M  100 22.4M    0     0  15.5M      0  0:00:01  0:00:01 --:--:-- 15.6M
+\end{verbatim}
+
+Now that I've imported the libraries I'm going to be using, I'm ready to
+import the data:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}./data/wk7/cps.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{df.head()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllllllllll@{}}
+\toprule\noalign{}
+& year & state & age & sex & race & sch & ind & union & incwage &
+realhrwage & occupation \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 1990 & 36 & 58 & 1 & 3 & 12.0 & 871 & 0.0 & 14200.0 & 12.269874 &
+Office and Admin Support \\
+1 & 2009 & 5 & 28 & 1 & 1 & 12.0 & 8660 & 1.0 & 17680.0 & 8.635149 &
+Office and Admin Support \\
+2 & 1990 & 36 & 37 & 1 & 1 & 14.0 & 380 & 1.0 & 28000.0 & 21.169851 &
+. \\
+3 & 1990 & 6 & 34 & 1 & 1 & 18.0 & 740 & 1.0 & 27500.0 & 20.447746 &
+Computer and Math Technicians \\
+4 & 1981 & 51 & 38 & 1 & 4 & 13.0 & 798 & NaN & 17000.0 & 18.892282 &
+Managers \\
+\end{longtable}
+
+Our dataframe has 10 columns:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{year}: Survey year
+\item
+  \emph{age}: the person's age
+\item
+  \emph{sex}: the person's sex
+
+  \begin{itemize}
+  \tightlist
+  \item
+    1=male
+  \item
+    2=female
+  \end{itemize}
+\item
+  \emph{race}: the person's race
+
+  \begin{itemize}
+  \tightlist
+  \item
+    White non hispanic=1
+  \item
+    Black non hispanic=2
+  \item
+    Hispanic=3
+  \item
+    Other non hispanic=4)
+  \end{itemize}
+\item
+  \emph{sch}: Educational attainment
+
+  \begin{itemize}
+  \tightlist
+  \item
+    None = 0,
+  \item
+    Grades 1-12 = 1-12
+  \item
+    Some University = 13,
+  \item
+    Associate's degree = 14,
+  \item
+    BA = 16
+  \item
+    Advanced Degree = 18
+  \end{itemize}
+\item
+  \emph{union}: Union membership
+
+  \begin{itemize}
+  \tightlist
+  \item
+    N/A = 0,
+  \item
+    No union coverage = 1,
+  \item
+    Member of labor union=2,
+  \item
+    Covered by union but not a member=3
+  \end{itemize}
+\item
+  \emph{incwage}: Wage and salary income
+\item
+  \emph{realhrwage}: Real Hourly Wage
+\item
+  \emph{occupation}: Occupation
+\item
+  \emph{ind}:
+  \href{https://www.census.gov/naics/?58967?yearbck=2002}{industry code}
+\end{enumerate}
+
+\hypertarget{summary-statistics}{%
+\section{Summary Statistics}\label{summary-statistics}}
+
+After thinking about the origins of our dataset and loading it into
+python, the next step is to generate summary statistics. This is vital
+for us to better understand our data. Pandas has a useful function,
+\texttt{describe}, which will generate summary statistics for all
+numerical variables in our entire dataframe:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df.describe()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllllllll@{}}
+\toprule\noalign{}
+& year & state & age & sex & race & sch & ind & union & incwage &
+realhrwage \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+count & 344287.000000 & 344287.000000 & 344287.000000 & 344287.000000 &
+344287.000000 & 344287.000000 & 344287.000000 & 301908.000000 &
+3.442870e+05 & 344287.000000 \\
+mean & 2002.599122 & 28.121004 & 41.734364 & 1.489057 & 1.570077 &
+13.498057 & 4235.846009 & 0.221505 & 3.976170e+04 & 22.886629 \\
+std & 10.831555 & 15.818556 & 10.415874 & 0.499881 & 0.952252 & 2.799038
+& 3468.163157 & 0.499690 & 4.529758e+04 & 506.489695 \\
+min & 1981.000000 & 1.000000 & 25.000000 & 1.000000 & 1.000000 &
+0.000000 & 10.000000 & 0.000000 & 1.500000e+01 & 2.000000 \\
+25\% & 1990.000000 & 13.000000 & 33.000000 & 1.000000 & 1.000000 &
+12.000000 & 760.000000 & 0.000000 & 1.670000e+04 & 11.723004 \\
+50\% & 2007.000000 & 28.000000 & 41.000000 & 1.000000 & 1.000000 &
+13.000000 & 4270.000000 & 0.000000 & 3.000000e+04 & 17.698591 \\
+75\% & 2011.000000 & 41.000000 & 50.000000 & 2.000000 & 2.000000 &
+16.000000 & 7860.000000 & 0.000000 & 5.000000e+04 & 26.442308 \\
+max & 2013.000000 & 56.000000 & 64.000000 & 2.000000 & 4.000000 &
+18.000000 & 9590.000000 & 3.000000 & 1.259999e+06 & 294610.968750 \\
+\end{longtable}
+
+\texttt{describe} returns a dataframe with the same columns as the
+source dataframe. For numeric data, the result's index will include
+count, mean, std, min, max as well as lower, 50 and upper percentiles.
+By default the lower percentile is 25 and the upper percentile is 75.
+The 50 percentile is the same as the median. ``incwage'' is the annual
+income variable. Because values are generally in the tens of thousands,
+Python displays this using scientific notation (e.g.~3.442870e+05). This
+is pretty ugly, so let's create a new variable called ``income'' which
+divides that number by 1000 to make it more manageable:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}incwage\textquotesingle{}}\NormalTok{]}\OperatorTok{/}\DecValTok{1000}
+\BuiltInTok{print}\NormalTok{(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+0         14.20
+1         17.68
+2         28.00
+3         27.50
+4         17.00
+          ...  
+344282    17.00
+344283     3.20
+344284    13.00
+344285     8.80
+344286    15.00
+Name: income, Length: 344287, dtype: float64
+\end{verbatim}
+
+\hypertarget{exercise-11}{%
+\subsection{Exercise}\label{exercise-11}}
+
+Given these summary statistics, answer the following questions:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  what is the median hourly wage?
+\item
+  what is the average age?
+\item
+  are there more men or women?
+\item
+  intepret the mean of the ``race'' column.
+\end{enumerate}
+
+The answer to the last question should provoke some futher thought; the
+race column is categorical, but because it contains numbers it's being
+treated as numerical. The mean of a categorical variable is meaningless;
+For object data (e.g.~categories, strings or timestamps), the result's
+index will include count, unique, top, and freq. The top is the most
+common value. The freq is the most common value's frequency. Timestamps
+also include the first and last items.
+
+Let's convert the race column from a numerical variable into a
+categorical one, and try \texttt{describe} once again:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df.dtypes}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+year            int64
+state           int64
+age             int64
+sex             int64
+race            int64
+sch           float64
+ind             int64
+union         float64
+incwage       float64
+realhrwage    float64
+occupation     object
+income        float64
+dtype: object
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{].astype(}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{)}
+\NormalTok{df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{].describe()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+count     344287
+unique         4
+top            1
+freq      240382
+Name: race, dtype: int64
+\end{verbatim}
+
+what other variables are categorical? Convert them to categorical and
+describe. What is the most common occupation in this dataset?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# convert the variables to categorical and describe}
+\end{Highlighting}
+\end{Shaded}
+
+These statistics are useful, but suppose we want detailed counts of the
+number of individuals in each category; For this, we can use the
+\texttt{groupby} function, with the \texttt{.size()} operator which
+simply counts the number of rows in each category.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{occupations}\OperatorTok{=}\NormalTok{ df.groupby(}\StringTok{\textquotesingle{}occupation\textquotesingle{}}\NormalTok{).size()}
+\NormalTok{occupations.sort\_values(ascending}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+occupation
+.                                         132708
+Office and Admin Support                   50635
+Managers                                   35696
+Consruction, Extraction, Installation      30579
+Production                                 29732
+Transportation and materials moving        21277
+Computer and Math Technicians               8602
+Protective Service adj_occupations          7809
+financial Operators                         7702
+Business Operators                          7327
+Community and Social Workers                6025
+Lawyers, Judges,Physicans and dentists      3835
+Farming, Fishing & Forestry                 2360
+dtype: int64
+\end{verbatim}
+
+What is the most common profession?
+
+\bookmarksetup{startatroot}
+
+\hypertarget{distributions}{%
+\chapter{Distributions}\label{distributions}}
+
+Now that we've cleaned our data up, let's have a closer look at the
+\emph{distribution} of our data. The best way to do this is using a
+histogram, which takes one variable and divides its values into a number
+of bins shown on the X axis, and then counts the number of observations
+in each of those bins on the Y axis. Let's start by looking at the
+distribution of the \texttt{income} variable:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{2013}\NormalTok{] }\CommentTok{\# filter the dataframe to only contain 2013 data}
+
+\NormalTok{plt.hist(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]) }\CommentTok{\# plot a histogram of the income variable}
+\NormalTok{plt.show() }\CommentTok{\# show the plot}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-11-output-1.png}
+
+}
+
+\end{figure}
+
+This is a pretty ugly histogram, and it's not telling us very much
+useful information. It shows that the vast majority of people make
+between 0 and \$100,000 per year, and a few make over 200k. A small
+number make over \$1 million per year, so the plot is being extended to
+accomodate these outliers. Let's try fixing the histogram up a bit.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plt.hist(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{], bins}\OperatorTok{=}\DecValTok{100}\NormalTok{, edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{, density}\OperatorTok{=}\VariableTok{True}\NormalTok{) }
+\CommentTok{\# i\textquotesingle{}ve increased the number of bins to 100 to make the plot smoother,}
+\CommentTok{\# added the density=True argument to make the y{-}axis a probability density instead of a count,}
+\CommentTok{\# and the edgecolor=\textquotesingle{}white\textquotesingle{} argument to add some space between the bars, making the plot easier to read}
+
+
+\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}Income ($, thousands)\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a label to the x axis}
+\NormalTok{plt.title(}\StringTok{"U.S. Income Distributon, 2013"}\NormalTok{) }\CommentTok{\# add a title to the plot}
+
+\NormalTok{plt.show() }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-12-output-1.png}
+
+}
+
+\end{figure}
+
+That's better. We can now see more variation in how much people earn
+within the \$0-200,000 range since we increased the number of bins in
+the histogram. It could still be improved, though. The outliers making
+over \$ 1 million are creating lots of dead space in this plot. We can
+defensibly omit them from the plot, as long as we acknowledge that we've
+done this somewhere in our analysis.
+
+Let's also plot the mean and median of our distribution.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inc\_summary}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{].describe() }\CommentTok{\# get summary statistics for the income variable using the describe() method, and store them in a variable called inc\_summary}
+\BuiltInTok{print}\NormalTok{(inc\_summary[[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}50\%\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}std\textquotesingle{}}\NormalTok{]]) }\CommentTok{\# print the mean, median and standard deviation}
+
+\NormalTok{plt.hist(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{], bins}\OperatorTok{=}\DecValTok{100}\NormalTok{, edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{, density}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# plot the histogram again}
+\NormalTok{plt.axvline(inc\_summary[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{], color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{1}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}Mean\textquotesingle{}}\NormalTok{) }\CommentTok{\# get the mean from the inc\_summary variable and plot a vertical line in red at that point}
+\NormalTok{plt.axvline(inc\_summary[}\StringTok{\textquotesingle{}50\%\textquotesingle{}}\NormalTok{], color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{1}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}Median\textquotesingle{}}\NormalTok{) }\CommentTok{\# do the same for the median, but plot it in black}
+
+\NormalTok{plt.legend()}
+\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}Income ($, thousands\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{"U.S. Income Distributon, 2013"}\NormalTok{)}
+\NormalTok{plt.xlim(}\DecValTok{0}\NormalTok{,}\DecValTok{250}\NormalTok{) }\CommentTok{\# set the x{-}axis limits to 0 to 250{-}{-} this will get rid of the outliers on the right side of the plot}
+
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+mean    51.821863
+50%     40.000000
+std     60.163449
+Name: income, dtype: float64
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-13-output-2.png}
+
+}
+
+\end{figure}
+
+This histogram is far more informative-- use the questions in the
+exercise below to guide your interpretation of this plot.
+
+\hypertarget{exercise-12}{%
+\subsection{Exercise}\label{exercise-12}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  What is the (approximate) mean of this distribution?
+\item
+  What is the median?
+\item
+  Keeping in mind that we've excluded some extreme values, why might the
+  mean be larger than the median? Intepret this qualitatively in
+  reference to income inequality.
+\item
+  There are slight bumps in density at \$100,000, \$150,000, \$200,000,
+  and \$250,000. Why might this be?
+\end{enumerate}
+
+As we have seen, there are a few extreme outliers in the income
+distribution (really rich people). Outliers can bias some statistical
+tests, so for the rest of this workbook, we're going to subset our
+dataframe to exclude those who make over \$200k per year:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\DecValTok{200}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{functions}{%
+\section{Functions}\label{functions}}
+
+Now we've got a pretty good sense of what's going on with the income
+variable. But suppose we want to do this for another variable. We could
+just copy and paste the code above, switch around the variable in
+question, and edit the labels. But there's a far more efficient way of
+doing things. In Python and most programming languages, you can write
+your own \textbf{function}.
+
+A function is a block of code that you can call on to do a specific
+task. You can write your own functions, or you can use functions that
+other people have written. Functions are useful because they allow you
+to write code once, and then call on it whenever you need it. This is
+much more efficient than writing the same code over and over again. You
+can define a function by using the \texttt{def} keyword. For example, we
+can define a function called \texttt{variable\_stats} that will
+calculate the mean, median, and standard deviation of the variable tha
+you specify.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ variable\_stats(variable): }\CommentTok{\# define a function called variable\_stats that takes a variable as an argument}
+\NormalTok{    mean }\OperatorTok{=}\NormalTok{ variable.mean() }\CommentTok{\# calculate the mean of the variable}
+\NormalTok{    median }\OperatorTok{=}\NormalTok{ variable.median() }\CommentTok{\# calculate the median of the variable}
+\NormalTok{    std }\OperatorTok{=}\NormalTok{ variable.std() }\CommentTok{\# calculate the standard deviation of the variable}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Mean: "} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(mean)) }\CommentTok{\# print the mean}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Median: "} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(median)) }\CommentTok{\# print the median}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Standard deviation: "} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(std)) }\CommentTok{\# print the standard deviation}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# We can then call on this function whenever we want to calculate these statistics. }
+
+\NormalTok{variable\_stats(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Mean: 46.75408852483797
+Median: 40.0
+Standard deviation: 32.82190958000738
+\end{verbatim}
+
+Now, to calculate the same values for the age variable, we can simply
+change which variable we feed the function:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{variable\_stats(df[}\StringTok{\textquotesingle{}age\textquotesingle{}}\NormalTok{]) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Mean: 42.845076809704665
+Median: 43.0
+Standard deviation: 10.576333292267508
+\end{verbatim}
+
+We can write a more complex function to deal with plotting new
+histograms for different variables, since most of the code we need to
+plot a histogram won't change from one variable to the next. A few
+things will change-- the variable that we're plotting, the title of the
+graph, and the labels on the x and y axes, and perhaps the number of
+bins. We can write a function called \texttt{plot\_histogram} that takes
+these four things as arguments, and then plots a histogram. Then, we can
+call on this function whenever we want to plot a histogram of a new
+variable. Below is the same code we used to plot the histogram of
+income, but this time we've written it as a function called
+\texttt{plot\_histogram} and substituted the variable name
+\texttt{income} for the argument \texttt{variable}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ plot\_histogram(variable, bin\_number, xlab, title): }\CommentTok{\# define a function called plot\_histogram that takes a variable, number of bins, x{-}axis label, and title as arguments}
+    
+\NormalTok{    summary}\OperatorTok{=}\NormalTok{variable.describe()     }
+\NormalTok{    plt.hist(variable, bins}\OperatorTok{=}\NormalTok{bin\_number,edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{, density}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# plot the histogram. Notice i\textquotesingle{}ve changed "bins=100" to "bins=bin\_number" so that the number of bins can be specified when the function is called}
+\NormalTok{    plt.axvline(summary[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{], color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{1}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}Mean \textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(}\BuiltInTok{round}\NormalTok{(summary[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{],}\DecValTok{2}\NormalTok{)))}
+\NormalTok{    plt.axvline(summary[}\StringTok{\textquotesingle{}50\%\textquotesingle{}}\NormalTok{], color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{1}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}Median \textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(}\BuiltInTok{round}\NormalTok{(summary[}\StringTok{\textquotesingle{}50\%\textquotesingle{}}\NormalTok{],}\DecValTok{2}\NormalTok{)))}
+
+\NormalTok{    plt.legend()}
+\NormalTok{    plt.xlabel(xlab) }\CommentTok{\# i\textquotesingle{}ve changed the x{-}axis label to "xlab" so that it can be specified when the function is called}
+\NormalTok{    plt.title(title) }\CommentTok{\# similarly, we can now specify the title when calling the function}
+\NormalTok{    plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+Now we can just call the function with the variable we want to plot, the
+number of bins, the x-axis label, and the title using one line of code.
+Let's recreate the histogram of income from above, but this time using
+the function we just defined:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plot\_histogram(variable }\OperatorTok{=}\NormalTok{ df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{], bin\_number }\OperatorTok{=} \DecValTok{20}\NormalTok{, xlab }\OperatorTok{=} \StringTok{\textquotesingle{}Income ($, 000)\textquotesingle{}}\NormalTok{, title }\OperatorTok{=} \StringTok{\textquotesingle{}U.S. Income Distribution, 2013\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-19-output-1.png}
+
+}
+
+\end{figure}
+
+If we want to produce lots of similar plots, this really helps us cut
+down on repetition.
+
+\hypertarget{exercise-13}{%
+\subsection{Exercise}\label{exercise-13}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Plot the histogram of the `age' variable with 80 bins, label the
+  x-axis ``Age'', and add title of `U.S. Age Distribution, 2013'.
+\item
+  Plot the distribution of schooling years.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Find an appropriate number of bins
+  \item
+    Label it clearly
+  \item
+    Interpret salient trends
+  \end{itemize}
+\end{enumerate}
+
+\hypertarget{the-central-limit-theorem}{%
+\section{The Central Limit Theorem}\label{the-central-limit-theorem}}
+
+But as we learned in class, the Central Limit Theorem states that the
+\textbf{distribution of the mean of a sample of observations will be
+approximately normal, regardless of the distribution of the original
+observations}. So, if we take a \textbf{large enough sample} of
+observations from each of these variables, and calculate the mean of
+each sample, we should get a normal distribution. This is important
+because the normal distribution behaves in a very predictable way.
+
+The code below creates a ``standard normal'' distribution with a mean of
+0 and a standard deviation of 1:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mu, se}\OperatorTok{=} \DecValTok{0}\NormalTok{, }\DecValTok{1} \CommentTok{\# create two variables, a mean "mu" equal to zero, and standard deviation "se" equal to 1}
+\NormalTok{x }\OperatorTok{=}\NormalTok{ np.linspace(mu }\OperatorTok{{-}} \DecValTok{3}\OperatorTok{*}\NormalTok{se, mu }\OperatorTok{+} \DecValTok{3}\OperatorTok{*}\NormalTok{se, }\DecValTok{100}\NormalTok{) }\CommentTok{\# create a range of values from {-}3 to 3 standard deviations}
+
+\NormalTok{plt.plot(x, norm.pdf(x, mu, se)) }\CommentTok{\# plot the normal distribution}
+\NormalTok{plt.axvline(mu, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}solid\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{1}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}µ\textquotesingle{}}\NormalTok{)  }\CommentTok{\# plot a vertical line at the mean}
+\NormalTok{plt.axvline(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}µ ± 2σ\textquotesingle{}}\NormalTok{) }\CommentTok{\# plot a vertical line at the mean plus 2 standard deviations}
+\NormalTok{plt.axvline(mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)  }\CommentTok{\# plot a vertical line at the mean minus 2 standard deviations}
+\NormalTok{plt.legend()}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-22-output-1.png}
+
+}
+
+\end{figure}
+
+for a distribution with this shape,
+
+\begin{verbatim}
+* 68% of the values will be within 1 standard deviation of the mean
+* 95.45% of the values will be within 2 standard deviations of the mean
+* 99.7% of the values will be within 3 standard deviations of the mean
+\end{verbatim}
+
+so in the plot above, if I took a random value from the distribution,
+there's a 95\% chance that it would be between -2 and 2 (within the
+dotted lines), and a 99.7\% chance that it would be between -3 and 3.
+
+It's crucial to note, however, that this applies to the mean of a
+sample, not individual observations. For example, this doesnt mean that
+there is a 95\% chance that an individual taken at random will have an
+income that is within 2 standard deviations of the mean (\$46k). It
+means that if we take a sample of 100 observations, there is a 95\%
+chance that the \textbf{mean of that sample} will be within 2 standard
+deviations of the mean (\$46k).
+
+\hypertarget{sampling}{%
+\subsection{Sampling}\label{sampling}}
+
+To illustrate how this works, for the rest of this workshop we're going
+to pretend that the dataframe contains the entire adult
+\textbf{population} of the United States (of course, it is actually a
+sample but just pretend). The mean of this distribution will thus be the
+\textbf{population mean}; for the income variable, this is \$46k.
+
+We can use the \texttt{sample} function to take a random sample of
+observations from a distribution. We'll take a sample of 5 observations
+from the income variable and use the \texttt{mean} function to calculate
+the mean of this sample.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{income\_sample }\OperatorTok{=}\NormalTok{ df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{].sample(}\DecValTok{5}\NormalTok{, replace}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# take a random sample of 10 observations from the income variable}
+\NormalTok{income\_sample\_mean}\OperatorTok{=}\NormalTok{income\_sample.mean() }\CommentTok{\# calculate the mean of the sample}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Mean: "} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(income\_sample\_mean)) }\CommentTok{\# print the sample mean}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Mean: 33.0
+\end{verbatim}
+
+\hypertarget{exercise-14}{%
+\subsection{Exercise}\label{exercise-14}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Run the code cell above 10 times and make note of the mean. What is
+  the farthest the sample mean deviates from the ``population'' mean of
+  \$51k?
+\item
+  Increase the sample size from 5 to 100 and run the cell 10 more times.
+  Now, what is the farthest the sample mean deviates from the population
+  mean?
+\item
+  Increase the sample size to 1000. What do you notice about the sample
+  means as we increase the sample size?
+\end{enumerate}
+
+Hopefully, you will have noticed that as the sample size increases, the
+sample means tend to be closer to the population mean. But clicking that
+cell is hard work. Let's create a loop that will run that block of code
+10000 times, save the sample means in a list, and plot the distribution
+of sample means as a histogram. Once again, we'll start by only drawing
+samples of 10 observations:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#create an empty list to store sample means}
+\NormalTok{sample\_means}\OperatorTok{=}\NormalTok{[]}
+
+\NormalTok{sample\_size}\OperatorTok{=}\DecValTok{10}
+\CommentTok{\# loop 10,000 times.}
+\ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10000}\NormalTok{):}
+\NormalTok{    sample}\OperatorTok{=}\NormalTok{ df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{].sample(sample\_size, replace}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# draw a sample of 10 observations from the income variable, with replacement}
+\NormalTok{    sample\_mean}\OperatorTok{=}\NormalTok{sample.mean() }\CommentTok{\# calculate the mean of the sample}
+\NormalTok{    sample\_means.append(sample\_mean) }\CommentTok{\# append the sample mean to the list of sample means}
+    
+\NormalTok{plt.hist(sample\_means, bins}\OperatorTok{=}\DecValTok{30}\NormalTok{, edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{, density}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# plot a histogram of the sample means}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Distribution of Sample Means (n=}\SpecialCharTok{\{\}}\StringTok{)\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(sample\_size)) }\CommentTok{\# add a title}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-24-output-1.png}
+
+}
+
+\end{figure}
+
+\hypertarget{exercise-15}{%
+\subsection{Exercise}\label{exercise-15}}
+
+\begin{verbatim}
+1. Edit the code block above so that instead of drawing samples of 10 observations, it draws samples of 1000 observations
+2. What happens to the distribution?
+\end{verbatim}
+
+When we draw 10,000 samples of 1000 observations each, the distribution
+of sample means looks a lot more normally distributed than the
+underlying distribution of income itself, which is skewed to the right.
+To show how normally distributed it is, let's overlay the normal
+distribution line we plotted earlier and fit it to the distribution of
+sample means. We'll start off by making the same histogram of sample
+means, but add a line plot of the normal distribution and some droplines
+at ± 2 standard deviations.
+
+Because we may want to do this for several different variables, let's
+once again package our code as a function in which we can swap around a
+couple bits. In this case, we may want to swap around the variable we're
+plotting, the label on the x-axis, and the size of the samples we're
+drawing. So we'll create a function called \texttt{plot\_sample\_means}
+that takes these three things as arguments (\texttt{var}, \texttt{xlab},
+and \texttt{sample\_size}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ plot\_sample\_means(var, xlab, sample\_size): }\CommentTok{\# define a function called plot\_sample\_means that takes a variable, x{-}axis label, and sample size as arguments}
+
+    \CommentTok{\#create an empty list to store sample means}
+\NormalTok{    sample\_means}\OperatorTok{=}\NormalTok{[]}
+
+    \CommentTok{\# loop 10,000 times.}
+    \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10000}\NormalTok{):}
+        \CommentTok{\# for each iteration, draw a sample of the size specified by the "sample\_size" parameter}
+\NormalTok{        sample}\OperatorTok{=}\NormalTok{var.sample(sample\_size, replace}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+        \CommentTok{\# calculate the mean, and append it to the list of sample means. }
+\NormalTok{        sample\_mean}\OperatorTok{=}\NormalTok{sample.mean()}
+\NormalTok{        sample\_means.append(sample\_mean)}
+    
+    \CommentTok{\# now, plot a histogram }
+\NormalTok{    plt.hist(sample\_means, color}\OperatorTok{=}\StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{,alpha}\OperatorTok{=}\FloatTok{0.5}\NormalTok{, bins}\OperatorTok{=}\BuiltInTok{int}\NormalTok{(}\DecValTok{30}\NormalTok{), edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{, density}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+    
+    \CommentTok{\# fit a normal distribution to the data }
+\NormalTok{    mu, se }\OperatorTok{=}\NormalTok{ norm.fit(sample\_means)}
+\NormalTok{    xmin, xmax }\OperatorTok{=}\NormalTok{ plt.xlim()}
+\NormalTok{    x }\OperatorTok{=}\NormalTok{ np.linspace(xmin, xmax, }\DecValTok{100}\NormalTok{)}
+\NormalTok{    p }\OperatorTok{=}\NormalTok{ norm.pdf(x, mu, se) }
+\NormalTok{    plt.plot(x, p, }\StringTok{\textquotesingle{}k\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{2}\NormalTok{)}
+
+    \CommentTok{\# calculate the difference between the mean of the sample means }
+\NormalTok{    diff}\OperatorTok{=}\BuiltInTok{abs}\NormalTok{(mu}\OperatorTok{{-}}\NormalTok{var.mean())}
+    
+    \CommentTok{\# add droplines, labels, title, legend, and limit the x{-}axis range to 3 standard deviations from the mean on either side.}
+\NormalTok{    plt.axvline(mu, color}\OperatorTok{=}\StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}solid\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{3}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}µx̄=\textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(}\BuiltInTok{round}\NormalTok{(mu, }\DecValTok{3}\NormalTok{)))}
+\NormalTok{    plt.axvline(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}µ ± 2σ\textquotesingle{}}\NormalTok{)}
+\NormalTok{    plt.axvline(mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
+\NormalTok{    plt.legend()}
+\NormalTok{    plt.xlabel(xlab)    }
+\NormalTok{    plt.title(}\StringTok{\textquotesingle{}Distribution of Sample Means (n=}\SpecialCharTok{\{\}}\StringTok{)\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(sample\_size))}
+\NormalTok{    plt.xlim(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\DecValTok{3}\NormalTok{, mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\DecValTok{3}\NormalTok{)}
+\NormalTok{    plt.show()  }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plot\_sample\_means(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{], xlab}\OperatorTok{=}\StringTok{\textquotesingle{}Income, ($, 000)\textquotesingle{}}\NormalTok{, sample\_size}\OperatorTok{=}\DecValTok{1000}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-26-output-1.png}
+
+}
+
+\end{figure}
+
+We can see that the distribution of sample means (for samples of 1000
+people) very closely approximates the normal distribution. The addition
+of droplines at ±2σ tells us that \textbf{if we take a random sample of
+1000 people, there is a 95\% chance that the mean of this sample will
+fall between \textasciitilde\$44.7k and \textasciitilde\$48.8k}.
+
+Why is this important? let's see what happens when we filter the sample
+based on peoples' attributes. The code below creates two dataframes: one
+called \texttt{men} which only contains male respondents, and one called
+\texttt{women} which only contains female respondents. Then, we run the
+\texttt{plot\_sample\_means()} function on each of these dataframes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{men}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{][}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{] }\CommentTok{\# create a new dataframe containing only income values for men}
+\NormalTok{women}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{2}\NormalTok{][}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{] }\CommentTok{\# create a new dataframe containing only income values for women}
+
+\NormalTok{plot\_sample\_means(men, xlab}\OperatorTok{=}\StringTok{\textquotesingle{}Income, ($, 000)\textquotesingle{}}\NormalTok{, sample\_size}\OperatorTok{=}\DecValTok{500}\NormalTok{)}
+\NormalTok{plot\_sample\_means(women, xlab}\OperatorTok{=}\StringTok{\textquotesingle{}Income, ($, 000)\textquotesingle{}}\NormalTok{, sample\_size}\OperatorTok{=}\DecValTok{500}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-27-output-1.png}
+
+}
+
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-27-output-2.png}
+
+}
+
+\end{figure}
+
+\hypertarget{exercise-16}{%
+\subsection{Exercise}\label{exercise-16}}
+
+\begin{verbatim}
+1. These two histograms may look the same, but look closely at the values. 
+2. The population mean income for women is around $39.6k. Based on the histogram of sample means taken from only men, 
+    * What is the likelihood of observing a sample mean of $39.6k among men due to random chance?
+3. Interpret this finding qualitatively.
+\end{verbatim}
+
+The plot of incomes for men and women show very different distributions,
+but they look quite similar. To make this more readable, let's define
+one last function that can take two or more groups and plot the
+distribution of their sample means on the same plot:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ two\_hist(groups,group\_labs,xlab, title): }\CommentTok{\# define a function called two\_hist that takes a list of groups, a list of group labels, an x{-}axis label, and a title as arguments}
+
+\NormalTok{        plt.figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{15}\NormalTok{,}\DecValTok{6}\NormalTok{)) }\CommentTok{\# set the figure size}
+
+\NormalTok{        it}\OperatorTok{={-}}\DecValTok{1} \CommentTok{\# create a counter variable called "it" and set it equal to {-}1}
+        \ControlFlowTok{for}\NormalTok{ var }\KeywordTok{in}\NormalTok{ groups: }\CommentTok{\# loop through each group in the list of groups}
+\NormalTok{            it}\OperatorTok{+=}\DecValTok{1} \CommentTok{\# increase the iterator by 1}
+\NormalTok{            sample\_size}\OperatorTok{=}\DecValTok{1000} \CommentTok{\# set the sample size equal to 1000}
+\NormalTok{            sample\_means}\OperatorTok{=}\NormalTok{[] }\CommentTok{\# create an empty list to store sample means}
+\NormalTok{            iterations}\OperatorTok{=}\DecValTok{10000} \CommentTok{\# set the number of iterations equal to 10,000}
+
+            \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{,iterations): }\CommentTok{\# loop through the number of iterations}
+\NormalTok{                sample}\OperatorTok{=}\NormalTok{var.sample(sample\_size, replace}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# draw a sample of the size specified by the "sample\_size" parameter}
+\NormalTok{                sample\_mean}\OperatorTok{=}\NormalTok{sample.mean() }\CommentTok{\# calculate the mean of the sample}
+\NormalTok{                sample\_means.append(sample\_mean) }\CommentTok{\# append the sample mean to the list of sample means}
+            
+\NormalTok{            plt.hist(sample\_means, bins}\OperatorTok{=}\BuiltInTok{int}\NormalTok{(iterations}\OperatorTok{/}\DecValTok{300}\NormalTok{),edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{,density}\OperatorTok{=}\VariableTok{True}\NormalTok{, label}\OperatorTok{=}\NormalTok{group\_labs[it])  }\CommentTok{\# plot a histogram of the sample means}
+\NormalTok{            mu, se }\OperatorTok{=}\NormalTok{ norm.fit(sample\_means) }\CommentTok{\# fit a normal distribution to the data}
+\NormalTok{            xmin, xmax }\OperatorTok{=}\NormalTok{ plt.xlim() }\CommentTok{\# set the x{-}axis limits}
+\NormalTok{            x }\OperatorTok{=}\NormalTok{ np.linspace(xmin, xmax, }\DecValTok{100}\NormalTok{) }\CommentTok{\# create a range of values from the minimum to the maximum x{-}axis value}
+\NormalTok{            p }\OperatorTok{=}\NormalTok{ norm.pdf(x, mu, se) }\CommentTok{\# calculate the probability density function for the normal distribution}
+
+\NormalTok{            plt.plot(x, p, }\StringTok{\textquotesingle{}k\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{2}\NormalTok{) }\CommentTok{\# plot the normal distribution}
+\NormalTok{            plt.xlabel(xlab) }\CommentTok{\# add an x{-}axis label}
+\NormalTok{            plt.title(title) }\CommentTok{\# add a title}
+\NormalTok{            plt.axvline(var.mean(), color}\OperatorTok{=}\StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}solid\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{3}\NormalTok{) }\CommentTok{\# add a vertical line at the mean of the variable}
+\NormalTok{            plt.axvline(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
+\NormalTok{            plt.axvline(mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
+\NormalTok{            plt.legend() }\CommentTok{\# add a legend}
+            
+\NormalTok{        plt.show()  }\CommentTok{\# show the plot }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{two\_hist([men,women],[}\StringTok{\textquotesingle{}Men\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Women\textquotesingle{}}\NormalTok{],}\StringTok{\textquotesingle{}Income ($, thousands)\textquotesingle{}}\NormalTok{, }\StringTok{"Income Sample Means"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-29-output-1.png}
+
+}
+
+\end{figure}
+
+There we have it: A stark, quantitative representation of the gender
+wage gap.
+
+If we simply compared the means between a sample of women and a sample
+of men, the best we could do in terms of inference would be to say
+something like ``the average income for men was \$14.2k higher than it
+was for women.'' Though this is an important finding, the central limit
+theorem lets us add important context.
+
+\begin{verbatim}
+1. We took 10,000 large samples of men and calculated the means of each sample.
+2. We found that over 99.7% of them were greater than $50,000. 
+3. We took 10,000 large samples of women and calculated the means of each sample.
+4. We found that over 99.7% of them were smaller than $44,000.
+\end{verbatim}
+
+The fact that the distribution of income sample means between men and
+women do not overlap at all tells us that the probability of this
+variation in incomes being due to random chance is extremely, extremely
+small. Thus, we can say that the observed difference in income between
+men and women is \textbf{statistically significant}.
+
+\bookmarksetup{startatroot}
+
+\hypertarget{assessed-question-4}{%
+\chapter{Assessed Question}\label{assessed-question-4}}
+
+Given that we've used functions to create these plots, we can make plots
+with different data relatively easily. As a reminder, here are the
+values for the sex, race, and schooling variable in our dataframe:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  \emph{sex}: the person's sex
+
+  \begin{itemize}
+  \tightlist
+  \item
+    1=male
+  \item
+    2=female
+  \end{itemize}
+\item
+  \emph{race}: the person's race
+
+  \begin{itemize}
+  \tightlist
+  \item
+    White non hispanic=1
+  \item
+    Black non hispanic=2
+  \item
+    Hispanic=3
+  \item
+    Other non hispanic=4)
+  \end{itemize}
+\item
+  \emph{sch}: Educational attainment
+
+  \begin{itemize}
+  \tightlist
+  \item
+    None = 0,
+  \item
+    Grades 1-12 = 1-12
+  \item
+    Some University = 13,
+  \item
+    Associate's degree = 14,
+  \item
+    BA = 16
+  \item
+    Advanced Degree = 18
+  \end{itemize}
+\end{enumerate}
+
+Intersectionality is an important consideration when thinking about
+inequality. The code below allows you to create a subset of income for
+white men who have completed highschool:
+
+\texttt{white\_highschool\_men=df{[}(df{[}\textquotesingle{}sex\textquotesingle{}{]}==1)\&(df{[}\textquotesingle{}race\textquotesingle{}{]}==1)\&(df{[}\textquotesingle{}sch\textquotesingle{}{]}==12){]}{[}\textquotesingle{}income\textquotesingle{}{]}}
+
+Re-use this code to create a subset of income for Hispanic women who
+have completed a BA degree. Use the \texttt{two\_hist()} function we
+defined to plot the income of this group against the income of white men
+who have completed highschool.
+
+Which group has higher income?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{white\_highschool\_men}\OperatorTok{=}\NormalTok{df[(df[}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{\&}\NormalTok{(df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{\&}\NormalTok{(df[}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{12}\NormalTok{)][}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]}
+\NormalTok{hispanic\_BA\_women}\OperatorTok{=}
+
+\NormalTok{two\_hist()}
+\end{Highlighting}
+\end{Shaded}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{merging-and-joining}{%
+\chapter{Merging and Joining}\label{merging-and-joining}}
+
+\hypertarget{workshop-5-open-in-colab-1}{%
+\section[\emph{Workshop 5} ]{\texorpdfstring{\emph{Workshop 5}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W05.\%20Merging\%20and\%20Joining.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 5 Open In Colab}}\label{workshop-5-open-in-colab-1}}
 
 Sometimes, we will want to combine data from different sources about the
 same subject - perhaps we want to compare the GDP in a country with life
 expectancy, or the proportion of free schools meals with the level of
 unemployment.
 
-\hypertarget{aims-2}{%
-\subsection{Aims}\label{aims-2}}
+\hypertarget{aims-3}{%
+\subsection{Aims}\label{aims-3}}
 
 \begin{itemize}
 \tightlist
@@ -4217,8 +5287,8 @@ Paris & 5.294294 & 4.282418 & 5.741057 \\
 Glasgow & 5.375804 & 4.697775 & 4.393675 \\
 \end{longtable}
 
-\hypertarget{exercise-11}{%
-\section{Exercise:}\label{exercise-11}}
+\hypertarget{exercise-17}{%
+\section{Exercise:}\label{exercise-17}}
 
 How many cities appear in: - both dataframes - only df1 - only df5 -
 neither df1 nor df5?
@@ -4243,7 +5313,7 @@ Well, there are several, starting with the\ldots{}
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Merging and Joining_files/figure-pdf/cell-33-output-1.png}
+{\centering \includegraphics{notebooks/W06. Merging and Joining_files/figure-pdf/cell-33-output-1.png}
 
 }
 
@@ -4341,7 +5411,7 @@ left table, and have blanks for the columns on the right.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Merging and Joining_files/figure-pdf/cell-38-output-1.png}
+{\centering \includegraphics{notebooks/W06. Merging and Joining_files/figure-pdf/cell-38-output-1.png}
 
 }
 
@@ -4384,8 +5454,8 @@ NaN & NaN & NaN \\
 
 As we see, the missing data appears as \textbf{NaN} - Not a Number.
 
-\hypertarget{exercise-12}{%
-\section{Exercise:}\label{exercise-12}}
+\hypertarget{exercise-18}{%
+\section{Exercise:}\label{exercise-18}}
 
 Carry out \emph{right} and \emph{outer} joins on the dataframes df1 and
 df5 and explain how they're filtering and joining the data.
@@ -4448,8 +5518,8 @@ jure & Final figure, complete & 2013 & 11304.5 & NaN \\
 Final figure, complete & 2013 & 5408.0 & NaN \\
 \end{longtable}
 
-\hypertarget{exercise-13}{%
-\section{Exercise}\label{exercise-13}}
+\hypertarget{exercise-19}{%
+\section{Exercise}\label{exercise-19}}
 
 There is a another datafile we downloaded called
 \emph{UN\_Cities\_1214\_country.csv}. This is saved to
@@ -4557,8 +5627,8 @@ http://data.un.org/Data.aspx?d=WDI\&f=Indicator\_Code\%3ASP.DYN.LE00.IN
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{exercise-14}{%
-\section{Exercise:}\label{exercise-14}}
+\hypertarget{exercise-20}{%
+\section{Exercise:}\label{exercise-20}}
 
 In a new cell, clean up the above dataframe by
 
@@ -4587,8 +5657,8 @@ column. This is one way to do that:
 
 \bookmarksetup{startatroot}
 
-\hypertarget{exercise-15}{%
-\chapter{Exercise}\label{exercise-15}}
+\hypertarget{exercise-21}{%
+\chapter{Exercise}\label{exercise-21}}
 
 Now, merge this data with the cities data to show life expectancy for
 each city (based on the country it is in), and show the first 5 rows.
@@ -4617,71 +5687,71 @@ Pandas has \textbf{four} join methods:
 
 \bookmarksetup{startatroot}
 
-\hypertarget{group-presentations}{%
-\chapter{Group Presentations}\label{group-presentations}}
-
-\bookmarksetup{startatroot}
-
-\hypertarget{distributions-and-basic-statistics}{%
-\chapter{Distributions and Basic
-Statistics}\label{distributions-and-basic-statistics}}
+\hypertarget{hypothesis-testing}{%
+\chapter{Hypothesis Testing}\label{hypothesis-testing}}
 
 \hypertarget{workshop-7-open-in-colab}{%
 \section[\emph{Workshop 7} ]{\texorpdfstring{\emph{Workshop 7}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W07.\%20Distributions\%20and\%20Basic\%20Statistics.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 7 Open In Colab}}\label{workshop-7-open-in-colab}}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W07.\%20Hypothesis\%20Testing.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 7 Open In Colab}}\label{workshop-7-open-in-colab}}
 
 For the rest of this course, we'll be working with data from the U.S.
 Census \href{https://www.census.gov/programs-surveys/cps.html}{Current
 Population Survey (CPS)}.
 
-\hypertarget{aims-3}{%
-\subsection{Aims:}\label{aims-3}}
+\hypertarget{aims-4}{%
+\subsection{Aims:}\label{aims-4}}
 
 \begin{itemize}
-\item
-  Choosing appropriate summary statistics for varying distributions
+\tightlist
 \item
   Understanding:
 
   \begin{itemize}
   \tightlist
   \item
-    The nature of our dataset, including potential bias
+    Confidence Intervals
   \item
-    How to generate summary statistics for our dataset
-  \item
-    The distribution of different variables
-  \item
-    The intuition behind the Central Limit Theorem
+    Hypothesis Testing
+
+    \begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \tightlist
+    \item
+      Stating the Null and Alternative Hypotheses
+    \item
+      Selecting a Critical Value
+    \item
+      Calculating the Test Statistic
+    \item
+      Making a Decision
+    \end{enumerate}
   \end{itemize}
 \end{itemize}
 
-\hypertarget{getting-started-1}{%
-\section{Getting Started}\label{getting-started-1}}
+\hypertarget{getting-started-2}{%
+\section{Getting Started}\label{getting-started-2}}
 
-\hypertarget{first-things-first-bias}{%
-\subsection{First Things First: Bias}\label{first-things-first-bias}}
+We will be following on from the analysis we conducted in Workshop 5
+(Distributions and Basic Statistics). We visually explored differences
+in the income levels between different groups of people in the US
+census. Now, we are going to conduct hypothesis testing to see if those
+differences are statistically significant.
 
-Once we've acquired a dataset, the first step is \emph{always} to
-develop an understanding of where the data has come from. For this
-dataset, use the following
-\href{https://www.census.gov/programs-surveys/cps/technical-documentation/methodology.html}{documentation
-page} to answer the questions below:
+\begin{Shaded}
+\begin{Highlighting}[]
+\OperatorTok{!}\NormalTok{mkdir data}
+\OperatorTok{!}\NormalTok{mkdir data}\OperatorTok{/}\NormalTok{wk7}
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{cps.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{cps.csv}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi})}
-\tightlist
-\item
-  What is the population of interest?
-\item
-  What was the sampling strategy?
-\item
-  What are potential sources of selection bias?
-\end{enumerate}
-
-I'll start by importing the libraries I need: matplotlib (for graphs),
-pandas (for data), numpy (for maths) and random (for generating random
-numbers):
+\begin{verbatim}
+mkdir: data: File exists
+mkdir: data/wk7: File exists
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 22.4M  100 22.4M    0     0  15.2M      0  0:00:01  0:00:01 --:--:-- 15.2M
+\end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4702,58 +5772,39 @@ numbers):
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-/Users/ollieballinger/.pyenv/versions/3.9.5/lib/python3.9/site-packages/pandas/compat/__init__.py:97: UserWarning: Could not import the lzma module. Your installed Python is incomplete. Attempting to use lzma compression will result in a RuntimeError.
-  warnings.warn(msg)
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\OperatorTok{!}\NormalTok{mkdir data}
-\OperatorTok{!}\NormalTok{mkdir data}\OperatorTok{/}\NormalTok{wk7}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{cps.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{cps.csv}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-mkdir: data: File exists
-mkdir: data/wk7: File exists
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 22.4M  100 22.4M    0     0  12.3M      0  0:00:01  0:00:01 --:--:-- 12.4M
-\end{verbatim}
-
-Now that I've imported the libraries I'm going to be using, I'm ready to
-import the data:
-
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{df}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}./data/wk7/cps.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{].astype(}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{)}
+\NormalTok{df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}incwage\textquotesingle{}}\NormalTok{]}\OperatorTok{/}\DecValTok{1000}
+\NormalTok{df}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\DecValTok{200}\NormalTok{]}
+\NormalTok{df}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{2013}\NormalTok{] }\CommentTok{\# filter the dataframe to only contain 2013 data}
 \NormalTok{df.head()}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{longtable}[]{@{}llllllllllll@{}}
+\begin{longtable}[]{@{}lllllllllllll@{}}
 \toprule\noalign{}
 & year & state & age & sex & race & sch & ind & union & incwage &
-realhrwage & occupation \\
+realhrwage & occupation & income \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-0 & 1990 & 36 & 58 & 1 & 3 & 12.0 & 871 & 0.0 & 14200.0 & 12.269874 &
-Office and Admin Support \\
-1 & 2009 & 5 & 28 & 1 & 1 & 12.0 & 8660 & 1.0 & 17680.0 & 8.635149 &
-Office and Admin Support \\
-2 & 1990 & 36 & 37 & 1 & 1 & 14.0 & 380 & 1.0 & 28000.0 & 21.169851 &
-. \\
-3 & 1990 & 6 & 34 & 1 & 1 & 18.0 & 740 & 1.0 & 27500.0 & 20.447746 &
-Computer and Math Technicians \\
-4 & 1981 & 51 & 38 & 1 & 4 & 13.0 & 798 & NaN & 17000.0 & 18.892282 &
-Managers \\
+20 & 2013 & 50 & 62 & 1 & 1 & 14.0 & 8090 & 1.0 & 57000.0 & 23.889143 &
+. & 57.0 \\
+32 & 2013 & 39 & 59 & 1 & 1 & 13.0 & 9590 & 0.0 & 62000.0 & 29.726475 &
+Consruction, Extraction, Installation & 62.0 \\
+34 & 2013 & 44 & 44 & 1 & 3 & 12.0 & 7290 & 0.0 & 45000.0 & 20.745834 &
+. & 45.0 \\
+36 & 2013 & 12 & 41 & 1 & 1 & 12.0 & 7070 & 1.0 & 28000.0 & 12.293828 &
+Managers & 28.0 \\
+37 & 2013 & 33 & 35 & 1 & 1 & 12.0 & 770 & 0.0 & 42500.0 & 20.377020 &
+Transportation and materials moving & 42.5 \\
 \end{longtable}
 
-Our dataframe has 10 columns:
+This is once again the U.S. census data from Week 5. As a reminder, our
+dataframe has 10 columns:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -4829,809 +5880,6 @@ Our dataframe has 10 columns:
   \href{https://www.census.gov/naics/?58967?yearbck=2002}{industry code}
 \end{enumerate}
 
-\hypertarget{summary-statistics}{%
-\section{Summary Statistics}\label{summary-statistics}}
-
-After thinking about the origins of our dataset and loading it into
-python, the next step is to generate summary statistics. This is vital
-for us to better understand our data. Pandas has a useful function,
-\texttt{describe}, which will generate summary statistics for all
-numerical variables in our entire dataframe:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df.describe()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{longtable}[]{@{}lllllllllll@{}}
-\toprule\noalign{}
-& year & state & age & sex & race & sch & ind & union & incwage &
-realhrwage \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-count & 344287.000000 & 344287.000000 & 344287.000000 & 344287.000000 &
-344287.000000 & 344287.000000 & 344287.000000 & 301908.000000 &
-3.442870e+05 & 344287.000000 \\
-mean & 2002.599122 & 28.121004 & 41.734364 & 1.489057 & 1.570077 &
-13.498057 & 4235.846009 & 0.221505 & 3.976170e+04 & 22.886629 \\
-std & 10.831555 & 15.818556 & 10.415874 & 0.499881 & 0.952252 & 2.799038
-& 3468.163157 & 0.499690 & 4.529758e+04 & 506.489695 \\
-min & 1981.000000 & 1.000000 & 25.000000 & 1.000000 & 1.000000 &
-0.000000 & 10.000000 & 0.000000 & 1.500000e+01 & 2.000000 \\
-25\% & 1990.000000 & 13.000000 & 33.000000 & 1.000000 & 1.000000 &
-12.000000 & 760.000000 & 0.000000 & 1.670000e+04 & 11.723004 \\
-50\% & 2007.000000 & 28.000000 & 41.000000 & 1.000000 & 1.000000 &
-13.000000 & 4270.000000 & 0.000000 & 3.000000e+04 & 17.698591 \\
-75\% & 2011.000000 & 41.000000 & 50.000000 & 2.000000 & 2.000000 &
-16.000000 & 7860.000000 & 0.000000 & 5.000000e+04 & 26.442308 \\
-max & 2013.000000 & 56.000000 & 64.000000 & 2.000000 & 4.000000 &
-18.000000 & 9590.000000 & 3.000000 & 1.259999e+06 & 294610.968750 \\
-\end{longtable}
-
-\texttt{describe} returns a dataframe with the same columns as the
-source dataframe. For numeric data, the result's index will include
-count, mean, std, min, max as well as lower, 50 and upper percentiles.
-By default the lower percentile is 25 and the upper percentile is 75.
-The 50 percentile is the same as the median. ``incwage'' is the annual
-income variable. Because values are generally in the tens of thousands,
-Python displays this using scientific notation (e.g.~3.442870e+05). This
-is pretty ugly, so let's create a new variable called ``income'' which
-divides that number by 1000 to make it more manageable:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}incwage\textquotesingle{}}\NormalTok{]}\OperatorTok{/}\DecValTok{1000}
-\BuiltInTok{print}\NormalTok{(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{])}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-0         14.20
-1         17.68
-2         28.00
-3         27.50
-4         17.00
-          ...  
-344282    17.00
-344283     3.20
-344284    13.00
-344285     8.80
-344286    15.00
-Name: income, Length: 344287, dtype: float64
-\end{verbatim}
-
-\hypertarget{exercise-16}{%
-\subsection{Exercise}\label{exercise-16}}
-
-Given these summary statistics, answer the following questions:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  what is the median hourly wage?
-\item
-  what is the average age?
-\item
-  are there more men or women?
-\item
-  intepret the mean of the ``race'' column.
-\end{enumerate}
-
-The answer to the last question should provoke some futher thought; the
-race column is categorical, but because it contains numbers it's being
-treated as numerical. The mean of a categorical variable is meaningless;
-For object data (e.g.~categories, strings or timestamps), the result's
-index will include count, unique, top, and freq. The top is the most
-common value. The freq is the most common value's frequency. Timestamps
-also include the first and last items.
-
-Let's convert the race column from a numerical variable into a
-categorical one, and try \texttt{describe} once again:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df.dtypes}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-year            int64
-state           int64
-age             int64
-sex             int64
-race            int64
-sch           float64
-ind             int64
-union         float64
-incwage       float64
-realhrwage    float64
-occupation     object
-income        float64
-dtype: object
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{].astype(}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{)}
-\NormalTok{df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{].describe()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-count     344287
-unique         4
-top            1
-freq      240382
-Name: race, dtype: int64
-\end{verbatim}
-
-what other variables are categorical? Convert them to categorical and
-describe. What is the most common occupation in this dataset?
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# convert the variables to categorical and describe}
-\end{Highlighting}
-\end{Shaded}
-
-These statistics are useful, but suppose we want detailed counts of the
-number of individuals in each category; For this, we can use the
-\texttt{groupby} function, with the \texttt{.size()} operator which
-simply counts the number of rows in each category.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{occupations}\OperatorTok{=}\NormalTok{ df.groupby(}\StringTok{\textquotesingle{}occupation\textquotesingle{}}\NormalTok{).size()}
-\NormalTok{occupations.sort\_values(ascending}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-occupation
-.                                         132708
-Office and Admin Support                   50635
-Managers                                   35696
-Consruction, Extraction, Installation      30579
-Production                                 29732
-Transportation and materials moving        21277
-Computer and Math Technicians               8602
-Protective Service adj_occupations          7809
-financial Operators                         7702
-Business Operators                          7327
-Community and Social Workers                6025
-Lawyers, Judges,Physicans and dentists      3835
-Farming, Fishing & Forestry                 2360
-dtype: int64
-\end{verbatim}
-
-What is the most common profession?
-
-\bookmarksetup{startatroot}
-
-\hypertarget{distributions}{%
-\chapter{Distributions}\label{distributions}}
-
-Now that we've cleaned our data up, let's have a closer look at the
-\emph{distribution} of our data. The best way to do this is using a
-histogram, which takes one variable and divides its values into a number
-of bins shown on the X axis, and then counts the number of observations
-in each of those bins on the Y axis. Let's start by looking at the
-distribution of the \texttt{income} variable:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{2013}\NormalTok{] }\CommentTok{\# filter the dataframe to only contain 2013 data}
-
-\NormalTok{plt.hist(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]) }\CommentTok{\# plot a histogram of the income variable}
-\NormalTok{plt.show() }\CommentTok{\# show the plot}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-11-output-1.png}
-
-}
-
-\end{figure}
-
-This is a pretty ugly histogram, and it's not telling us very much
-useful information. It shows that the vast majority of people make
-between 0 and \$100,000 per year, and a few make over 200k. A small
-number make over \$1 million per year, so the plot is being extended to
-accomodate these outliers. Let's try fixing the histogram up a bit.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{plt.hist(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{], bins}\OperatorTok{=}\DecValTok{100}\NormalTok{, edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{, density}\OperatorTok{=}\VariableTok{True}\NormalTok{) }
-\CommentTok{\# i\textquotesingle{}ve increased the number of bins to 100 to make the plot smoother,}
-\CommentTok{\# added the density=True argument to make the y{-}axis a probability density instead of a count,}
-\CommentTok{\# and the edgecolor=\textquotesingle{}white\textquotesingle{} argument to add some space between the bars, making the plot easier to read}
-
-
-\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}Income ($, thousands)\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a label to the x axis}
-\NormalTok{plt.title(}\StringTok{"U.S. Income Distributon, 2013"}\NormalTok{) }\CommentTok{\# add a title to the plot}
-
-\NormalTok{plt.show() }
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-12-output-1.png}
-
-}
-
-\end{figure}
-
-That's better. We can now see more variation in how much people earn
-within the \$0-200,000 range since we increased the number of bins in
-the histogram. It could still be improved, though. The outliers making
-over \$ 1 million are creating lots of dead space in this plot. We can
-defensibly omit them from the plot, as long as we acknowledge that we've
-done this somewhere in our analysis.
-
-Let's also plot the mean and median of our distribution.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{inc\_summary}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{].describe() }\CommentTok{\# get summary statistics for the income variable using the describe() method, and store them in a variable called inc\_summary}
-\BuiltInTok{print}\NormalTok{(inc\_summary[[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}50\%\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}std\textquotesingle{}}\NormalTok{]]) }\CommentTok{\# print the mean, median and standard deviation}
-
-\NormalTok{plt.hist(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{], bins}\OperatorTok{=}\DecValTok{100}\NormalTok{, edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{, density}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# plot the histogram again}
-\NormalTok{plt.axvline(inc\_summary[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{], color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{1}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}Mean\textquotesingle{}}\NormalTok{) }\CommentTok{\# get the mean from the inc\_summary variable and plot a vertical line in red at that point}
-\NormalTok{plt.axvline(inc\_summary[}\StringTok{\textquotesingle{}50\%\textquotesingle{}}\NormalTok{], color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{1}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}Median\textquotesingle{}}\NormalTok{) }\CommentTok{\# do the same for the median, but plot it in black}
-
-\NormalTok{plt.legend()}
-\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}Income ($, thousands\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.title(}\StringTok{"U.S. Income Distributon, 2013"}\NormalTok{)}
-\NormalTok{plt.xlim(}\DecValTok{0}\NormalTok{,}\DecValTok{250}\NormalTok{) }\CommentTok{\# set the x{-}axis limits to 0 to 250{-}{-} this will get rid of the outliers on the right side of the plot}
-
-\NormalTok{plt.show()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-mean    51.821863
-50%     40.000000
-std     60.163449
-Name: income, dtype: float64
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-13-output-2.png}
-
-}
-
-\end{figure}
-
-This histogram is far more informative-- use the questions in the
-exercise below to guide your interpretation of this plot.
-
-\hypertarget{exercise-17}{%
-\subsection{Exercise}\label{exercise-17}}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  What is the (approximate) mean of this distribution?
-\item
-  What is the median?
-\item
-  Keeping in mind that we've excluded some extreme values, why might the
-  mean be larger than the median? Intepret this qualitatively in
-  reference to income inequality.
-\item
-  There are slight bumps in density at \$100,000, \$150,000, \$200,000,
-  and \$250,000. Why might this be?
-\end{enumerate}
-
-As we have seen, there are a few extreme outliers in the income
-distribution (really rich people). Outliers can bias some statistical
-tests, so for the rest of this workbook, we're going to subset our
-dataframe to exclude those who make over \$200k per year:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\DecValTok{200}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{functions}{%
-\section{Functions}\label{functions}}
-
-Now we've got a pretty good sense of what's going on with the income
-variable. But suppose we want to do this for another variable. We could
-just copy and paste the code above, switch around the variable in
-question, and edit the labels. But there's a far more efficient way of
-doing things. In Python and most programming languages, you can write
-your own \textbf{function}.
-
-A function is a block of code that you can call on to do a specific
-task. You can write your own functions, or you can use functions that
-other people have written. Functions are useful because they allow you
-to write code once, and then call on it whenever you need it. This is
-much more efficient than writing the same code over and over again. You
-can define a function by using the \texttt{def} keyword. For example, we
-can define a function called \texttt{variable\_stats} that will
-calculate the mean, median, and standard deviation of the variable tha
-you specify.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ variable\_stats(variable): }\CommentTok{\# define a function called variable\_stats that takes a variable as an argument}
-\NormalTok{    mean }\OperatorTok{=}\NormalTok{ variable.mean() }\CommentTok{\# calculate the mean of the variable}
-\NormalTok{    median }\OperatorTok{=}\NormalTok{ variable.median() }\CommentTok{\# calculate the median of the variable}
-\NormalTok{    std }\OperatorTok{=}\NormalTok{ variable.std() }\CommentTok{\# calculate the standard deviation of the variable}
-    \BuiltInTok{print}\NormalTok{(}\StringTok{"Mean: "} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(mean)) }\CommentTok{\# print the mean}
-    \BuiltInTok{print}\NormalTok{(}\StringTok{"Median: "} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(median)) }\CommentTok{\# print the median}
-    \BuiltInTok{print}\NormalTok{(}\StringTok{"Standard deviation: "} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(std)) }\CommentTok{\# print the standard deviation}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# We can then call on this function whenever we want to calculate these statistics. }
-
-\NormalTok{variable\_stats(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]) }
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Mean: 46.75408852483797
-Median: 40.0
-Standard deviation: 32.82190958000738
-\end{verbatim}
-
-Now, to calculate the same values for the age variable, we can simply
-change which variable we feed the function:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{variable\_stats(df[}\StringTok{\textquotesingle{}age\textquotesingle{}}\NormalTok{]) }
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Mean: 42.845076809704665
-Median: 43.0
-Standard deviation: 10.576333292267508
-\end{verbatim}
-
-We can write a more complex function to deal with plotting new
-histograms for different variables, since most of the code we need to
-plot a histogram won't change from one variable to the next. A few
-things will change-- the variable that we're plotting, the title of the
-graph, and the labels on the x and y axes, and perhaps the number of
-bins. We can write a function called \texttt{plot\_histogram} that takes
-these four things as arguments, and then plots a histogram. Then, we can
-call on this function whenever we want to plot a histogram of a new
-variable. Below is the same code we used to plot the histogram of
-income, but this time we've written it as a function called
-\texttt{plot\_histogram} and substituted the variable name
-\texttt{income} for the argument \texttt{variable}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ plot\_histogram(variable, bin\_number, xlab, title): }\CommentTok{\# define a function called plot\_histogram that takes a variable, number of bins, x{-}axis label, and title as arguments}
-    
-\NormalTok{    summary}\OperatorTok{=}\NormalTok{variable.describe()     }
-\NormalTok{    plt.hist(variable, bins}\OperatorTok{=}\NormalTok{bin\_number,edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{, density}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# plot the histogram. Notice i\textquotesingle{}ve changed "bins=100" to "bins=bin\_number" so that the number of bins can be specified when the function is called}
-\NormalTok{    plt.axvline(summary[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{], color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{1}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}Mean \textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(}\BuiltInTok{round}\NormalTok{(summary[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{],}\DecValTok{2}\NormalTok{)))}
-\NormalTok{    plt.axvline(summary[}\StringTok{\textquotesingle{}50\%\textquotesingle{}}\NormalTok{], color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{1}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}Median \textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(}\BuiltInTok{round}\NormalTok{(summary[}\StringTok{\textquotesingle{}50\%\textquotesingle{}}\NormalTok{],}\DecValTok{2}\NormalTok{)))}
-
-\NormalTok{    plt.legend()}
-\NormalTok{    plt.xlabel(xlab) }\CommentTok{\# i\textquotesingle{}ve changed the x{-}axis label to "xlab" so that it can be specified when the function is called}
-\NormalTok{    plt.title(title) }\CommentTok{\# similarly, we can now specify the title when calling the function}
-\NormalTok{    plt.show()}
-\end{Highlighting}
-\end{Shaded}
-
-Now we can just call the function with the variable we want to plot, the
-number of bins, the x-axis label, and the title using one line of code.
-Let's recreate the histogram of income from above, but this time using
-the function we just defined:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{plot\_histogram(variable }\OperatorTok{=}\NormalTok{ df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{], bin\_number }\OperatorTok{=} \DecValTok{20}\NormalTok{, xlab }\OperatorTok{=} \StringTok{\textquotesingle{}Income ($, 000)\textquotesingle{}}\NormalTok{, title }\OperatorTok{=} \StringTok{\textquotesingle{}U.S. Income Distribution, 2013\textquotesingle{}}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-19-output-1.png}
-
-}
-
-\end{figure}
-
-If we want to produce lots of similar plots, this really helps us cut
-down on repetition.
-
-\hypertarget{exercise-18}{%
-\subsection{Exercise}\label{exercise-18}}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Plot the histogram of the `age' variable with 80 bins, label the
-  x-axis ``Age'', and add title of `U.S. Age Distribution, 2013'.
-\item
-  Plot the distribution of schooling years.
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Find an appropriate number of bins
-  \item
-    Label it clearly
-  \item
-    Interpret salient trends
-  \end{itemize}
-\end{enumerate}
-
-\hypertarget{the-central-limit-theorem}{%
-\section{The Central Limit Theorem}\label{the-central-limit-theorem}}
-
-But as we learned in class, the Central Limit Theorem states that the
-\textbf{distribution of the mean of a sample of observations will be
-approximately normal, regardless of the distribution of the original
-observations}. So, if we take a \textbf{large enough sample} of
-observations from each of these variables, and calculate the mean of
-each sample, we should get a normal distribution. This is important
-because the normal distribution behaves in a very predictable way.
-
-The code below creates a ``standard normal'' distribution with a mean of
-0 and a standard deviation of 1:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{mu, se}\OperatorTok{=} \DecValTok{0}\NormalTok{, }\DecValTok{1} \CommentTok{\# create two variables, a mean "mu" equal to zero, and standard deviation "se" equal to 1}
-\NormalTok{x }\OperatorTok{=}\NormalTok{ np.linspace(mu }\OperatorTok{{-}} \DecValTok{3}\OperatorTok{*}\NormalTok{se, mu }\OperatorTok{+} \DecValTok{3}\OperatorTok{*}\NormalTok{se, }\DecValTok{100}\NormalTok{) }\CommentTok{\# create a range of values from {-}3 to 3 standard deviations}
-
-\NormalTok{plt.plot(x, norm.pdf(x, mu, se)) }\CommentTok{\# plot the normal distribution}
-\NormalTok{plt.axvline(mu, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}solid\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{1}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}µ\textquotesingle{}}\NormalTok{)  }\CommentTok{\# plot a vertical line at the mean}
-\NormalTok{plt.axvline(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}µ ± 2σ\textquotesingle{}}\NormalTok{) }\CommentTok{\# plot a vertical line at the mean plus 2 standard deviations}
-\NormalTok{plt.axvline(mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)  }\CommentTok{\# plot a vertical line at the mean minus 2 standard deviations}
-\NormalTok{plt.legend()}
-\NormalTok{plt.show()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-22-output-1.png}
-
-}
-
-\end{figure}
-
-for a distribution with this shape,
-
-\begin{verbatim}
-* 68% of the values will be within 1 standard deviation of the mean
-* 95.45% of the values will be within 2 standard deviations of the mean
-* 99.7% of the values will be within 3 standard deviations of the mean
-\end{verbatim}
-
-so in the plot above, if I took a random value from the distribution,
-there's a 95\% chance that it would be between -2 and 2 (within the
-dotted lines), and a 99.7\% chance that it would be between -3 and 3.
-
-It's crucial to note, however, that this applies to the mean of a
-sample, not individual observations. For example, this doesnt mean that
-there is a 95\% chance that an individual taken at random will have an
-income that is within 2 standard deviations of the mean (\$46k). It
-means that if we take a sample of 100 observations, there is a 95\%
-chance that the \textbf{mean of that sample} will be within 2 standard
-deviations of the mean (\$46k).
-
-\hypertarget{sampling}{%
-\subsection{Sampling}\label{sampling}}
-
-To illustrate how this works, for the rest of this workshop we're going
-to pretend that the dataframe contains the entire adult
-\textbf{population} of the United States (of course, it is actually a
-sample but just pretend). The mean of this distribution will thus be the
-\textbf{population mean}; for the income variable, this is \$46k.
-
-We can use the \texttt{sample} function to take a random sample of
-observations from a distribution. We'll take a sample of 5 observations
-from the income variable and use the \texttt{mean} function to calculate
-the mean of this sample.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{income\_sample }\OperatorTok{=}\NormalTok{ df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{].sample(}\DecValTok{5}\NormalTok{, replace}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# take a random sample of 10 observations from the income variable}
-\NormalTok{income\_sample\_mean}\OperatorTok{=}\NormalTok{income\_sample.mean() }\CommentTok{\# calculate the mean of the sample}
-\BuiltInTok{print}\NormalTok{(}\StringTok{"Mean: "} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(income\_sample\_mean)) }\CommentTok{\# print the sample mean}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Mean: 38.3604
-\end{verbatim}
-
-\hypertarget{exercise-19}{%
-\subsection{Exercise}\label{exercise-19}}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Run the code cell above 10 times and make note of the mean. What is
-  the farthest the sample mean deviates from the ``population'' mean of
-  \$51k?
-\item
-  Increase the sample size from 5 to 100 and run the cell 10 more times.
-  Now, what is the farthest the sample mean deviates from the population
-  mean?
-\item
-  Increase the sample size to 1000. What do you notice about the sample
-  means as we increase the sample size?
-\end{enumerate}
-
-Hopefully, you will have noticed that as the sample size increases, the
-sample means tend to be closer to the population mean. But clicking that
-cell is hard work. Let's create a loop that will run that block of code
-10000 times, save the sample means in a list, and plot the distribution
-of sample means as a histogram. Once again, we'll start by only drawing
-samples of 10 observations:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#create an empty list to store sample means}
-\NormalTok{sample\_means}\OperatorTok{=}\NormalTok{[]}
-
-\NormalTok{sample\_size}\OperatorTok{=}\DecValTok{10}
-\CommentTok{\# loop 10,000 times.}
-\ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10000}\NormalTok{):}
-\NormalTok{    sample}\OperatorTok{=}\NormalTok{ df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{].sample(sample\_size, replace}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# draw a sample of 10 observations from the income variable, with replacement}
-\NormalTok{    sample\_mean}\OperatorTok{=}\NormalTok{sample.mean() }\CommentTok{\# calculate the mean of the sample}
-\NormalTok{    sample\_means.append(sample\_mean) }\CommentTok{\# append the sample mean to the list of sample means}
-    
-\NormalTok{plt.hist(sample\_means, bins}\OperatorTok{=}\DecValTok{30}\NormalTok{, edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{, density}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# plot a histogram of the sample means}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}Distribution of Sample Means (n=}\SpecialCharTok{\{\}}\StringTok{)\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(sample\_size)) }\CommentTok{\# add a title}
-\NormalTok{plt.show()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-24-output-1.png}
-
-}
-
-\end{figure}
-
-\hypertarget{exercise-20}{%
-\subsection{Exercise}\label{exercise-20}}
-
-\begin{verbatim}
-1. Edit the code block above so that instead of drawing samples of 10 observations, it draws samples of 1000 observations
-2. What happens to the distribution?
-\end{verbatim}
-
-When we draw 10,000 samples of 1000 observations each, the distribution
-of sample means looks a lot more normally distributed than the
-underlying distribution of income itself, which is skewed to the right.
-To show how normally distributed it is, let's overlay the normal
-distribution line we plotted earlier and fit it to the distribution of
-sample means. We'll start off by making the same histogram of sample
-means, but add a line plot of the normal distribution and some droplines
-at ± 2 standard deviations.
-
-Because we may want to do this for several different variables, let's
-once again package our code as a function in which we can swap around a
-couple bits. In this case, we may want to swap around the variable we're
-plotting, the label on the x-axis, and the size of the samples we're
-drawing. So we'll create a function called \texttt{plot\_sample\_means}
-that takes these three things as arguments (\texttt{var}, \texttt{xlab},
-and \texttt{sample\_size}).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ plot\_sample\_means(var, xlab, sample\_size): }\CommentTok{\# define a function called plot\_sample\_means that takes a variable, x{-}axis label, and sample size as arguments}
-
-    \CommentTok{\#create an empty list to store sample means}
-\NormalTok{    sample\_means}\OperatorTok{=}\NormalTok{[]}
-
-    \CommentTok{\# loop 10,000 times.}
-    \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10000}\NormalTok{):}
-        \CommentTok{\# for each iteration, draw a sample of the size specified by the "sample\_size" parameter}
-\NormalTok{        sample}\OperatorTok{=}\NormalTok{var.sample(sample\_size, replace}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
-        \CommentTok{\# calculate the mean, and append it to the list of sample means. }
-\NormalTok{        sample\_mean}\OperatorTok{=}\NormalTok{sample.mean()}
-\NormalTok{        sample\_means.append(sample\_mean)}
-    
-    \CommentTok{\# now, plot a histogram }
-\NormalTok{    plt.hist(sample\_means, color}\OperatorTok{=}\StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{,alpha}\OperatorTok{=}\FloatTok{0.5}\NormalTok{, bins}\OperatorTok{=}\BuiltInTok{int}\NormalTok{(}\DecValTok{30}\NormalTok{), edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{, density}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
-    
-    \CommentTok{\# fit a normal distribution to the data }
-\NormalTok{    mu, se }\OperatorTok{=}\NormalTok{ norm.fit(sample\_means)}
-\NormalTok{    xmin, xmax }\OperatorTok{=}\NormalTok{ plt.xlim()}
-\NormalTok{    x }\OperatorTok{=}\NormalTok{ np.linspace(xmin, xmax, }\DecValTok{100}\NormalTok{)}
-\NormalTok{    p }\OperatorTok{=}\NormalTok{ norm.pdf(x, mu, se) }
-\NormalTok{    plt.plot(x, p, }\StringTok{\textquotesingle{}k\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{2}\NormalTok{)}
-
-    \CommentTok{\# calculate the difference between the mean of the sample means }
-\NormalTok{    diff}\OperatorTok{=}\BuiltInTok{abs}\NormalTok{(mu}\OperatorTok{{-}}\NormalTok{var.mean())}
-    
-    \CommentTok{\# add droplines, labels, title, legend, and limit the x{-}axis range to 3 standard deviations from the mean on either side.}
-\NormalTok{    plt.axvline(mu, color}\OperatorTok{=}\StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}solid\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{3}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}µx̄=\textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(}\BuiltInTok{round}\NormalTok{(mu, }\DecValTok{3}\NormalTok{)))}
-\NormalTok{    plt.axvline(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}µ ± 2σ\textquotesingle{}}\NormalTok{)}
-\NormalTok{    plt.axvline(mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
-\NormalTok{    plt.legend()}
-\NormalTok{    plt.xlabel(xlab)    }
-\NormalTok{    plt.title(}\StringTok{\textquotesingle{}Distribution of Sample Means (n=}\SpecialCharTok{\{\}}\StringTok{)\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(sample\_size))}
-\NormalTok{    plt.xlim(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\DecValTok{3}\NormalTok{, mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\DecValTok{3}\NormalTok{)}
-\NormalTok{    plt.show()  }
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{plot\_sample\_means(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{], xlab}\OperatorTok{=}\StringTok{\textquotesingle{}Income, ($, 000)\textquotesingle{}}\NormalTok{, sample\_size}\OperatorTok{=}\DecValTok{1000}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-26-output-1.png}
-
-}
-
-\end{figure}
-
-We can see that the distribution of sample means (for samples of 1000
-people) very closely approximates the normal distribution. The addition
-of droplines at ±2σ tells us that \textbf{if we take a random sample of
-1000 people, there is a 95\% chance that the mean of this sample will
-fall between \textasciitilde\$44.7k and \textasciitilde\$48.8k}.
-
-Why is this important? let's see what happens when we filter the sample
-based on peoples' attributes. The code below creates two dataframes: one
-called \texttt{men} which only contains male respondents, and one called
-\texttt{women} which only contains female respondents. Then, we run the
-\texttt{plot\_sample\_means()} function on each of these dataframes.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{men}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{][}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{] }\CommentTok{\# create a new dataframe containing only income values for men}
-\NormalTok{women}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{2}\NormalTok{][}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{] }\CommentTok{\# create a new dataframe containing only income values for women}
-
-\NormalTok{plot\_sample\_means(men, xlab}\OperatorTok{=}\StringTok{\textquotesingle{}Income, ($, 000)\textquotesingle{}}\NormalTok{, sample\_size}\OperatorTok{=}\DecValTok{500}\NormalTok{)}
-\NormalTok{plot\_sample\_means(women, xlab}\OperatorTok{=}\StringTok{\textquotesingle{}Income, ($, 000)\textquotesingle{}}\NormalTok{, sample\_size}\OperatorTok{=}\DecValTok{500}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-27-output-1.png}
-
-}
-
-\end{figure}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-27-output-2.png}
-
-}
-
-\end{figure}
-
-\hypertarget{exercise-21}{%
-\subsection{Exercise}\label{exercise-21}}
-
-\begin{verbatim}
-1. These two histograms may look the same, but look closely at the values. 
-2. The population mean income for women is around $39.6k. Based on the histogram of sample means taken from only men, 
-    * What is the likelihood of observing a sample mean of $39.6k among men due to random chance?
-3. Interpret this finding qualitatively.
-\end{verbatim}
-
-The plot of incomes for men and women show very different distributions,
-but they look quite similar. To make this more readable, let's define
-one last function that can take two or more groups and plot the
-distribution of their sample means on the same plot:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ two\_hist(groups,group\_labs,xlab, title): }\CommentTok{\# define a function called two\_hist that takes a list of groups, a list of group labels, an x{-}axis label, and a title as arguments}
-
-\NormalTok{        plt.figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{15}\NormalTok{,}\DecValTok{6}\NormalTok{)) }\CommentTok{\# set the figure size}
-
-\NormalTok{        it}\OperatorTok{={-}}\DecValTok{1} \CommentTok{\# create a counter variable called "it" and set it equal to {-}1}
-        \ControlFlowTok{for}\NormalTok{ var }\KeywordTok{in}\NormalTok{ groups: }\CommentTok{\# loop through each group in the list of groups}
-\NormalTok{            it}\OperatorTok{+=}\DecValTok{1} \CommentTok{\# increase the iterator by 1}
-\NormalTok{            sample\_size}\OperatorTok{=}\DecValTok{1000} \CommentTok{\# set the sample size equal to 1000}
-\NormalTok{            sample\_means}\OperatorTok{=}\NormalTok{[] }\CommentTok{\# create an empty list to store sample means}
-\NormalTok{            iterations}\OperatorTok{=}\DecValTok{10000} \CommentTok{\# set the number of iterations equal to 10,000}
-
-            \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{,iterations): }\CommentTok{\# loop through the number of iterations}
-\NormalTok{                sample}\OperatorTok{=}\NormalTok{var.sample(sample\_size, replace}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\CommentTok{\# draw a sample of the size specified by the "sample\_size" parameter}
-\NormalTok{                sample\_mean}\OperatorTok{=}\NormalTok{sample.mean() }\CommentTok{\# calculate the mean of the sample}
-\NormalTok{                sample\_means.append(sample\_mean) }\CommentTok{\# append the sample mean to the list of sample means}
-            
-\NormalTok{            plt.hist(sample\_means, bins}\OperatorTok{=}\BuiltInTok{int}\NormalTok{(iterations}\OperatorTok{/}\DecValTok{300}\NormalTok{),edgecolor}\OperatorTok{=}\StringTok{\textquotesingle{}white\textquotesingle{}}\NormalTok{,density}\OperatorTok{=}\VariableTok{True}\NormalTok{, label}\OperatorTok{=}\NormalTok{group\_labs[it])  }\CommentTok{\# plot a histogram of the sample means}
-\NormalTok{            mu, se }\OperatorTok{=}\NormalTok{ norm.fit(sample\_means) }\CommentTok{\# fit a normal distribution to the data}
-\NormalTok{            xmin, xmax }\OperatorTok{=}\NormalTok{ plt.xlim() }\CommentTok{\# set the x{-}axis limits}
-\NormalTok{            x }\OperatorTok{=}\NormalTok{ np.linspace(xmin, xmax, }\DecValTok{100}\NormalTok{) }\CommentTok{\# create a range of values from the minimum to the maximum x{-}axis value}
-\NormalTok{            p }\OperatorTok{=}\NormalTok{ norm.pdf(x, mu, se) }\CommentTok{\# calculate the probability density function for the normal distribution}
-
-\NormalTok{            plt.plot(x, p, }\StringTok{\textquotesingle{}k\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{2}\NormalTok{) }\CommentTok{\# plot the normal distribution}
-\NormalTok{            plt.xlabel(xlab) }\CommentTok{\# add an x{-}axis label}
-\NormalTok{            plt.title(title) }\CommentTok{\# add a title}
-\NormalTok{            plt.axvline(var.mean(), color}\OperatorTok{=}\StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}solid\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{3}\NormalTok{) }\CommentTok{\# add a vertical line at the mean of the variable}
-\NormalTok{            plt.axvline(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
-\NormalTok{            plt.axvline(mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
-\NormalTok{            plt.legend() }\CommentTok{\# add a legend}
-            
-\NormalTok{        plt.show()  }\CommentTok{\# show the plot }
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{two\_hist([men,women],[}\StringTok{\textquotesingle{}Men\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Women\textquotesingle{}}\NormalTok{],}\StringTok{\textquotesingle{}Income ($, thousands)\textquotesingle{}}\NormalTok{, }\StringTok{"Income Sample Means"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-29-output-1.png}
-
-}
-
-\end{figure}
-
-There we have it: A stark, quantitative representation of the gender
-wage gap.
-
-If we simply compared the means between a sample of women and a sample
-of men, the best we could do in terms of inference would be to say
-something like ``the average income for men was \$14.2k higher than it
-was for women.'' Though this is an important finding, the central limit
-theorem lets us add important context.
-
-\begin{verbatim}
-1. We took 10,000 large samples of men and calculated the means of each sample.
-2. We found that over 99.7% of them were greater than $50,000. 
-3. We took 10,000 large samples of women and calculated the means of each sample.
-4. We found that over 99.7% of them were smaller than $44,000.
-\end{verbatim}
-
-The fact that the distribution of income sample means between men and
-women do not overlap at all tells us that the probability of this
-variation in incomes being due to random chance is extremely, extremely
-small. Thus, we can say that the observed difference in income between
-men and women is \textbf{statistically significant}.
-
-\hypertarget{extension-2}{%
-\subsection{Extension}\label{extension-2}}
-
-Given that we've used functions to create these plots, we can make plots
-with different data relatively easily. Intersectionality is an important
-consideration when thinking about inequality. The code below allows you
-to create a subset of income for white men:
-
-\texttt{w\_men=df{[}(df{[}\textquotesingle{}sex\textquotesingle{}{]}==1)\&(df{[}\textquotesingle{}race\textquotesingle{}{]}==1){]}{[}\textquotesingle{}income\textquotesingle{}{]}}
-
-There is a strong gendered difference in income, but what about the
-effects of both race and gender? How does union membership mitigate
-these inequalities? What if we only compare people in the same types of
-jobs? Try creating subsets based on these characteristics and plotting
-distributions of sample means to answer these questions.
-
 \hypertarget{confidence-intervals}{%
 \section{Confidence Intervals}\label{confidence-intervals}}
 
@@ -5677,7 +5925,7 @@ Text(0.5, 1.0, 'Income Distribution')
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-31-output-2.png}
+{\centering \includegraphics{notebooks/W07. Hypothesis Testing_files/figure-pdf/cell-5-output-2.png}
 
 }
 
@@ -5699,13 +5947,13 @@ sample.
 
 \begin{verbatim}
 count    1000.000000
-mean       46.862772
-std        32.960154
-min         0.500000
-25%        23.000000
+mean       46.776892
+std        32.401396
+min         0.052000
+25%        24.000000
 50%        40.000000
-75%        63.000000
-max       189.000000
+75%        60.000000
+max       180.000000
 Name: income, dtype: float64
 \end{verbatim}
 
@@ -5730,8 +5978,8 @@ interval as follows:
 \end{Shaded}
 
 \begin{verbatim}
-The mean is 46.86 with a standard error of 1.04
-The 95% confidence interval is 44.82 to 48.91
+The mean is 46.78 with a standard error of 1.02
+The 95% confidence interval is 44.77 to 48.79
 \end{verbatim}
 
 Finally, let's plot these bounds on our swarmplot to graphically show
@@ -5756,14 +6004,14 @@ Text(0.5, 1.0, 'Income Distribution, 95% Confidence Interval')
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-34-output-2.png}
+{\centering \includegraphics{notebooks/W07. Hypothesis Testing_files/figure-pdf/cell-8-output-2.png}
 
 }
 
 \end{figure}
 
-\hypertarget{hypothesis-testing}{%
-\section{Hypothesis Testing}\label{hypothesis-testing}}
+\hypertarget{hypothesis-testing-1}{%
+\section{Hypothesis Testing}\label{hypothesis-testing-1}}
 
 If we create a boxplot of income disaggregated by sex using our sample,
 we can observe that men seem to earn more than women:
@@ -5780,7 +6028,7 @@ we can observe that men seem to earn more than women:
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-35-output-2.png}
+{\centering \includegraphics{notebooks/W07. Hypothesis Testing_files/figure-pdf/cell-9-output-2.png}
 
 }
 
@@ -5901,7 +6149,7 @@ confidence level? what about the 99\% level?
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-36-output-1.png}
+{\centering \includegraphics{notebooks/W07. Hypothesis Testing_files/figure-pdf/cell-10-output-1.png}
 
 }
 
@@ -5989,7 +6237,8 @@ plot.
 \end{Highlighting}
 \end{Shaded}
 
-Having defined the function, we can now call it to calculate a
+Having defined the function, we can now call it to calculate a t-test
+for the difference in income between men and women
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6001,9 +6250,9 @@ Having defined the function, we can now call it to calculate a
 \end{Shaded}
 
 \begin{verbatim}
-Group 1: n=491, mean=55.719, std=35.562
-Group 2: n=509, mean=38.320, std=27.705
-The t-statistic is 8.610
+Group 1: n=501, mean=54.689, std=35.363
+Group 2: n=499, mean=38.833, std=26.912
+The t-statistic is 7.980
 \end{verbatim}
 
 \hypertarget{make-a-decision}{%
@@ -6023,7 +6272,7 @@ T-statistic from our test against the critical values:
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-39-output-1.png}
+{\centering \includegraphics{notebooks/W07. Hypothesis Testing_files/figure-pdf/cell-13-output-1.png}
 
 }
 
@@ -6055,18 +6304,8 @@ no difference in mean income between men and women?
   article, and try to replicate the analysis using our dataset.
 \end{enumerate}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Statistics=8.610, p=0.000
-\end{verbatim}
-
-\hypertarget{extension-3}{%
-\section{Extension}\label{extension-3}}
+\hypertarget{extension-2}{%
+\section{Extension}\label{extension-2}}
 
 If this is all way too easy for you, here's a different and less
 structured task. When Elon musk bought Twitter, he promisted to restore
@@ -6095,7 +6334,7 @@ significant increase in hate speech following Elon Musk's tweet.
 \begin{verbatim}
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  4380  100  4380    0     0   8144      0 --:--:-- --:--:-- --:--:--  8217
+100  4380  100  4380    0     0  20048      0 --:--:-- --:--:-- --:--:-- 20467
 \end{verbatim}
 
 \begin{Shaded}
@@ -6126,13 +6365,13 @@ significant increase in hate speech following Elon Musk's tweet.
 \end{Shaded}
 
 \begin{verbatim}
-/var/folders/6q/jt4x0r8n1rs0kbrrqrbj61fr0000gn/T/ipykernel_34310/354133693.py:17: UserWarning: color is redundantly defined by the 'color' keyword argument and the fmt string "b-" (-> color='b'). The keyword argument will take precedence.
+/var/folders/6q/jt4x0r8n1rs0kbrrqrbj61fr0000gn/T/ipykernel_79624/354133693.py:17: UserWarning: color is redundantly defined by the 'color' keyword argument and the fmt string "b-" (-> color='b'). The keyword argument will take precedence.
   plt.plot_date(tweets['hour'], tweets['count'], 'b-', color='red')
 \end{verbatim}
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W07. Distributions and Basic Statistics_files/figure-pdf/cell-42-output-2.png}
+{\centering \includegraphics{notebooks/W07. Hypothesis Testing_files/figure-pdf/cell-16-output-2.png}
 
 }
 
@@ -6143,12 +6382,12 @@ significant increase in hate speech following Elon Musk's tweet.
 \hypertarget{regression}{%
 \chapter{Regression}\label{regression}}
 
-\hypertarget{workshop-6-open-in-colab}{%
-\section[\emph{Workshop 6} ]{\texorpdfstring{\emph{Workshop 6}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W09.\%20Linear\%20Regression.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 6 Open In Colab}}\label{workshop-6-open-in-colab}}
+\hypertarget{workshop-8-open-in-colab}{%
+\section[\emph{Workshop 8} ]{\texorpdfstring{\emph{Workshop 8}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W08.\%20Linear\%20Regression.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 8 Open In Colab}}\label{workshop-8-open-in-colab}}
 
-\hypertarget{aims-4}{%
-\subsection{Aims:}\label{aims-4}}
+\hypertarget{aims-5}{%
+\subsection{Aims:}\label{aims-5}}
 
 In this workshop, we're going to be modeling the relationship between
 education and income. More precisely, we're going to be looking at the
@@ -6199,8 +6438,8 @@ Squares regression. We're going to accomplish this in four steps:
 If you're conducting a regression, you must complete the steps above,
 and produce each item indicated by a bullet point.
 
-\hypertarget{getting-started-2}{%
-\section{Getting Started}\label{getting-started-2}}
+\hypertarget{getting-started-3}{%
+\section{Getting Started}\label{getting-started-3}}
 
 As always we'll start by importing the libraries I need
 
@@ -7011,8 +7250,8 @@ higher in California! Why might this be?
   \end{itemize}
 \end{enumerate}
 
-\hypertarget{extension-4}{%
-\section{Extension}\label{extension-4}}
+\hypertarget{extension-3}{%
+\section{Extension}\label{extension-3}}
 
 Though we've gotten some significant results and interesting insights
 from our modeling effort so far, we can further improve our model. In
@@ -7222,8 +7461,8 @@ coefficeint in the logged model as follows:
 \section[\emph{Workshop 10} ]{\texorpdfstring{\emph{Workshop 10}
 \href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W10.\%20Causal\%20Inference.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 10 Open In Colab}}\label{workshop-10-open-in-colab}}
 
-\hypertarget{aims-5}{%
-\subsection{Aims:}\label{aims-5}}
+\hypertarget{aims-6}{%
+\subsection{Aims:}\label{aims-6}}
 
 This workshop builds on last week's material-- now that we know what a
 basic regression looks like, we'll be looking at three different types
@@ -7542,9 +7781,9 @@ ValueError: mismatch between column_names and columns coded by given terms
 \hypertarget{machine-learning}{%
 \chapter{Machine Learning}\label{machine-learning}}
 
-\hypertarget{workshop-9-open-in-colab}{%
-\section[\emph{Workshop 9} ]{\texorpdfstring{\emph{Workshop 9}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W09.\%20Machine\%20Learning.ipynb}{\protect\includegraphics{notebooks/../colab-badge.png}}}{Workshop 9 Open In Colab}}\label{workshop-9-open-in-colab}}
+\hypertarget{workshop-10-open-in-colab-1}{%
+\section[\emph{Workshop 10} ]{\texorpdfstring{\emph{Workshop 10}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W10.\%20Machine\%20Learning.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 10 Open In Colab}}\label{workshop-10-open-in-colab-1}}
 
 This short introduction uses
 \href{https://www.tensorflow.org/guide/keras/overview}{Keras} to:
