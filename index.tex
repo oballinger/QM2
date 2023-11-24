@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, frame hidden, breakable, sharp corners, interior hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, frame hidden, interior hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, boxrule=0pt, breakable]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -5750,7 +5750,7 @@ mkdir: data: File exists
 mkdir: data/wk7: File exists
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 22.4M  100 22.4M    0     0  15.2M      0  0:00:01  0:00:01 --:--:-- 15.2M
+100 22.4M  100 22.4M    0     0  16.5M      0  0:00:01  0:00:01 --:--:-- 16.6M
 \end{verbatim}
 
 \begin{Shaded}
@@ -5947,13 +5947,13 @@ sample.
 
 \begin{verbatim}
 count    1000.000000
-mean       46.776892
-std        32.401396
-min         0.052000
-25%        24.000000
+mean       47.677568
+std        33.041244
+min         0.700000
+25%        25.000000
 50%        40.000000
-75%        60.000000
-max       180.000000
+75%        62.000000
+max       190.000000
 Name: income, dtype: float64
 \end{verbatim}
 
@@ -5978,8 +5978,8 @@ interval as follows:
 \end{Shaded}
 
 \begin{verbatim}
-The mean is 46.78 with a standard error of 1.02
-The 95% confidence interval is 44.77 to 48.79
+The mean is 47.68 with a standard error of 1.04
+The 95% confidence interval is 45.63 to 49.73
 \end{verbatim}
 
 Finally, let's plot these bounds on our swarmplot to graphically show
@@ -6250,9 +6250,9 @@ for the difference in income between men and women
 \end{Shaded}
 
 \begin{verbatim}
-Group 1: n=501, mean=54.689, std=35.363
-Group 2: n=499, mean=38.833, std=26.912
-The t-statistic is 7.980
+Group 1: n=485, mean=57.435, std=36.610
+Group 2: n=515, mean=38.489, std=26.179
+The t-statistic is 9.364
 \end{verbatim}
 
 \hypertarget{make-a-decision}{%
@@ -6304,26 +6304,22 @@ no difference in mean income between men and women?
   article, and try to replicate the analysis using our dataset.
 \end{enumerate}
 
-\hypertarget{extension-2}{%
-\section{Extension}\label{extension-2}}
+\hypertarget{assessed-question-5}{%
+\section{Assessed Question}\label{assessed-question-5}}
 
-If this is all way too easy for you, here's a different and less
-structured task. When Elon musk bought Twitter, he promisted to restore
-``free speech'' to the platform. He heralded this new era with a tweet
-on 28/10/2022, which read ``the bird is freed''. A tidal wave of hate
-speech ensued instead.
+When Elon musk bought Twitter, he promisted to restore ``free speech''
+to the platform. He heralded this new era with a tweet on 28/10/2022,
+which read ``the bird is freed''. A tidal wave of hate speech ensued
+instead.
 
-Using twitter's API, I downloaded tweets containing a racial slur
-starting with N. Using the groupby function and regex, I counted the
-number of mentions of this word per hour on the platform for about a
-month before the takeover, and a few days thereafter. I've saved these
-counts (but not the tweets themselves) as a csv file called
-``elon\_tweets.csv''.
+Using twitter's API, I downloaded tweets containing a racial slur. Using
+the groupby function and regex, I counted the number of mentions of this
+word per hour on the platform for about a month before the takeover, and
+a few days thereafter. I've saved these counts (but not the tweets
+themselves) as a csv file called ``elon\_tweets.csv''.
 
-The code below downloads this csv file, and plots the number of N-word
-containing tweets over time. Using a t-test and the full hypothesis
-testing procedure, investigate wheter there was a statistically
-significant increase in hate speech following Elon Musk's tweet.
+The code below downloads this csv file, and plots the number of
+slur-containing tweets over time.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6334,7 +6330,7 @@ significant increase in hate speech following Elon Musk's tweet.
 \begin{verbatim}
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  4380  100  4380    0     0  20048      0 --:--:-- --:--:-- --:--:-- 20467
+100  4380  100  4380    0     0  24551      0 --:--:-- --:--:-- --:--:-- 24886
 \end{verbatim}
 
 \begin{Shaded}
@@ -6353,20 +6349,20 @@ significant increase in hate speech following Elon Musk's tweet.
 \NormalTok{post\_mean}\OperatorTok{=}\NormalTok{tweets[tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\NormalTok{tweet][}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{].mean()}
 \NormalTok{pct\_change}\OperatorTok{=} \BuiltInTok{int}\NormalTok{(((post\_mean}\OperatorTok{{-}}\NormalTok{pre\_mean)}\OperatorTok{/}\NormalTok{pre\_mean)}\OperatorTok{*}\DecValTok{100}\NormalTok{)}
 
-\NormalTok{plt.ylabel(}\StringTok{\textquotesingle{}Hourly N{-}word Tweets\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.ylabel(}\StringTok{\textquotesingle{}Hourly Slur Tweets\textquotesingle{}}\NormalTok{)}
 
-\NormalTok{plt.plot\_date(tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{], tweets[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{], }\StringTok{\textquotesingle{}b{-}\textquotesingle{}}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.plot\_date(tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{], tweets[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{], }\StringTok{\textquotesingle{}b\textquotesingle{}}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{)}
 \NormalTok{plt.axvline(tweet, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}"the bird is freed"\textquotesingle{}}\NormalTok{)}
 \NormalTok{plt.legend()}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}Elon Musk tweets "The bird is freed"; Tweets containing N{-}word increase }\SpecialCharTok{\{\}}\StringTok{\%\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(pct\_change))}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Elon Musk tweets "The bird is freed"; Tweets containing racial slurs increase }\SpecialCharTok{\{\}}\StringTok{\%\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(pct\_change))}
 \NormalTok{plt.gca().xaxis.set\_major\_locator(mdates.DayLocator())}
 \NormalTok{plt.gca().xaxis.set\_major\_formatter(mdates.DateFormatter(}\StringTok{\textquotesingle{}}\SpecialCharTok{\%d}\StringTok{/\%m\textquotesingle{}}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-/var/folders/6q/jt4x0r8n1rs0kbrrqrbj61fr0000gn/T/ipykernel_79624/354133693.py:17: UserWarning: color is redundantly defined by the 'color' keyword argument and the fmt string "b-" (-> color='b'). The keyword argument will take precedence.
-  plt.plot_date(tweets['hour'], tweets['count'], 'b-', color='red')
+/var/folders/6q/jt4x0r8n1rs0kbrrqrbj61fr0000gn/T/ipykernel_97088/4258694155.py:17: UserWarning: color is redundantly defined by the 'color' keyword argument and the fmt string "b" (-> color=(0.2980392156862745, 0.4470588235294118, 0.6901960784313725, 1)). The keyword argument will take precedence.
+  plt.plot_date(tweets['hour'], tweets['count'], 'b', color='red')
 \end{verbatim}
 
 \begin{figure}[H]
@@ -6376,6 +6372,12 @@ significant increase in hate speech following Elon Musk's tweet.
 }
 
 \end{figure}
+
+This plot definitely shows an uptick in the number of tweets containing
+a racial slur following Musk's tweet. But is this increase statistically
+significant? Using a t-test and the full hypothesis testing procedure,
+investigate wheter there was a statistically significant increase in
+hate speech following Elon Musk's tweet.
 
 \bookmarksetup{startatroot}
 
@@ -7250,8 +7252,8 @@ higher in California! Why might this be?
   \end{itemize}
 \end{enumerate}
 
-\hypertarget{extension-3}{%
-\section{Extension}\label{extension-3}}
+\hypertarget{extension-2}{%
+\section{Extension}\label{extension-2}}
 
 Though we've gotten some significant results and interesting insights
 from our modeling effort so far, we can further improve our model. In
