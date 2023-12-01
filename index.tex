@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, frame hidden, interior hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, boxrule=0pt, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, frame hidden, interior hidden, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced, sharp corners]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -6343,7 +6343,7 @@ slur-containing tweets over time.
 \NormalTok{figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{4}\NormalTok{), dpi}\OperatorTok{=}\DecValTok{200}\NormalTok{)}
 \NormalTok{tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{pd.to\_datetime(tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{])}
 
-\NormalTok{tweet}\OperatorTok{=}\NormalTok{datetime.datetime(}\DecValTok{2022}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{28}\NormalTok{)}\CommentTok{\#.strftime(\textquotesingle{}\%d/\%m/\%Y \%HH\textquotesingle{})}
+\NormalTok{tweet}\OperatorTok{=}\NormalTok{datetime.datetime(}\DecValTok{2022}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{28}\NormalTok{)}
 
 \NormalTok{pre\_mean}\OperatorTok{=}\NormalTok{tweets[tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\NormalTok{tweet][}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{].mean()}
 \NormalTok{post\_mean}\OperatorTok{=}\NormalTok{tweets[tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\NormalTok{tweet][}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{].mean()}
@@ -6479,6 +6479,14 @@ As always we'll start by importing the libraries I need
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+mkdir: data: File exists
+mkdir: data/wk8: File exists
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 22.4M  100 22.4M    0     0  18.3M      0  0:00:01  0:00:01 --:--:-- 18.4M
+\end{verbatim}
+
 Now that I've imported the libraries I'm going to be using, I'm ready to
 import the data:
 
@@ -6488,6 +6496,26 @@ import the data:
 \NormalTok{df.head()}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{longtable}[]{@{}llllllllllll@{}}
+\toprule\noalign{}
+& year & state & age & sex & race & sch & ind & union & incwage &
+realhrwage & occupation \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 1990 & 36 & 58 & 1 & 3 & 12.0 & 871 & 0.0 & 14200.0 & 12.269874 &
+Office and Admin Support \\
+1 & 2009 & 5 & 28 & 1 & 1 & 12.0 & 8660 & 1.0 & 17680.0 & 8.635149 &
+Office and Admin Support \\
+2 & 1990 & 36 & 37 & 1 & 1 & 14.0 & 380 & 1.0 & 28000.0 & 21.169851 &
+. \\
+3 & 1990 & 6 & 34 & 1 & 1 & 18.0 & 740 & 1.0 & 27500.0 & 20.447746 &
+Computer and Math Technicians \\
+4 & 1981 & 51 & 38 & 1 & 4 & 13.0 & 798 & NaN & 17000.0 & 18.892282 &
+Managers \\
+\end{longtable}
 
 Our dataframe has 10 columns:
 
@@ -6599,6 +6627,21 @@ measures of the variables make sense.
 \end{Highlighting}
 \end{Shaded}
 
+\begin{longtable}[]{@{}lllllllll@{}}
+\toprule\noalign{}
+& count & mean & std & min & 25\% & 50\% & 75\% & max \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+age & 53790.0 & 42.91 & 10.56 & 25.00 & 34.00 & 43.00 & 51.00 & 64.0 \\
+sch & 53790.0 & 13.93 & 2.74 & 0.00 & 12.00 & 13.00 & 16.00 & 18.0 \\
+incwage & 53790.0 & 51821.86 & 60163.45 & 38.00 & 24000.00 & 40000.00 &
+63000.00 & 1102999.0 \\
+realhrwage & 53790.0 & 24.38 & 151.90 & 2.01 & 12.17 & 18.44 & 28.12 &
+34760.8 \\
+\end{longtable}
+
 This table is already informative. I now know that the average person in
 this dataset is 42 years old, has around 14 years of schooling, and
 makes \$24/hour (or \$51,821/year). However, it's also useful to spot
@@ -6635,6 +6678,10 @@ understand'').
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+Dropped 1040 observations
+\end{verbatim}
+
 We can see that this operation dropped 1040 observations that had
 extreme values in the ``realhrwage'' variable. Let's re-generate the
 table of summary statistics and only keep four columns: count, mean,
@@ -6646,6 +6693,19 @@ standard deviaiton, minimum, and maximum.
 \NormalTok{summary[[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}std\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}min\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}max\textquotesingle{}}\NormalTok{]]}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& count & mean & std & min & max \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+age & 52750.0 & 42.84 & 10.57 & 25.00 & 64.00 \\
+sch & 52750.0 & 13.88 & 2.73 & 0.00 & 18.00 \\
+incwage & 52750.0 & 46849.39 & 33376.96 & 38.00 & 353000.00 \\
+realhrwage & 52750.0 & 21.59 & 13.03 & 2.01 & 75.81 \\
+\end{longtable}
 
 \hypertarget{visualization}{%
 \section{2. Visualization}\label{visualization}}
@@ -6683,6 +6743,14 @@ Let's start with the race category:
 \NormalTok{plt.show() }\CommentTok{\# show the plot}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W08. Linear Regression_files/figure-pdf/cell-9-output-1.png}
+
+}
+
+\end{figure}
 
 \hypertarget{exercise-23}{%
 \subsection{Exercise}\label{exercise-23}}
@@ -6734,7 +6802,7 @@ regression}. More on that next week.
 \hypertarget{b.-homoscedasticity}{%
 \subsection{B. Homoscedasticity}\label{b.-homoscedasticity}}
 
-\textbf{\texttt{Linear\ regression\ assumes\ that\ the\ variance\ of\ residuals\ is\ the\ same\ for\ any\ value\ of\ \$x\$,\ and\ that\ residuals\ are\ normally\ distributed\ with\ a\ mean\ of\ 0.}}
+\textbf{\texttt{Linear\ regression\ assumes\ that\ the\ variance\ of\ residuals\ is\ the\ same\ for\ any\ value\ of\ x,\ and\ that\ residuals\ are\ normally\ distributed\ with\ a\ mean\ of\ 0.}}
 
 This is a complicated way of saying your regression line should fit
 consistently across the full range of \(x\) values. If there are really
@@ -6785,6 +6853,18 @@ potential heteroscedasticity:
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+Text(53.625, 0.5, 'Hourly Wage')
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W08. Linear Regression_files/figure-pdf/cell-10-output-2.png}
+
+}
+
+\end{figure}
+
 The plot above is cause for concern. From 0 to 5 years of schooling the
 model has underestimated hourly wages for every single observation.
 Conversely, at the far right tip of the regression line, we can see that
@@ -6825,6 +6905,18 @@ matrix:
 \NormalTok{plt.title(}\StringTok{\textquotesingle{}Correlation Matrix\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+Text(0.5, 1.0, 'Correlation Matrix')
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W08. Linear Regression_files/figure-pdf/cell-11-output-2.png}
+
+}
+
+\end{figure}
 
 This matrix has each of the continuous variables in \texttt{reg\_df} on
 both axes. Each cell denotes the correlation between the corresponding
@@ -6920,6 +7012,12 @@ Now we can implement this on our dataset:
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+Max VIF: 1.0471509029112354
+The columns remaining after VIF selection are:
+Index(['sex', 'age', 'sch', 'union', 'race'], dtype='object')
+\end{verbatim}
+
 The maximum VIF value encountered was 1.04-- well within the acceptable
 range. Accordingly, the function hasn't dropped any of the independent
 variables in our dataset.
@@ -6964,6 +7062,34 @@ specified above, which we will store in an variable called
 \BuiltInTok{print}\NormalTok{(model.summary()) }\CommentTok{\# print the summary}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             realhrwage   R-squared:                       0.181
+Model:                            OLS   Adj. R-squared:                  0.181
+Method:                 Least Squares   F-statistic:                 1.164e+04
+Date:                Fri, 01 Dec 2023   Prob (F-statistic):               0.00
+Time:                        09:05:19   Log-Likelihood:            -2.0503e+05
+No. Observations:               52750   AIC:                         4.101e+05
+Df Residuals:                   52748   BIC:                         4.101e+05
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     -6.6246      0.266    -24.858      0.000      -7.147      -6.102
+sch            2.0327      0.019    107.887      0.000       1.996       2.070
+==============================================================================
+Omnibus:                    10230.138   Durbin-Watson:                   1.900
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            19817.137
+Skew:                           1.187   Prob(JB):                         0.00
+Kurtosis:                       4.838   Cond. No.                         73.7
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+\end{verbatim}
 
 There's a lot going on in the regression output above. If you want a
 more detailed explanation of what each part means, check out this
@@ -7100,6 +7226,36 @@ Let's see what this looks like in our regression output:
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             realhrwage   R-squared:                       0.239
+Model:                            OLS   Adj. R-squared:                  0.239
+Method:                 Least Squares   F-statistic:                     5514.
+Date:                Fri, 01 Dec 2023   Prob (F-statistic):               0.00
+Time:                        09:05:19   Log-Likelihood:            -2.0310e+05
+No. Observations:               52750   AIC:                         4.062e+05
+Df Residuals:                   52746   BIC:                         4.062e+05
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+===============================================================================
+                  coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------
+Intercept     -12.6722      0.330    -38.392      0.000     -13.319     -12.025
+C(sex)[T.2]    -5.2692      0.099    -52.967      0.000      -5.464      -5.074
+sch             2.1343      0.018    116.995      0.000       2.098       2.170
+age             0.1695      0.005     36.164      0.000       0.160       0.179
+==============================================================================
+Omnibus:                     9831.824   Durbin-Watson:                   1.995
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            19481.335
+Skew:                           1.131   Prob(JB):                         0.00
+Kurtosis:                       4.935   Cond. No.                         308.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+\end{verbatim}
+
 We now have 4 coefficients. In general, we don't always have to
 interpret the Intercept coefficient. It's not really that meaningful in
 this case, since now it denotes the predicted hourly income of someone
@@ -7198,6 +7354,27 @@ p\textless0.01, *** p\textless0.001.
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+
+=====================================
+               California Mississippi
+-------------------------------------
+Intercept      -12.136*** -10.111*** 
+               (1.030)    (3.497)    
+C(sex)[T.2]    -5.154***  -4.980***  
+               (0.350)    (0.924)    
+sch            2.096***   1.850***   
+               (0.053)    (0.205)    
+age            0.217***   0.115**    
+               (0.017)    (0.045)    
+R-squared      0.262      0.199      
+R-squared Adj. 0.262      0.193      
+N              5079       430        
+=====================================
+Standard errors in parentheses.
+* p<.1, ** p<.05, ***p<.01
+\end{verbatim}
+
 This layout lets us clearly explore our regresison results. This lets us
 clearly compare the coefficients of the same variable in different
 models. For example, we can see that men tend to earn \$5.15 more per
@@ -7260,50 +7437,7 @@ from our modeling effort so far, we can further improve our model. In
 particular, we may want to revisit the way we've defined some of our
 variables, since we suspect that we may have some heteroscedasticity in
 our models, and have consequently been getting some weird results
-(e.g.~negative hourly income). Let's have a closer look at our main
-independent variable (years of schooling), and
-
-\hypertarget{years-of-schooling}{%
-\subsection{Years of Schooling}\label{years-of-schooling}}
-
-Let's start with the main independent variable, Years of Schooling. Is
-it appropriate to think of this as a continuous variable, linearly
-related to hourly wages? A linear relationship should be consistent
-across the full range of data-- in other words, the increase from 0
-years of schooling to 1 year of schooling should have the same effect on
-wages as the increase from 11 to 12 years of schooling, even though this
-one year determines whether a person has a highschool diploma or not. We
-would probably expect the increase from 11 to 12 years of schooling to
-have a greater effect on wages than the change from 0 to 1 years of
-schooling.
-
-We could conceptualize of years of schooling instead as a categorical or
-ordinal variable. Below, i've used the \texttt{np.where()} function to
-create a new variable called \texttt{degrees} based on years of
-schooling such that all observations have 0
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{reg\_df[}\StringTok{\textquotesingle{}degrees\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(reg\_df[}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{12}\NormalTok{, }\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a new variable called degrees that is equal to 1 if the person has 12 or more years of schooling and 0 otherwise}
-\NormalTok{reg\_df[}\StringTok{\textquotesingle{}degrees\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(reg\_df[}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{16}\NormalTok{, }\DecValTok{2}\NormalTok{, reg\_df[}\StringTok{\textquotesingle{}degrees\textquotesingle{}}\NormalTok{]) }\CommentTok{\# if the person has 16 years of schooling, set the degrees variable to 2}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{exercise-26}{%
-\subsubsection{Exercise}\label{exercise-26}}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Add a level to the \texttt{degrees} column that denotes having a PhD.
-\item
-  Run a regression in which hourly wages is the dependent variable and
-  degrees is a \textbf{continuous} independent variable, and interpret.
-\item
-  Run the same regression again, but treat \texttt{degrees} as
-  categorical. How does the interpretation change?
-\end{enumerate}
+(e.g.~negative hourly income).
 
 \hypertarget{hourly-wages}{%
 \subsection{Hourly Wages}\label{hourly-wages}}
@@ -7320,6 +7454,14 @@ scatterplot:
 \NormalTok{sns.jointplot(data}\OperatorTok{=}\NormalTok{reg\_df, x}\OperatorTok{=}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}realhrwage\textquotesingle{}}\NormalTok{, kind}\OperatorTok{=}\StringTok{"reg"}\NormalTok{,  scatter\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(alpha}\OperatorTok{=}\FloatTok{0.1}\NormalTok{), line\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{), height}\OperatorTok{=}\DecValTok{10}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W08. Linear Regression_files/figure-pdf/cell-18-output-1.png}
+
+}
+
+\end{figure}
 
 We can more thoroughly diagnose heteroscedasticity \emph{after} having
 run our regression models, since we have access to the model's
@@ -7351,6 +7493,14 @@ residuals of our model to a normal distribution as follows:
 \end{Highlighting}
 \end{Shaded}
 
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W08. Linear Regression_files/figure-pdf/cell-19-output-1.png}
+
+}
+
+\end{figure}
+
 This Q-Q plot suggests that our residuals are not normally distributed,
 as very few of them are on the red line. This is probably due to the
 fact that the \texttt{realhrwage} variable is itself highly skewed.
@@ -7377,6 +7527,14 @@ Qualitatively, this means
 \NormalTok{sns.jointplot(data}\OperatorTok{=}\NormalTok{reg\_df, x}\OperatorTok{=}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}logwage\textquotesingle{}}\NormalTok{, kind}\OperatorTok{=}\StringTok{"reg"}\NormalTok{,  scatter\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(alpha}\OperatorTok{=}\FloatTok{0.1}\NormalTok{), line\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{), height}\OperatorTok{=}\DecValTok{10}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W08. Linear Regression_files/figure-pdf/cell-20-output-1.png}
+
+}
+
+\end{figure}
 
 A few things are noticeably different in this plot. First, the histogram
 of \texttt{logwage} on the far right is a lot less skewed than the
@@ -7405,6 +7563,14 @@ using a model in which \texttt{logwage} is the dependent variable:
 \NormalTok{plt.show() }\CommentTok{\# show the plot}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W08. Linear Regression_files/figure-pdf/cell-21-output-1.png}
+
+}
+
+\end{figure}
 
 It's not perfect, but it's a lot better than the unlogged version; a
 large proportion of the residuals fall on the red line in the Q-Q plot,
@@ -7437,6 +7603,23 @@ First, let's compare the unlogged and logged models:
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+
+=================================
+                Unlogged  Logged 
+---------------------------------
+Intercept      -6.625*** 1.573***
+               (0.266)   (0.012) 
+sch            2.033***  0.096***
+               (0.019)   (0.001) 
+R-squared      0.181     0.191   
+R-squared Adj. 0.181     0.191   
+N              52750     52750   
+=================================
+Standard errors in parentheses.
+* p<.1, ** p<.05, ***p<.01
+\end{verbatim}
+
 Interestingly, we can see that we've also got a 1\% increase in \(R^2\)
 just from logging the dependent variable. While the coefficient for
 schooling can be interpreted normally for the unlogged model (every
@@ -7454,14 +7637,62 @@ coefficeint in the logged model as follows:
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+For every additional year of schooling, log wages increase by 10.04%
+\end{verbatim}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{assessed-question-6}{%
+\chapter{Assessed Question}\label{assessed-question-6}}
+
+Let's dive in to our main independent variable, Years of Schooling. Is
+it appropriate to think of this as a continuous variable, linearly
+related to hourly wages? A linear relationship should be consistent
+across the full range of data-- in other words, the increase from 0
+years of schooling to 1 year of schooling should have the same effect on
+wages as the increase from 11 to 12 years of schooling, even though this
+one year determines whether a person has a highschool diploma or not. We
+would probably expect the increase from 11 to 12 years of schooling to
+have a greater effect on wages than the change from 0 to 1 years of
+schooling.
+
+We could conceptualize of years of schooling instead as a categorical or
+ordinal variable. Below, i've used the \texttt{np.where()} function to
+create a new variable called \texttt{degrees} based on years of
+schooling such that it is equal to 1 if the person has 12 or more years
+of schooling (highschool diploma), 2 if they have 16 or more years of
+schooling (university degree), and 0 otherwise.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{reg\_df[}\StringTok{\textquotesingle{}degrees\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(reg\_df[}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\DecValTok{12}\NormalTok{, }\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a new variable called degrees that is equal to 1 if the person has 12 or more years of schooling and 0 otherwise}
+\NormalTok{reg\_df[}\StringTok{\textquotesingle{}degrees\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(reg\_df[}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\DecValTok{16}\NormalTok{, }\DecValTok{2}\NormalTok{, reg\_df[}\StringTok{\textquotesingle{}degrees\textquotesingle{}}\NormalTok{]) }\CommentTok{\# if the person has 16 years of schooling, set the degrees variable to 2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Add a level to the \texttt{degrees} column that denotes having an
+  advanced degree (18 years of schooling).
+\item
+  Run a regression in which hourly wages is the dependent variable and
+  degrees is a \textbf{categorical} independent variable.
+\item
+  Compared to someone with no highschool degree, how much more does
+  someone with an advanced degree earn per hour?
+\end{enumerate}
+
 \bookmarksetup{startatroot}
 
 \hypertarget{causal-inference}{%
 \chapter{Causal Inference}\label{causal-inference}}
 
-\hypertarget{workshop-10-open-in-colab}{%
-\section[\emph{Workshop 10} ]{\texorpdfstring{\emph{Workshop 10}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W10.\%20Causal\%20Inference.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 10 Open In Colab}}\label{workshop-10-open-in-colab}}
+\hypertarget{workshop-9-open-in-colab}{%
+\section[\emph{Workshop 9} ]{\texorpdfstring{\emph{Workshop 9}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W09.\%20Causal\%20Inference.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 9 Open In Colab}}\label{workshop-9-open-in-colab}}
 
 \hypertarget{aims-6}{%
 \subsection{Aims:}\label{aims-6}}
@@ -7543,21 +7774,26 @@ mkdir: data: File exists
 mkdir: data/wk10: File exists
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 2424k  100 2424k    0     0  6772k      0 --:--:-- --:--:-- --:--:-- 6848k
+100 2424k  100 2424k    0     0  3390k      0 --:--:-- --:--:-- --:--:-- 3414k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  875k  100  875k    0     0  1538k      0 --:--:-- --:--:-- --:--:-- 1548k
+100  875k  100  875k    0     0  1329k      0 --:--:-- --:--:-- --:--:-- 1334k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 3141k  100 3141k    0     0  8346k      0 --:--:-- --:--:-- --:--:-- 8399k
+100 3141k  100 3141k    0     0  3937k      0 --:--:-- --:--:-- --:--:-- 3956k
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ requests}
+\ImportTok{from}\NormalTok{ io }\ImportTok{import}\NormalTok{ StringIO}
 \NormalTok{counties}\OperatorTok{=}\NormalTok{pd.DataFrame() }\CommentTok{\# create empty dataframe to store the county data for each year}
 
 \ControlFlowTok{for}\NormalTok{ year }\KeywordTok{in} \BuiltInTok{range}\NormalTok{ (}\DecValTok{2008}\NormalTok{,}\DecValTok{2022}\NormalTok{): }\CommentTok{\# loop through years from 1990 to 2021}
-\NormalTok{    annual}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}https://www.bls.gov/lau/laucnty\textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(year)[}\OperatorTok{{-}}\DecValTok{2}\NormalTok{:]}\OperatorTok{+}\StringTok{\textquotesingle{}.txt\textquotesingle{}}\NormalTok{, sep}\OperatorTok{=}\StringTok{"\textbackslash{}s\{2,\}"}\NormalTok{, header}\OperatorTok{=}\DecValTok{3}\NormalTok{, on\_bad\_lines}\OperatorTok{=}\StringTok{\textquotesingle{}skip\textquotesingle{}}\NormalTok{, engine}\OperatorTok{=}\StringTok{\textquotesingle{}python\textquotesingle{}}\NormalTok{, skipfooter}\OperatorTok{=}\DecValTok{2}\NormalTok{) }\CommentTok{\# read in the data for each year by adding the last two digits of the year to the url}
+\NormalTok{    url}\OperatorTok{=}\StringTok{\textquotesingle{}https://www.bls.gov/lau/laucnty\textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(year)[}\OperatorTok{{-}}\DecValTok{2}\NormalTok{:]}\OperatorTok{+}\StringTok{\textquotesingle{}.txt\textquotesingle{}} \CommentTok{\# create the url for the data}
+\NormalTok{    txt}\OperatorTok{=}\NormalTok{requests.get(url, headers}\OperatorTok{=}\NormalTok{\{}\StringTok{\textquotesingle{}User{-}Agent\textquotesingle{}}\NormalTok{: }\StringTok{\textquotesingle{}Mozilla/5.0\textquotesingle{}}\NormalTok{\}).text }\CommentTok{\# get the text from the url}
+\NormalTok{    txt}\OperatorTok{=}\NormalTok{StringIO(txt) }\CommentTok{\# create a string object}
+\NormalTok{    annual}\OperatorTok{=}\NormalTok{pd.read\_csv(txt, sep}\OperatorTok{=}\StringTok{"\textbackslash{}s\{2,\}"}\NormalTok{, header}\OperatorTok{=}\DecValTok{3}\NormalTok{, on\_bad\_lines}\OperatorTok{=}\StringTok{\textquotesingle{}skip\textquotesingle{}}\NormalTok{, engine}\OperatorTok{=}\StringTok{\textquotesingle{}python\textquotesingle{}}\NormalTok{, skipfooter}\OperatorTok{=}\DecValTok{2}\NormalTok{) }\CommentTok{\# read the text as a dataframe}
 \NormalTok{    annual}\OperatorTok{=}\NormalTok{annual[[}\StringTok{\textquotesingle{}Code\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Code.1\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Year\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Rate\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Force\textquotesingle{}}\NormalTok{]].rename(columns}\OperatorTok{=}\NormalTok{\{}\StringTok{\textquotesingle{}Code\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Code.1\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}county\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Year\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Rate\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Force\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}population\textquotesingle{}}\NormalTok{\}) }\CommentTok{\# rename the columns}
 \NormalTok{    counties}\OperatorTok{=}\NormalTok{pd.concat([counties,annual]) }\CommentTok{\# append the data for each year to the dataframe}
 
@@ -7576,11 +7812,11 @@ mkdir: data/wk10: File exists
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-0 & 1 & 1.0 & 2008.0 & 5.3 & 24.687 & 01001 \\
-1 & 1 & 3.0 & 2008.0 & 4.8 & 83.205 & 01003 \\
-2 & 1 & 5.0 & 2008.0 & 9.1 & 10.175 & 01005 \\
-3 & 1 & 7.0 & 2008.0 & 6.0 & 8.751 & 01007 \\
-4 & 1 & 9.0 & 2008.0 & 4.8 & 26.693 & 01009 \\
+0 & 1 & 1 & 2008 & 5.3 & 24.687 & 01001 \\
+1 & 1 & 3 & 2008 & 4.8 & 83.205 & 01003 \\
+2 & 1 & 5 & 2008 & 9.1 & 10.175 & 01005 \\
+3 & 1 & 7 & 2008 & 6.0 & 8.751 & 01007 \\
+4 & 1 & 9 & 2008 & 4.8 & 26.693 & 01009 \\
 \end{longtable}
 
 Part of the cleaning process in the cell above involves the creation of
@@ -7597,11 +7833,13 @@ different sources quicky and easily. Imagine what a nightmare it would
 be to try to join them using the names of the counties, having to deal
 with capitalizations, punctuation, etc. Yikes.
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\hypertarget{regression-discontinuity}{%
-\section{Regression Discontinuity}\label{regression-discontinuity}}
-
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\#\# Regression Discontinuity \\
 Our difference in difference model made causal claims by treating PA as
 a control group for NJ on the basis that they had similar trends in
 unemployment before the minimum wage law, and diverging trends after,
@@ -7615,8 +7853,7 @@ largest coal-producing state in the U.S.-- coal miners are probably less
 affected by financial crises, but more likely to be earning minimum
 wage. As such, increasing the minimum wage in a place where most people
 are bankers probably has less of an effect on unemployment compared to
-an area where everyone is a coal miner.
-
+an area where everyone is a coal miner. \\
 Running a state-level analysis is subject to this sort of selection
 bias, since by looking at state averages we're effectively comparing
 places like Jersey City to places like
@@ -7627,30 +7864,25 @@ step in our analysis might be to try to compare apples to apples. There
 are a number of ways of doing this-- we could look at the unemployment
 rate by industry, for example. But what if we didn't want to rely on
 pre-trends, or if we didn't even have data prior to the treatment? This
-is often the case
-
+is often the case \\
 To build a more valid counterfactual, we can drill even deeper to find
 even more similar comparison groups using a \textbf{Regression
-Discontinuity Design (RDD)} using county (rather than state) level data.
-
-\begin{quote}
+Discontinuity Design (RDD)} using county (rather than state) level
+data. \\
+\textgreater{}
 \textbf{\href{https://www.princeton.edu/~davidlee/wp/RDDEconomics.pdf}{Regression
 Discontinuity Designs}} are a method of estimating treatment effects in
 a nonexperimental setting where treatment is determined by whether an
 observed ``assignment'' variable exceeds a known cutoff point. If the
 cutoff is exogenous to the treatment, observations in the vicinity of
 this cutoff are likely to be very similar, and assignment to the
-treatment or control group can be considered as good as random.
-\end{quote}
-
-RDD models generally take the following form:
-
-\[\huge Y_{i} = \beta_0 + \beta_1 X_i + \beta_2 D_i + \varepsilon_{i}\]
-\[\large D_i=    \begin{cases}
-      1 & X_i>X_k\\
-      0 & X_i<X_k\\
-    \end{cases} \]
-
+treatment or control group can be considered as good as random. \\
+RDD models generally take the following form: \\
+\(\huge Y_{i} = \beta_0 + \beta_1 X_i + \beta_2 D_i + \varepsilon_{i}\)
+\(\large D_i=    \begin{cases}
+1 & X_i>X_k\\
+0 & X_i<X_k\\
+\end{cases} \) \\
 In our case, the treatment is the minimum wage law passed in NJ in 2014.
 We want to be looking at the period after this to pick up on any changes
 in employment. The \textbf{assignment variable} in this case could be
@@ -7658,105 +7890,101 @@ the distance of a county to the border between the two states, and the
 sharp cutoff would be the border itself. Counties on the border counties
 are probably much more similar to each other than other, farther away
 counties: this would exclude both Jersey City (in the far east of NJ)
-and Centralia (in the centre of PA).
-
+and Centralia (in the centre of PA). \\
 Indeed, several cities are divided by the border between these states
-including Philladelphia, the capital city of Pennsylvania:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ ipyleaflet }\ImportTok{import}\NormalTok{ Map, Marker, basemaps, basemap\_to\_tiles}
-\NormalTok{Map(basemap}\OperatorTok{=}\NormalTok{basemap\_to\_tiles(}
-\NormalTok{    basemaps.Esri.WorldImagery),}
-\NormalTok{  center}\OperatorTok{=}\NormalTok{(}\FloatTok{39.95279958991338}\NormalTok{, }\OperatorTok{{-}}\FloatTok{75.1341365382268}\NormalTok{),}
-\NormalTok{  zoom}\OperatorTok{=}\DecValTok{14}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Map(center=[39.95279958991338, -75.1341365382268], controls=(ZoomControl(options=['position', 'zoom_in_text', …
-\end{verbatim}
-
+including Philladelphia, the capital city of Pennsylvania: \\
+::: \{.cell execution\_count=22\} \\
+::: \{.cell-output .cell-output-display\} \\
 On the left side of the river is Philladelphia, PA, while on the right
 side is Camden, NJ. The code below uses the county shapefile we used
-before to isolate the counties in NJ and PA that are on the border.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{import}\NormalTok{ geopandas }\ImportTok{as}\NormalTok{ gpd}
-
-\NormalTok{shp }\OperatorTok{=}\NormalTok{ gpd.read\_file(}\StringTok{\textquotesingle{}data/wk10/geojson{-}counties{-}fips.json\textquotesingle{}}\NormalTok{) }\CommentTok{\# read in the counties shapefile}
-
-\NormalTok{subset}\OperatorTok{=}\NormalTok{shp[shp[}\StringTok{\textquotesingle{}STATE\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}34\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}42\textquotesingle{}}\NormalTok{])] }\CommentTok{\# new jersey = 34, pennsylvania = 42, new york = 36}
-
-\NormalTok{subset[}\StringTok{\textquotesingle{}neighbors\textquotesingle{}}\NormalTok{]}\OperatorTok{=} \DecValTok{0} \CommentTok{\# create a new column called neighbors}
-
-\ControlFlowTok{for}\NormalTok{ index, row }\KeywordTok{in}\NormalTok{ subset.iterrows():  }\CommentTok{\# iterate through each row in the counties shapefile}
-\NormalTok{    buffered}\OperatorTok{=}\NormalTok{ row[}\StringTok{\textquotesingle{}geometry\textquotesingle{}}\NormalTok{].}\BuiltInTok{buffer}\NormalTok{(}\FloatTok{0.1}\NormalTok{) }\CommentTok{\# create a buffer around the county so that it overlaps with its neighbors}
-\NormalTok{    neighbors }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(}\BuiltInTok{set}\NormalTok{(subset[subset.geometry.overlaps(buffered)].STATE.tolist()).difference([row.STATE])) }\CommentTok{\# check which counties overlap with the buffer, grab the state code, and remove the current county\textquotesingle{}s state code}
-\NormalTok{    subset.at[index, }\StringTok{"neighbors"}\NormalTok{] }\OperatorTok{=} \StringTok{", "}\NormalTok{.join(neighbors) }\CommentTok{\# add the list of neighbors to the neighbors column}
-
-\NormalTok{subset[}\StringTok{\textquotesingle{}border\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(subset[}\StringTok{\textquotesingle{}neighbors\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{) }\CommentTok{\# create a new column called border that is 1 if the county is on the border and 0 if it is not}
-
-\NormalTok{subset[}\StringTok{\textquotesingle{}viscol\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{subset[}\StringTok{\textquotesingle{}STATE\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{int}\NormalTok{)}\OperatorTok{+}\NormalTok{subset[}\StringTok{\textquotesingle{}border\textquotesingle{}}\NormalTok{] }\CommentTok{\# create a new column that combines the state code and the border column}
-\NormalTok{subset.plot(column}\OperatorTok{=}\StringTok{\textquotesingle{}viscol\textquotesingle{}}\NormalTok{,legend}\OperatorTok{=}\VariableTok{False}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{20}\NormalTok{,}\DecValTok{10}\NormalTok{), cmap}\OperatorTok{=}\StringTok{\textquotesingle{}RdYlGn\textquotesingle{}}\NormalTok{) }\CommentTok{\# plot the counties and color them by the border column}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}Border Counties in New Jersey and Pennsylvania\textquotesingle{}}\NormalTok{, fontsize}\OperatorTok{=}\DecValTok{20}\NormalTok{) }\CommentTok{\# add a title}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Text(0.5, 1.0, 'Border Counties in New Jersey and Pennsylvania')
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W09. Causal Inference_files/figure-pdf/cell-6-output-2.png}
-
-}
-
-\end{figure}
-
+before to isolate the counties in NJ and PA that are on the border. \\
+::: \{.cell execution\_count=23\} ``` \{.python .cell-code\} import
+geopandas as gpd \\
+shp = gpd.read\_file(`data/wk10/geojson-counties-fips.json') \# read in
+the counties shapefile \\
+subset=shp{[}shp{[}`STATE'{]}.isin({[}`34',`42'{]}){]} \# new jersey =
+34, pennsylvania = 42, new york = 36 \\
+subset{[}`neighbors'{]}= 0 \# create a new column called neighbors \\
+for index, row in subset.iterrows(): \# iterate through each row in the
+counties shapefile buffered= row{[}`geometry'{]}.buffer(0.1) \# create a
+buffer around the county so that it overlaps with its neighbors
+neighbors =
+list(set(subset{[}subset.geometry.overlaps(buffered){]}.STATE.tolist()).difference({[}row.STATE{]}))
+\# check which counties overlap with the buffer, grab the state code,
+and remove the current county's state code subset.at{[}index,
+``neighbors''{]} = ``,''.join(neighbors) \# add the list of neighbors to
+the neighbors column \\
+subset{[}`border'{]}=np.where(subset{[}`neighbors'{]}=='\,',0,1) \#
+create a new column called border that is 1 if the county is on the
+border and 0 if it is not \\
+subset{[}`viscol'{]}=subset{[}`STATE'{]}.astype(int)+subset{[}`border'{]}
+\# create a new column that combines the state code and the border
+column subset.plot(column=`viscol',legend=False, figsize=(20,10),
+cmap=`RdYlGn') \# plot the counties and color them by the border column
+plt.title(`Border Counties in New Jersey and Pennsylvania', fontsize=20)
+\# add a title ``` \\
+::: \{.cell-output .cell-output-display execution\_count=23\} \\
+::: \{.cell-output .cell-output-display\}
+\includegraphics{notebooks/W09. Causal Inference_files/figure-pdf/cell-6-output-2.png}
+::: ::: \\
 The plot above shows counties in Pennsylvania in green, and New Jersey
 in red. Dark green counties are border counties in PA, while light red
 counties are border counties in NJ. Under the assumption that these
 counties are going to be very similar to each other in most ways other
 than the fact that NJ implemented a minimum wage law, the simplest
 regression discontinuity desgin would basically just be a regression of
-the following form:
+the following form: \\
+::: \{.cell execution\_count=24\} ``` \{.python .cell-code\}
+border\_counties=subset{[}subset{[}`border'{]}==1{]}{[}`id'{]}.tolist()
+\# create a list of the border counties
+rdd=counties{[}(counties{[}`year'{]}\textgreater2007)\&(counties{[}`county\_fips'{]}.isin(border\_counties)){]}
+\# subset the counties data to only include border counties and years
+after 2007 rdd\_model = ols(`unemployment \textasciitilde{} state',
+rdd{[}rdd{[}`year'{]}\textgreater2014{]}).fit() \\
+print(rdd) ``` \\
+::: \{.cell-output .cell-output-stdout\} ``` state county year
+unemployment population county\_fips 1773 34 5 2008 5.0 238.994 34005
+1774 34 7 2008 6.0 266.721 34007 1778 34 15 2008 5.4 156.276 34015 1780
+34 19 2008 3.8 72.804 34019 1781 34 21 2008 4.8 201.705 34021 \ldots{}
+\ldots{} \ldots{} \ldots{} \ldots{} \ldots{} \ldots{} 2288 42 89 2021
+7.2 82.205 42089 2289 42 91 2021 4.7 459.375 42091 2291 42 95 2021 5.7
+162.767 42095 2294 42 101 2021 8.5 724.116 42101 2295 42 103 2021 6.9
+25.388 42103 \\
+{[}210 rows x 6 columns{]} ``` ::: ::: \\
+::: \{.cell execution\_count=25\} \\
+::: \{.cell-output .cell-output-stdout\} ``` OLS Regression Results
+==============================================================================
+Dep. Variable: unemployment R-squared: 0.032 Model: OLS Adj. R-squared:
+0.023 Method: Least Squares F-statistic: 3.394 Date: Fri, 01 Dec 2023
+Prob (F-statistic): 0.0683 Time: 10:29:28 Log-Likelihood: -211.58
+No.~Observations: 105 AIC: 427.2 Df Residuals: 103 BIC: 432.5 Df Model:
+1 Covariance Type: nonrobust
+==================================================================================
+coef std err t P\textgreater\textbar t\textbar{} {[}0.025 0.975{]} \\
+\end{longtable}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{border\_counties}\OperatorTok{=}\NormalTok{subset[subset[}\StringTok{\textquotesingle{}border\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{][}\StringTok{\textquotesingle{}id\textquotesingle{}}\NormalTok{].tolist() }\CommentTok{\# create a list of the border counties}
-\NormalTok{rdd}\OperatorTok{=}\NormalTok{counties[(counties[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\DecValTok{2007}\NormalTok{)}\OperatorTok{\&}\NormalTok{(counties[}\StringTok{\textquotesingle{}county\_fips\textquotesingle{}}\NormalTok{].isin(border\_counties))] }\CommentTok{\# subset the counties data to only include border counties and years after 2007}
-\NormalTok{rdd\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{} state\textquotesingle{}}\NormalTok{, rdd[rdd[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\DecValTok{2014}\NormalTok{]).fit()}
+Intercept 5.2518 0.245 21.446 0.000 4.766 5.737 C(state){[}T.42{]}
+0.6605 0.358 1.842 0.068 -0.051 1.371
+==============================================================================
+Omnibus: 21.953 Durbin-Watson: 0.637 Prob(Omnibus): 0.000 Jarque-Bera
+(JB): 27.712 Skew: 1.141 Prob(JB): 9.60e-07 Kurtosis: 4.061 Cond.
+No.~2.55
+==============================================================================
 
-\BuiltInTok{print}\NormalTok{(rdd)}
-\end{Highlighting}
-\end{Shaded}
+Notes: \href{http://www.literateprogramming.com/lpquotes.html}{1}
+Standard Errors assume that the covariance matrix of the errors is
+correctly specified.
 
 \begin{verbatim}
-ValueError: mismatch between column_names and columns coded by given terms
+:::
+:::
+
+
+::: {.cell}
+``` {.python .cell-code}
+df=pd.read_csv('data/wk10/elections.csv')
+df
 \end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{border\_counties}\OperatorTok{=}\NormalTok{subset[subset[}\StringTok{\textquotesingle{}border\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{][}\StringTok{\textquotesingle{}id\textquotesingle{}}\NormalTok{].tolist() }\CommentTok{\# create a list of the border counties}
-\NormalTok{rdd}\OperatorTok{=}\NormalTok{counties[(counties[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\DecValTok{2007}\NormalTok{)}\OperatorTok{\&}\NormalTok{(counties[}\StringTok{\textquotesingle{}county\_fips\textquotesingle{}}\NormalTok{].isin(border\_counties))] }\CommentTok{\# subset the counties data to only include border counties and years after 2007}
-\NormalTok{rdd\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{} C(state)\textquotesingle{}}\NormalTok{, rdd[rdd[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\DecValTok{2014}\NormalTok{]).fit()}
-\BuiltInTok{print}\NormalTok{(rdd\_model.summary())}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-ValueError: mismatch between column_names and columns coded by given terms
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}data/wk10/elections.csv\textquotesingle{}}\NormalTok{)}
-\NormalTok{df}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{longtable}[]{@{}lllll@{}}
 \toprule\noalign{}
@@ -7778,14 +8006,16 @@ ValueError: mismatch between column_names and columns coded by given terms
 18926 & 56045 & 2020 & 10.112360 & 87.275281 \\
 \end{longtable}
 
+:::
+
 \bookmarksetup{startatroot}
 
 \hypertarget{machine-learning}{%
 \chapter{Machine Learning}\label{machine-learning}}
 
-\hypertarget{workshop-10-open-in-colab-1}{%
+\hypertarget{workshop-10-open-in-colab}{%
 \section[\emph{Workshop 10} ]{\texorpdfstring{\emph{Workshop 10}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W10.\%20Machine\%20Learning.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 10 Open In Colab}}\label{workshop-10-open-in-colab-1}}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W10.\%20Machine\%20Learning.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 10 Open In Colab}}\label{workshop-10-open-in-colab}}
 
 This short introduction uses
 \href{https://www.tensorflow.org/guide/keras/overview}{Keras} to:

@@ -268,11 +268,10 @@ ga('send', {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#workshop-10-open-in-colab" id="toc-workshop-10-open-in-colab" class="nav-link active" data-scroll-target="#workshop-10-open-in-colab"><em>Workshop 10</em> <img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a>
+  <li><a href="#workshop-9-open-in-colab" id="toc-workshop-9-open-in-colab" class="nav-link active" data-scroll-target="#workshop-9-open-in-colab"><em>Workshop 9</em> <img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a>
   <ul class="collapse">
   <li><a href="#aims" id="toc-aims" class="nav-link" data-scroll-target="#aims">Aims:</a></li>
   </ul></li>
-  <li><a href="#regression-discontinuity" id="toc-regression-discontinuity" class="nav-link" data-scroll-target="#regression-discontinuity">Regression Discontinuity</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W09. Causal Inference.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -296,8 +295,8 @@ ga('send', {
 
 </header>
 
-<section id="workshop-10-open-in-colab" class="level2">
-<h2 class="anchored" data-anchor-id="workshop-10-open-in-colab"><em>Workshop 10</em> <a href="https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W10.%20Causal%20Inference.ipynb"><img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a></h2>
+<section id="workshop-9-open-in-colab" class="level2">
+<h2 class="anchored" data-anchor-id="workshop-9-open-in-colab"><em>Workshop 9</em> <a href="https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W09.%20Causal%20Inference.ipynb"><img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a></h2>
 <section id="aims" class="level3">
 <h3 class="anchored" data-anchor-id="aims">Aims:</h3>
 <p>This workshop builds on last week’s material– now that we know what a basic regression looks like, we’ll be looking at three different types of regression that let us extract more robust and even plausibly causal insights from our data:</p>
@@ -330,7 +329,7 @@ ga('send', {
 <li><p><code>elections.csv</code>: county-level U.S. Presidential election results spanning 2000-2020 from the <a href="https://electionlab.mit.edu/data">MIT Election Lab</a>.</p></li>
 <li><p><code>geojson-counties-fips.json</code>: a county-level geospatial file used for making maps.</p></li>
 </ul>
-<div class="cell" data-execution_count="31">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data<span class="op">/</span>wk10</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>storage.googleapis.com<span class="op">/</span>qm2<span class="op">/</span>wk10<span class="op">/</span>state_data.csv <span class="op">-</span>o data<span class="op">/</span>wk10<span class="op">/</span>state_data.csv</span>
@@ -341,29 +340,34 @@ ga('send', {
 mkdir: data/wk10: File exists
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 2424k  100 2424k    0     0  6772k      0 --:--:-- --:--:-- --:--:-- 6848k
+100 2424k  100 2424k    0     0  3390k      0 --:--:-- --:--:-- --:--:-- 3414k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  875k  100  875k    0     0  1538k      0 --:--:-- --:--:-- --:--:-- 1548k
+100  875k  100  875k    0     0  1329k      0 --:--:-- --:--:-- --:--:-- 1334k
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 3141k  100 3141k    0     0  8346k      0 --:--:-- --:--:-- --:--:-- 8399k</code></pre>
+100 3141k  100 3141k    0     0  3937k      0 --:--:-- --:--:-- --:--:-- 3956k</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>counties<span class="op">=</span>pd.DataFrame() <span class="co"># create empty dataframe to store the county data for each year</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> year <span class="kw">in</span> <span class="bu">range</span> (<span class="dv">2008</span>,<span class="dv">2022</span>): <span class="co"># loop through years from 1990 to 2021</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    annual<span class="op">=</span>pd.read_csv(<span class="st">'https://www.bls.gov/lau/laucnty'</span><span class="op">+</span><span class="bu">str</span>(year)[<span class="op">-</span><span class="dv">2</span>:]<span class="op">+</span><span class="st">'.txt'</span>, sep<span class="op">=</span><span class="st">"\s{2,}"</span>, header<span class="op">=</span><span class="dv">3</span>, on_bad_lines<span class="op">=</span><span class="st">'skip'</span>, engine<span class="op">=</span><span class="st">'python'</span>, skipfooter<span class="op">=</span><span class="dv">2</span>) <span class="co"># read in the data for each year by adding the last two digits of the year to the url</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    annual<span class="op">=</span>annual[[<span class="st">'Code'</span>,<span class="st">'Code.1'</span>,<span class="st">'Year'</span>,<span class="st">'Rate'</span>,<span class="st">'Force'</span>]].rename(columns<span class="op">=</span>{<span class="st">'Code'</span>:<span class="st">'state'</span>,<span class="st">'Code.1'</span>:<span class="st">'county'</span>,<span class="st">'Year'</span>:<span class="st">'year'</span>,<span class="st">'Rate'</span>:<span class="st">'unemployment'</span>,<span class="st">'Force'</span>:<span class="st">'population'</span>}) <span class="co"># rename the columns</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    counties<span class="op">=</span>pd.concat([counties,annual]) <span class="co"># append the data for each year to the dataframe</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>counties.dropna(inplace<span class="op">=</span><span class="va">True</span>) <span class="co"># drop missing values</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>counties[<span class="st">'county_fips'</span>]<span class="op">=</span>counties[<span class="st">'state'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.zfill(<span class="dv">2</span>)<span class="op">+</span>counties[<span class="st">'county'</span>].astype(<span class="bu">int</span>).astype(<span class="bu">str</span>).<span class="bu">str</span>.zfill(<span class="dv">3</span>) <span class="co"># create a fips code for each county</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>counties[<span class="st">'unemployment'</span>]<span class="op">=</span>pd.to_numeric(counties[<span class="st">'unemployment'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>) <span class="co"># convert the unemployment rate to a numeric variable</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>counties[<span class="st">'population'</span>]<span class="op">=</span>pd.to_numeric(counties[<span class="st">'population'</span>].<span class="bu">str</span>.replace(<span class="st">','</span>,<span class="st">''</span>), errors<span class="op">=</span><span class="st">'coerce'</span>)<span class="op">/</span><span class="dv">1000</span> <span class="co"># convert the population to a numeric variable and divide by 1000 to get the population in thousands</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>counties.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="17">
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> io <span class="im">import</span> StringIO</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>counties<span class="op">=</span>pd.DataFrame() <span class="co"># create empty dataframe to store the county data for each year</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> year <span class="kw">in</span> <span class="bu">range</span> (<span class="dv">2008</span>,<span class="dv">2022</span>): <span class="co"># loop through years from 1990 to 2021</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    url<span class="op">=</span><span class="st">'https://www.bls.gov/lau/laucnty'</span><span class="op">+</span><span class="bu">str</span>(year)[<span class="op">-</span><span class="dv">2</span>:]<span class="op">+</span><span class="st">'.txt'</span> <span class="co"># create the url for the data</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    txt<span class="op">=</span>requests.get(url, headers<span class="op">=</span>{<span class="st">'User-Agent'</span>: <span class="st">'Mozilla/5.0'</span>}).text <span class="co"># get the text from the url</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    txt<span class="op">=</span>StringIO(txt) <span class="co"># create a string object</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    annual<span class="op">=</span>pd.read_csv(txt, sep<span class="op">=</span><span class="st">"\s{2,}"</span>, header<span class="op">=</span><span class="dv">3</span>, on_bad_lines<span class="op">=</span><span class="st">'skip'</span>, engine<span class="op">=</span><span class="st">'python'</span>, skipfooter<span class="op">=</span><span class="dv">2</span>) <span class="co"># read the text as a dataframe</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    annual<span class="op">=</span>annual[[<span class="st">'Code'</span>,<span class="st">'Code.1'</span>,<span class="st">'Year'</span>,<span class="st">'Rate'</span>,<span class="st">'Force'</span>]].rename(columns<span class="op">=</span>{<span class="st">'Code'</span>:<span class="st">'state'</span>,<span class="st">'Code.1'</span>:<span class="st">'county'</span>,<span class="st">'Year'</span>:<span class="st">'year'</span>,<span class="st">'Rate'</span>:<span class="st">'unemployment'</span>,<span class="st">'Force'</span>:<span class="st">'population'</span>}) <span class="co"># rename the columns</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    counties<span class="op">=</span>pd.concat([counties,annual]) <span class="co"># append the data for each year to the dataframe</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>counties.dropna(inplace<span class="op">=</span><span class="va">True</span>) <span class="co"># drop missing values</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>counties[<span class="st">'county_fips'</span>]<span class="op">=</span>counties[<span class="st">'state'</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.zfill(<span class="dv">2</span>)<span class="op">+</span>counties[<span class="st">'county'</span>].astype(<span class="bu">int</span>).astype(<span class="bu">str</span>).<span class="bu">str</span>.zfill(<span class="dv">3</span>) <span class="co"># create a fips code for each county</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>counties[<span class="st">'unemployment'</span>]<span class="op">=</span>pd.to_numeric(counties[<span class="st">'unemployment'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>) <span class="co"># convert the unemployment rate to a numeric variable</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>counties[<span class="st">'population'</span>]<span class="op">=</span>pd.to_numeric(counties[<span class="st">'population'</span>].<span class="bu">str</span>.replace(<span class="st">','</span>,<span class="st">''</span>), errors<span class="op">=</span><span class="st">'coerce'</span>)<span class="op">/</span><span class="dv">1000</span> <span class="co"># convert the population to a numeric variable and divide by 1000 to get the population in thousands</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>counties.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
 <div>
 
 
@@ -383,8 +387,8 @@ mkdir: data/wk10: File exists
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
 <td>1</td>
-<td>1.0</td>
-<td>2008.0</td>
+<td>1</td>
+<td>2008</td>
 <td>5.3</td>
 <td>24.687</td>
 <td>01001</td>
@@ -392,8 +396,8 @@ mkdir: data/wk10: File exists
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>1</td>
-<td>3.0</td>
-<td>2008.0</td>
+<td>3</td>
+<td>2008</td>
 <td>4.8</td>
 <td>83.205</td>
 <td>01003</td>
@@ -401,8 +405,8 @@ mkdir: data/wk10: File exists
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
 <td>1</td>
-<td>5.0</td>
-<td>2008.0</td>
+<td>5</td>
+<td>2008</td>
 <td>9.1</td>
 <td>10.175</td>
 <td>01005</td>
@@ -410,8 +414,8 @@ mkdir: data/wk10: File exists
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
 <td>1</td>
-<td>7.0</td>
-<td>2008.0</td>
+<td>7</td>
+<td>2008</td>
 <td>6.0</td>
 <td>8.751</td>
 <td>01007</td>
@@ -419,8 +423,8 @@ mkdir: data/wk10: File exists
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
 <td>1</td>
-<td>9.0</td>
-<td>2008.0</td>
+<td>9</td>
+<td>2008</td>
 <td>4.8</td>
 <td>26.693</td>
 <td>01009</td>
@@ -432,86 +436,113 @@ mkdir: data/wk10: File exists
 </div>
 </div>
 <p>Part of the cleaning process in the cell above involves the creation of a column called “county_fips”– this stands for <a href="https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt#:~:text=FIPS%20codes%20are%20numbers%20which,to%20which%20the%20county%20belongs.">Federal Information Processing System</a>. This is a code that uniquely identifies states and counties in the U.S. A two digit FIPS code identifies states (e.g.&nbsp;01: Alabama, 02: Alaska, etc.) and a five digit fips code identifies counties (e.g.&nbsp;010001: Atauga County, Alabama; 02068: Denali Borough, Alaska). Notice, the first two digits of the five-digit county FIPS code indicates the state. Boring, yes, but these codes are imperative in allowing us to join county- and state- level datasets from different sources quicky and easily. Imagine what a nightmare it would be to try to join them using the names of the counties, having to deal with capitalizations, punctuation, etc. Yikes.</p>
-<hr>
-</section>
-</section>
-<section id="regression-discontinuity" class="level2">
-<h2 class="anchored" data-anchor-id="regression-discontinuity">Regression Discontinuity</h2>
-<p>Our difference in difference model made causal claims by treating PA as a control group for NJ on the basis that they had similar trends in unemployment before the minimum wage law, and diverging trends after, and no other shock coincided with this policy. We could still poke some holes in that– NJ seems to have fared worse than PA after the 2008 crisis; maybe more people work in finance in NJ. Indeed, Jersey City is across the water from Manhattan, America’s financial centre. Bankers would be hard hit by a financial crisis, but are probably not that affected by minimum wage laws. Conversely, Pennsylvania is the 3rd largest coal-producing state in the U.S.– coal miners are probably less affected by financial crises, but more likely to be earning minimum wage. As such, increasing the minimum wage in a place where most people are bankers probably has less of an effect on unemployment compared to an area where everyone is a coal miner.</p>
-<p>Running a state-level analysis is subject to this sort of selection bias, since by looking at state averages we’re effectively comparing places like Jersey City to places like <a href="https://en.wikipedia.org/wiki/Centralia,_Pennsylvania">Centralia</a>, a coal-mining town in central Pennsylvania which saw its population decline from 1000 in 1980 to just five residents in 2020. So the next step in our analysis might be to try to compare apples to apples. There are a number of ways of doing this– we could look at the unemployment rate by industry, for example. But what if we didn’t want to rely on pre-trends, or if we didn’t even have data prior to the treatment? This is often the case</p>
-<p>To build a more valid counterfactual, we can drill even deeper to find even more similar comparison groups using a <strong>Regression Discontinuity Design (RDD)</strong> using county (rather than state) level data.</p>
-<blockquote class="blockquote">
-<p><strong><a href="https://www.princeton.edu/~davidlee/wp/RDDEconomics.pdf">Regression Discontinuity Designs</a></strong> are a method of estimating treatment effects in a nonexperimental setting where treatment is determined by whether an observed “assignment” variable exceeds a known cutoff point. If the cutoff is exogenous to the treatment, observations in the vicinity of this cutoff are likely to be very similar, and assignment to the treatment or control group can be considered as good as random.</p>
-</blockquote>
-<p>RDD models generally take the following form:</p>
-<p><span class="math display">\[\huge Y_{i} = \beta_0 + \beta_1 X_i + \beta_2 D_i + \varepsilon_{i}\]</span> <span class="math display">\[\large D_i=    \begin{cases}
-      1 &amp; X_i&gt;X_k\\
-      0 &amp; X_i&lt;X_k\\
-    \end{cases} \]</span></p>
-<p>In our case, the treatment is the minimum wage law passed in NJ in 2014. We want to be looking at the period after this to pick up on any changes in employment. The <strong>assignment variable</strong> in this case could be the distance of a county to the border between the two states, and the sharp cutoff would be the border itself. Counties on the border counties are probably much more similar to each other than other, farther away counties: this would exclude both Jersey City (in the far east of NJ) and Centralia (in the centre of PA).</p>
-<p>Indeed, several cities are divided by the border between these states including Philladelphia, the capital city of Pennsylvania:</p>
-<div class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ipyleaflet <span class="im">import</span> Map, Marker, basemaps, basemap_to_tiles</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Map(basemap<span class="op">=</span>basemap_to_tiles(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    basemaps.Esri.WorldImagery),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  center<span class="op">=</span>(<span class="fl">39.95279958991338</span>, <span class="op">-</span><span class="fl">75.1341365382268</span>),</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  zoom<span class="op">=</span><span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"937b4ca99d624def8c3240954a37cb60","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-</div>
-<p>On the left side of the river is Philladelphia, PA, while on the right side is Camden, NJ. The code below uses the county shapefile we used before to isolate the counties in NJ and PA that are on the border.</p>
-<div class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>shp <span class="op">=</span> gpd.read_file(<span class="st">'data/wk10/geojson-counties-fips.json'</span>) <span class="co"># read in the counties shapefile</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>subset<span class="op">=</span>shp[shp[<span class="st">'STATE'</span>].isin([<span class="st">'34'</span>,<span class="st">'42'</span>])] <span class="co"># new jersey = 34, pennsylvania = 42, new york = 36</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>subset[<span class="st">'neighbors'</span>]<span class="op">=</span> <span class="dv">0</span> <span class="co"># create a new column called neighbors</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> index, row <span class="kw">in</span> subset.iterrows():  <span class="co"># iterate through each row in the counties shapefile</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    buffered<span class="op">=</span> row[<span class="st">'geometry'</span>].<span class="bu">buffer</span>(<span class="fl">0.1</span>) <span class="co"># create a buffer around the county so that it overlaps with its neighbors</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    neighbors <span class="op">=</span> <span class="bu">list</span>(<span class="bu">set</span>(subset[subset.geometry.overlaps(buffered)].STATE.tolist()).difference([row.STATE])) <span class="co"># check which counties overlap with the buffer, grab the state code, and remove the current county's state code</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    subset.at[index, <span class="st">"neighbors"</span>] <span class="op">=</span> <span class="st">", "</span>.join(neighbors) <span class="co"># add the list of neighbors to the neighbors column</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>subset[<span class="st">'border'</span>]<span class="op">=</span>np.where(subset[<span class="st">'neighbors'</span>]<span class="op">==</span><span class="st">''</span>,<span class="dv">0</span>,<span class="dv">1</span>) <span class="co"># create a new column called border that is 1 if the county is on the border and 0 if it is not</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>subset[<span class="st">'viscol'</span>]<span class="op">=</span>subset[<span class="st">'STATE'</span>].astype(<span class="bu">int</span>)<span class="op">+</span>subset[<span class="st">'border'</span>] <span class="co"># create a new column that combines the state code and the border column</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>subset.plot(column<span class="op">=</span><span class="st">'viscol'</span>,legend<span class="op">=</span><span class="va">False</span>, figsize<span class="op">=</span>(<span class="dv">20</span>,<span class="dv">10</span>), cmap<span class="op">=</span><span class="st">'RdYlGn'</span>) <span class="co"># plot the counties and color them by the border column</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Border Counties in New Jersey and Pennsylvania'</span>, fontsize<span class="op">=</span><span class="dv">20</span>) <span class="co"># add a title</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="26">
-<pre><code>Text(0.5, 1.0, 'Border Counties in New Jersey and Pennsylvania')</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="W09. Causal Inference_files/figure-html/cell-6-output-2.png" class="img-fluid"></p>
-</div>
-</div>
-<p>The plot above shows counties in Pennsylvania in green, and New Jersey in red. Dark green counties are border counties in PA, while light red counties are border counties in NJ. Under the assumption that these counties are going to be very similar to each other in most ways other than the fact that NJ implemented a minimum wage law, the simplest regression discontinuity desgin would basically just be a regression of the following form:</p>
-<div class="cell" data-execution_count="40">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>border_counties<span class="op">=</span>subset[subset[<span class="st">'border'</span>]<span class="op">==</span><span class="dv">1</span>][<span class="st">'id'</span>].tolist() <span class="co"># create a list of the border counties</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rdd<span class="op">=</span>counties[(counties[<span class="st">'year'</span>]<span class="op">&gt;</span><span class="dv">2007</span>)<span class="op">&amp;</span>(counties[<span class="st">'county_fips'</span>].isin(border_counties))] <span class="co"># subset the counties data to only include border counties and years after 2007</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>rdd_model <span class="op">=</span> ols(<span class="st">'unemployment ~ state'</span>, rdd[rdd[<span class="st">'year'</span>]<span class="op">&gt;</span><span class="dv">2014</span>]).fit()</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rdd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>ValueError: mismatch between column_names and columns coded by given terms</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>border_counties<span class="op">=</span>subset[subset[<span class="st">'border'</span>]<span class="op">==</span><span class="dv">1</span>][<span class="st">'id'</span>].tolist() <span class="co"># create a list of the border counties</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>rdd<span class="op">=</span>counties[(counties[<span class="st">'year'</span>]<span class="op">&gt;</span><span class="dv">2007</span>)<span class="op">&amp;</span>(counties[<span class="st">'county_fips'</span>].isin(border_counties))] <span class="co"># subset the counties data to only include border counties and years after 2007</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>rdd_model <span class="op">=</span> ols(<span class="st">'unemployment ~ C(state)'</span>, rdd[rdd[<span class="st">'year'</span>]<span class="op">&gt;</span><span class="dv">2014</span>]).fit()</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rdd_model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>ValueError: mismatch between column_names and columns coded by given terms</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df<span class="op">=</span>pd.read_csv(<span class="st">'data/wk10/elections.csv'</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="table">
+<tbody>
+<tr class="odd">
+<td>## Regression Discontinuity</td>
+</tr>
+<tr class="even">
+<td>Our difference in difference model made causal claims by treating PA as a control group for NJ on the basis that they had similar trends in unemployment before the minimum wage law, and diverging trends after, and no other shock coincided with this policy. We could still poke some holes in that– NJ seems to have fared worse than PA after the 2008 crisis; maybe more people work in finance in NJ. Indeed, Jersey City is across the water from Manhattan, America’s financial centre. Bankers would be hard hit by a financial crisis, but are probably not that affected by minimum wage laws. Conversely, Pennsylvania is the 3rd largest coal-producing state in the U.S.– coal miners are probably less affected by financial crises, but more likely to be earning minimum wage. As such, increasing the minimum wage in a place where most people are bankers probably has less of an effect on unemployment compared to an area where everyone is a coal miner.</td>
+</tr>
+<tr class="odd">
+<td>Running a state-level analysis is subject to this sort of selection bias, since by looking at state averages we’re effectively comparing places like Jersey City to places like <a href="https://en.wikipedia.org/wiki/Centralia,_Pennsylvania">Centralia</a>, a coal-mining town in central Pennsylvania which saw its population decline from 1000 in 1980 to just five residents in 2020. So the next step in our analysis might be to try to compare apples to apples. There are a number of ways of doing this– we could look at the unemployment rate by industry, for example. But what if we didn’t want to rely on pre-trends, or if we didn’t even have data prior to the treatment? This is often the case</td>
+</tr>
+<tr class="even">
+<td>To build a more valid counterfactual, we can drill even deeper to find even more similar comparison groups using a <strong>Regression Discontinuity Design (RDD)</strong> using county (rather than state) level data.</td>
+</tr>
+<tr class="odd">
+<td>&gt; <strong><a href="https://www.princeton.edu/~davidlee/wp/RDDEconomics.pdf">Regression Discontinuity Designs</a></strong> are a method of estimating treatment effects in a nonexperimental setting where treatment is determined by whether an observed “assignment” variable exceeds a known cutoff point. If the cutoff is exogenous to the treatment, observations in the vicinity of this cutoff are likely to be very similar, and assignment to the treatment or control group can be considered as good as random.</td>
+</tr>
+<tr class="even">
+<td>RDD models generally take the following form:</td>
+</tr>
+<tr class="odd">
+<td><span class="math display">\[\huge Y_{i} = \beta_0 + \beta_1 X_i + \beta_2 D_i + \varepsilon_{i}\]</span> <span class="math display">\[\large D_i=    \begin{cases}
+1 &amp; X_i&gt;X_k\\
+0 &amp; X_i&lt;X_k\\
+\end{cases} \]</span></td>
+</tr>
+<tr class="even">
+<td>In our case, the treatment is the minimum wage law passed in NJ in 2014. We want to be looking at the period after this to pick up on any changes in employment. The <strong>assignment variable</strong> in this case could be the distance of a county to the border between the two states, and the sharp cutoff would be the border itself. Counties on the border counties are probably much more similar to each other than other, farther away counties: this would exclude both Jersey City (in the far east of NJ) and Centralia (in the centre of PA).</td>
+</tr>
+<tr class="odd">
+<td>Indeed, several cities are divided by the border between these states including Philladelphia, the capital city of Pennsylvania:</td>
+</tr>
+<tr class="even">
+<td>::: {.cell execution_count=22}</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell-output .cell-output-display}</td>
+</tr>
+<tr class="even">
+<td><code>{=html} &lt;script type="application/vnd.jupyter.widget-view+json"&gt; {"model_id":"9c4b93e0e3ce40ababf85ac661075ba8","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"} &lt;/script&gt;</code></td>
+</tr>
+<tr class="odd">
+<td>::: :::</td>
+</tr>
+<tr class="even">
+<td>On the left side of the river is Philladelphia, PA, while on the right side is Camden, NJ. The code below uses the county shapefile we used before to isolate the counties in NJ and PA that are on the border.</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell execution_count=23} ``` {.python .cell-code} import geopandas as gpd</td>
+</tr>
+<tr class="even">
+<td>shp = gpd.read_file(‘data/wk10/geojson-counties-fips.json’) # read in the counties shapefile</td>
+</tr>
+<tr class="odd">
+<td>subset=shp[shp[‘STATE’].isin([‘34’,‘42’])] # new jersey = 34, pennsylvania = 42, new york = 36</td>
+</tr>
+<tr class="even">
+<td>subset[‘neighbors’]= 0 # create a new column called neighbors</td>
+</tr>
+<tr class="odd">
+<td>for index, row in subset.iterrows(): # iterate through each row in the counties shapefile buffered= row[‘geometry’].buffer(0.1) # create a buffer around the county so that it overlaps with its neighbors neighbors = list(set(subset[subset.geometry.overlaps(buffered)].STATE.tolist()).difference([row.STATE])) # check which counties overlap with the buffer, grab the state code, and remove the current county’s state code subset.at[index, “neighbors”] = “,”.join(neighbors) # add the list of neighbors to the neighbors column</td>
+</tr>
+<tr class="even">
+<td>subset[‘border’]=np.where(subset[‘neighbors’]==’’,0,1) # create a new column called border that is 1 if the county is on the border and 0 if it is not</td>
+</tr>
+<tr class="odd">
+<td>subset[‘viscol’]=subset[‘STATE’].astype(int)+subset[‘border’] # create a new column that combines the state code and the border column subset.plot(column=‘viscol’,legend=False, figsize=(20,10), cmap=‘RdYlGn’) # plot the counties and color them by the border column plt.title(‘Border Counties in New Jersey and Pennsylvania’, fontsize=20) # add a title ```</td>
+</tr>
+<tr class="even">
+<td>::: {.cell-output .cell-output-display execution_count=23}</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell-output .cell-output-display} <img src="W09. Causal Inference_files/figure-html/cell-6-output-2.png" class="img-fluid"> ::: :::</td>
+</tr>
+<tr class="even">
+<td>The plot above shows counties in Pennsylvania in green, and New Jersey in red. Dark green counties are border counties in PA, while light red counties are border counties in NJ. Under the assumption that these counties are going to be very similar to each other in most ways other than the fact that NJ implemented a minimum wage law, the simplest regression discontinuity desgin would basically just be a regression of the following form:</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell execution_count=24} ``` {.python .cell-code} border_counties=subset[subset[‘border’]==1][‘id’].tolist() # create a list of the border counties rdd=counties[(counties[‘year’]&gt;2007)&amp;(counties[‘county_fips’].isin(border_counties))] # subset the counties data to only include border counties and years after 2007 rdd_model = ols(‘unemployment ~ state’, rdd[rdd[‘year’]&gt;2014]).fit()</td>
+</tr>
+<tr class="even">
+<td>print(rdd) ```</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell-output .cell-output-stdout} ``` state county year unemployment population county_fips 1773 34 5 2008 5.0 238.994 34005 1774 34 7 2008 6.0 266.721 34007 1778 34 15 2008 5.4 156.276 34015 1780 34 19 2008 3.8 72.804 34019 1781 34 21 2008 4.8 201.705 34021 … … … … … … … 2288 42 89 2021 7.2 82.205 42089 2289 42 91 2021 4.7 459.375 42091 2291 42 95 2021 5.7 162.767 42095 2294 42 101 2021 8.5 724.116 42101 2295 42 103 2021 6.9 25.388 42103</td>
+</tr>
+<tr class="even">
+<td>[210 rows x 6 columns] ``` ::: :::</td>
+</tr>
+<tr class="odd">
+<td>::: {.cell execution_count=25}</td>
+</tr>
+<tr class="even">
+<td>::: {.cell-output .cell-output-stdout} ``` OLS Regression Results ============================================================================== Dep. Variable: unemployment R-squared: 0.032 Model: OLS Adj. R-squared: 0.023 Method: Least Squares F-statistic: 3.394 Date: Fri, 01 Dec 2023 Prob (F-statistic): 0.0683 Time: 10:29:28 Log-Likelihood: -211.58 No.&nbsp;Observations: 105 AIC: 427.2 Df Residuals: 103 BIC: 432.5 Df Model: 1 Covariance Type: nonrobust ================================================================================== coef std err t P&gt;|t| [0.025 0.975]</td>
+</tr>
+</tbody>
+</table>
+<p>Intercept 5.2518 0.245 21.446 0.000 4.766 5.737 C(state)[T.42] 0.6605 0.358 1.842 0.068 -0.051 1.371 ============================================================================== Omnibus: 21.953 Durbin-Watson: 0.637 Prob(Omnibus): 0.000 Jarque-Bera (JB): 27.712 Skew: 1.141 Prob(JB): 9.60e-07 Kurtosis: 4.061 Cond. No.&nbsp;2.55 ==============================================================================</p>
+<p>Notes: [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</p>
+<pre><code>:::
+:::
+
+
+::: {.cell}
+``` {.python .cell-code}
+df=pd.read_csv('data/wk10/elections.csv')
+df</code></pre>
 <div class="cell-output cell-output-display" data-execution_count="33">
 <div>
 
@@ -610,9 +641,10 @@ mkdir: data/wk10: File exists
 <p>18927 rows × 4 columns</p>
 </div>
 </div>
-</div>
+<p>:::</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
