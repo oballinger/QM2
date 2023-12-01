@@ -108,6 +108,9 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -290,10 +293,10 @@ ga('send', {
   </ul></li>
   <li><a href="#extension" id="toc-extension" class="nav-link" data-scroll-target="#extension">Extension</a>
   <ul class="collapse">
-  <li><a href="#years-of-schooling" id="toc-years-of-schooling" class="nav-link" data-scroll-target="#years-of-schooling">Years of Schooling</a></li>
   <li><a href="#hourly-wages" id="toc-hourly-wages" class="nav-link" data-scroll-target="#hourly-wages">Hourly Wages</a></li>
   </ul></li>
   <li><a href="#coefficient-interpretation." id="toc-coefficient-interpretation." class="nav-link" data-scroll-target="#coefficient-interpretation.">Coefficient interpretation.</a></li>
+  <li><a href="#assessed-question" id="toc-assessed-question" class="nav-link" data-scroll-target="#assessed-question">Assessed Question</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W08. Linear Regression.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -348,7 +351,7 @@ ga('send', {
 <section id="getting-started" class="level2">
 <h2 class="anchored" data-anchor-id="getting-started">Getting Started</h2>
 <p>As always we’ll start by importing the libraries I need</p>
-<div class="cell">
+<div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#This tells python to draw the graphs "inline" - in the notebook</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline  </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -371,15 +374,119 @@ ga('send', {
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"white"</span>)</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="d585f549-6d26-4927-8a95-881a66072bdf">
+<div class="cell" data-outputid="d585f549-6d26-4927-8a95-881a66072bdf" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mkdir data<span class="op">/</span>wk8</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>storage.googleapis.com<span class="op">/</span>qm2<span class="op">/</span>wk7<span class="op">/</span>cps.csv <span class="op">-</span>o data<span class="op">/</span>wk8<span class="op">/</span>cps.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>mkdir: data: File exists
+mkdir: data/wk8: File exists
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 22.4M  100 22.4M    0     0  18.3M      0  0:00:01  0:00:01 --:--:-- 18.4M</code></pre>
+</div>
 </div>
 <p>Now that I’ve imported the libraries I’m going to be using, I’m ready to import the data:</p>
-<div class="cell" data-outputid="eaa86222-5f24-416a-c119-45cf3782f65a">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df<span class="op">=</span>pd.read_csv(<span class="st">'./data/wk8/cps.csv'</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-outputid="eaa86222-5f24-416a-c119-45cf3782f65a" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df<span class="op">=</span>pd.read_csv(<span class="st">'./data/wk8/cps.csv'</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">year</th>
+<th data-quarto-table-cell-role="th">state</th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">sex</th>
+<th data-quarto-table-cell-role="th">race</th>
+<th data-quarto-table-cell-role="th">sch</th>
+<th data-quarto-table-cell-role="th">ind</th>
+<th data-quarto-table-cell-role="th">union</th>
+<th data-quarto-table-cell-role="th">incwage</th>
+<th data-quarto-table-cell-role="th">realhrwage</th>
+<th data-quarto-table-cell-role="th">occupation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1990</td>
+<td>36</td>
+<td>58</td>
+<td>1</td>
+<td>3</td>
+<td>12.0</td>
+<td>871</td>
+<td>0.0</td>
+<td>14200.0</td>
+<td>12.269874</td>
+<td>Office and Admin Support</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2009</td>
+<td>5</td>
+<td>28</td>
+<td>1</td>
+<td>1</td>
+<td>12.0</td>
+<td>8660</td>
+<td>1.0</td>
+<td>17680.0</td>
+<td>8.635149</td>
+<td>Office and Admin Support</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>1990</td>
+<td>36</td>
+<td>37</td>
+<td>1</td>
+<td>1</td>
+<td>14.0</td>
+<td>380</td>
+<td>1.0</td>
+<td>28000.0</td>
+<td>21.169851</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>1990</td>
+<td>6</td>
+<td>34</td>
+<td>1</td>
+<td>1</td>
+<td>18.0</td>
+<td>740</td>
+<td>1.0</td>
+<td>27500.0</td>
+<td>20.447746</td>
+<td>Computer and Math Technicians</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>1981</td>
+<td>51</td>
+<td>38</td>
+<td>1</td>
+<td>4</td>
+<td>13.0</td>
+<td>798</td>
+<td>NaN</td>
+<td>17000.0</td>
+<td>18.892282</td>
+<td>Managers</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 <p>Our dataframe has 10 columns:</p>
 <ol type="1">
@@ -420,40 +527,164 @@ ga('send', {
 <li><em>state</em>: <a href="https://www.bls.gov/respondents/mwr/electronic-data-interchange/appendix-d-usps-state-abbreviations-and-fips-codes.htm">FIPS code</a> denoting the state of residence.</li>
 </ol>
 <p>We’ll begin, as we did with last week’s workshop, by selecting the year 2013 in our data and making sure that all the variables that represent categories are stored as categorical in python:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>reg_df<span class="op">=</span>df[df[<span class="st">'year'</span>]<span class="op">==</span><span class="dv">2013</span>].drop([<span class="st">'year'</span>],axis<span class="op">=</span><span class="dv">1</span>) <span class="co"># filter the whole dataset to 2013 and drop year column</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>reg_df[[<span class="st">'race'</span>,<span class="st">'union'</span>,<span class="st">'sex'</span>,<span class="st">'occupation'</span>,<span class="st">'ind'</span>,<span class="st">'state'</span>]]<span class="op">=</span>reg_df[[<span class="st">'race'</span>,<span class="st">'union'</span>,<span class="st">'sex'</span>,<span class="st">'occupation'</span>, <span class="st">'ind'</span>,<span class="st">'state'</span>]].astype(<span class="st">'category'</span>) <span class="co"># convert these columns to categorical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>reg_df<span class="op">=</span>df[df[<span class="st">'year'</span>]<span class="op">==</span><span class="dv">2013</span>].drop([<span class="st">'year'</span>],axis<span class="op">=</span><span class="dv">1</span>) <span class="co"># filter the whole dataset to 2013 and drop year column</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>reg_df[[<span class="st">'race'</span>,<span class="st">'union'</span>,<span class="st">'sex'</span>,<span class="st">'occupation'</span>,<span class="st">'ind'</span>,<span class="st">'state'</span>]]<span class="op">=</span>reg_df[[<span class="st">'race'</span>,<span class="st">'union'</span>,<span class="st">'sex'</span>,<span class="st">'occupation'</span>, <span class="st">'ind'</span>,<span class="st">'state'</span>]].astype(<span class="st">'category'</span>) <span class="co"># convert these columns to categorical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="summary-statistics" class="level2">
 <h2 class="anchored" data-anchor-id="summary-statistics">1. Summary Statistics</h2>
 <p>Once our data has been cleaned and all our variables are stored as the appropriate type, we can start with the first step of any regression project: creating a table of summary statistics. This is an important part of the process, since it gives the reader a qualitative understanding of your data before you analyze it. It also serves to demonstrate that you’ve cleaned the data appropriately, and that the measures of the variables make sense.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>summary<span class="op">=</span>reg_df.describe().<span class="bu">round</span>(<span class="dv">2</span>)  <span class="co"># generate summary statistics, and round everything to 2 decimal degrees</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>summary<span class="op">=</span>summary.T <span class="co">#.T transposes the table (rows become columns and vice versa)</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>summary<span class="op">=</span>reg_df.describe().<span class="bu">round</span>(<span class="dv">2</span>)  <span class="co"># generate summary statistics, and round everything to 2 decimal degrees</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>summary<span class="op">=</span>summary.T <span class="co">#.T transposes the table (rows become columns and vice versa)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">std</th>
+<th data-quarto-table-cell-role="th">min</th>
+<th data-quarto-table-cell-role="th">25%</th>
+<th data-quarto-table-cell-role="th">50%</th>
+<th data-quarto-table-cell-role="th">75%</th>
+<th data-quarto-table-cell-role="th">max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">age</td>
+<td>53790.0</td>
+<td>42.91</td>
+<td>10.56</td>
+<td>25.00</td>
+<td>34.00</td>
+<td>43.00</td>
+<td>51.00</td>
+<td>64.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">sch</td>
+<td>53790.0</td>
+<td>13.93</td>
+<td>2.74</td>
+<td>0.00</td>
+<td>12.00</td>
+<td>13.00</td>
+<td>16.00</td>
+<td>18.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">incwage</td>
+<td>53790.0</td>
+<td>51821.86</td>
+<td>60163.45</td>
+<td>38.00</td>
+<td>24000.00</td>
+<td>40000.00</td>
+<td>63000.00</td>
+<td>1102999.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">realhrwage</td>
+<td>53790.0</td>
+<td>24.38</td>
+<td>151.90</td>
+<td>2.01</td>
+<td>12.17</td>
+<td>18.44</td>
+<td>28.12</td>
+<td>34760.8</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 <p>This table is already informative. I now know that the average person in this dataset is 42 years old, has around 14 years of schooling, and makes $24/hour (or $51,821/year). However, it’s also useful to spot potential errors in data entry that may warrant greater attention.</p>
 <p>Notice the max value for real hourly wage. Despite the fact that those in the top 75% of earners make $28.12/hour, someone is making $34,760 per hour. Must be nice (or, may be a data entry error). Either way, because regresisons are sensitive to this sort of outlier, we should remove it. I’ve defined a function below that calculates the quartiles and filters out observations that are more than three times as far away form the top quartile as the top quartile is from the bottom one. This was a somewhat arbitrary choice, but it allows me to be consistent if I want to apply it to other variables. You could also just pick a cutoff qualitatively and justify it (e.g.&nbsp;“I will focus on those making up to $250k per year, since they represent the population i’m trying to understand”).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filter_outliers(var):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    q1 <span class="op">=</span> var.quantile(<span class="fl">0.25</span>) <span class="co"># calculate the first quartile</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    q3 <span class="op">=</span> var.quantile(<span class="fl">0.75</span>) <span class="co"># calculate the third quartile</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    iqr <span class="op">=</span> q3 <span class="op">-</span> q1 <span class="co"># calculate the interquartile range</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    low <span class="op">=</span> q1 <span class="op">-</span> <span class="dv">3</span><span class="op">*</span>iqr <span class="co"># calculate the lower bound</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    high <span class="op">=</span> q3 <span class="op">+</span> <span class="dv">3</span><span class="op">*</span>iqr <span class="co"># calculate the upper bound</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    filtered <span class="op">=</span> reg_df[(var <span class="op">&gt;</span> low) <span class="op">&amp;</span> (var <span class="op">&lt;</span> high)] <span class="co"># filter  the values that are within the bounds</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    dropped_observations<span class="op">=</span> <span class="bu">len</span>(var)<span class="op">-</span><span class="bu">len</span>(filtered) <span class="co"># calculate the number of observations that were dropped</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Dropped </span><span class="sc">{}</span><span class="st"> observations'</span>.<span class="bu">format</span>(dropped_observations))</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>  filtered</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>reg_df<span class="op">=</span>filter_outliers(reg_df[<span class="st">'realhrwage'</span>]) <span class="co"># filter outliers from realhrwage</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filter_outliers(var):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    q1 <span class="op">=</span> var.quantile(<span class="fl">0.25</span>) <span class="co"># calculate the first quartile</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    q3 <span class="op">=</span> var.quantile(<span class="fl">0.75</span>) <span class="co"># calculate the third quartile</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    iqr <span class="op">=</span> q3 <span class="op">-</span> q1 <span class="co"># calculate the interquartile range</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    low <span class="op">=</span> q1 <span class="op">-</span> <span class="dv">3</span><span class="op">*</span>iqr <span class="co"># calculate the lower bound</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    high <span class="op">=</span> q3 <span class="op">+</span> <span class="dv">3</span><span class="op">*</span>iqr <span class="co"># calculate the upper bound</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    filtered <span class="op">=</span> reg_df[(var <span class="op">&gt;</span> low) <span class="op">&amp;</span> (var <span class="op">&lt;</span> high)] <span class="co"># filter  the values that are within the bounds</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    dropped_observations<span class="op">=</span> <span class="bu">len</span>(var)<span class="op">-</span><span class="bu">len</span>(filtered) <span class="co"># calculate the number of observations that were dropped</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Dropped </span><span class="sc">{}</span><span class="st"> observations'</span>.<span class="bu">format</span>(dropped_observations))</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>  filtered</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>reg_df<span class="op">=</span>filter_outliers(reg_df[<span class="st">'realhrwage'</span>]) <span class="co"># filter outliers from realhrwage</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Dropped 1040 observations</code></pre>
+</div>
 </div>
 <p>We can see that this operation dropped 1040 observations that had extreme values in the “realhrwage” variable. Let’s re-generate the table of summary statistics and only keep four columns: count, mean, standard deviaiton, minimum, and maximum.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>summary<span class="op">=</span>reg_df.describe().<span class="bu">round</span>(<span class="dv">2</span>).T</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>summary[[<span class="st">'count'</span>,<span class="st">'mean'</span>,<span class="st">'std'</span>,<span class="st">'min'</span>,<span class="st">'max'</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>summary<span class="op">=</span>reg_df.describe().<span class="bu">round</span>(<span class="dv">2</span>).T</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>summary[[<span class="st">'count'</span>,<span class="st">'mean'</span>,<span class="st">'std'</span>,<span class="st">'min'</span>,<span class="st">'max'</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">std</th>
+<th data-quarto-table-cell-role="th">min</th>
+<th data-quarto-table-cell-role="th">max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">age</td>
+<td>52750.0</td>
+<td>42.84</td>
+<td>10.57</td>
+<td>25.00</td>
+<td>64.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">sch</td>
+<td>52750.0</td>
+<td>13.88</td>
+<td>2.73</td>
+<td>0.00</td>
+<td>18.00</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">incwage</td>
+<td>52750.0</td>
+<td>46849.39</td>
+<td>33376.96</td>
+<td>38.00</td>
+<td>353000.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">realhrwage</td>
+<td>52750.0</td>
+<td>21.59</td>
+<td>13.03</td>
+<td>2.01</td>
+<td>75.81</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 </section>
 <section id="visualization" class="level2">
@@ -463,13 +694,16 @@ ga('send', {
 <h3 class="anchored" data-anchor-id="visualizing-the-distribution-of-categorical-variables">Visualizing the distribution of categorical variables</h3>
 <p>So far in this course we’ve been using a python library called Matplotlib to make our visualizations, which we’ve been calling using the ‘plt’ alias. But this isn’t the only one that is avaialble to us. <a href="https://seaborn.pydata.org/">Seaborn</a> is another library that has some cool plotting functions that are more geared towards statistical analysis. We’ve already imported seaborn above, and we’ll be calling it using the alias “sns”. We can use it in conjunction with matplotlib.</p>
 <p>To get a sense of the distribution of our categorical variables, we’ll make some plots that count the number of observations in each category. Let’s start with the race category:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sns.countplot(data<span class="op">=</span>reg_df, x<span class="op">=</span><span class="st">'race'</span>) <span class="co"># plot the union variable</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Race'</span>) <span class="co"># add a title</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">''</span>) <span class="co"># remove the x axis label</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.xticks(ticks<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>],labels<span class="op">=</span>[<span class="st">'White'</span>, <span class="st">'Black'</span>,<span class="st">'Hispanic'</span>,<span class="st">'Other'</span>]) <span class="co"># replace the x axis labels with more descriptive labels</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.show() <span class="co"># show the plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sns.countplot(data<span class="op">=</span>reg_df, x<span class="op">=</span><span class="st">'race'</span>) <span class="co"># plot the union variable</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Race'</span>) <span class="co"># add a title</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">''</span>) <span class="co"># remove the x axis label</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>plt.xticks(ticks<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>],labels<span class="op">=</span>[<span class="st">'White'</span>, <span class="st">'Black'</span>,<span class="st">'Hispanic'</span>,<span class="st">'Other'</span>]) <span class="co"># replace the x axis labels with more descriptive labels</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>plt.show() <span class="co"># show the plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="W08. Linear Regression_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
+</div>
 </div>
 </section>
 <section id="exercise" class="level3">
@@ -494,7 +728,7 @@ C. Multicollinearity </code></pre>
 </section>
 <section id="b.-homoscedasticity" class="level3">
 <h3 class="anchored" data-anchor-id="b.-homoscedasticity">B. Homoscedasticity</h3>
-<p><strong><code>Linear regression assumes that the variance of residuals is the same for any value of $x$, and that residuals are normally distributed with a mean of 0.</code></strong></p>
+<p><strong><code>Linear regression assumes that the variance of residuals is the same for any value of x, and that residuals are normally distributed with a mean of 0.</code></strong></p>
 <p>This is a complicated way of saying your regression line should fit consistently across the full range of <span class="math inline">\(x\)</span> values. If there are really small residuals (i.e., all the data points are close to the line) for low values of <span class="math inline">\(x\)</span>, but larger residuals for high values of <span class="math inline">\(x\)</span>, the regression is not performing well– we wouldn’t have the same confidence in our predictions at different values of <span class="math inline">\(x\)</span>. Similarly, if all the residuals are on one side of the regression line in different parts of the <span class="math inline">\(x\)</span> range, the model will consistently over/underestimate in those regions. When the variance of residuals from a regression model are inconsistent, we have <strong><code>Heteroscedasticity</code></strong>.</p>
 <p>We can explore potential heteroscedasticity by visually inspecting a regression plot. In our case, we’re primarily interested in the relationship between years of schooling and hourly wages, so we’ll be plotting these variables against eachother. <code>sns.jointplot()</code> lets us create a plot with four components which can help us diagnose potential heteroscedasticity:</p>
 <ul>
@@ -503,17 +737,23 @@ C. Multicollinearity </code></pre>
 <li>A histogram to the right of the plot shows the distribution of the hourly wages variable, which is heavily skewed.</li>
 <li>A histogram above the plot shows the distribution of the years of schooling variable, which has an almost bimodal form.</li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(data<span class="op">=</span>reg_df, <span class="co"># plot a scatterplot with a regression line and two histograms</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                x<span class="op">=</span><span class="st">'sch'</span>, <span class="co"># set the x axis to be the years of schooling</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                y<span class="op">=</span><span class="st">'realhrwage'</span>, <span class="co"># set the y axis to be the hourly wage</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                kind<span class="op">=</span><span class="st">"reg"</span>,  <span class="co"># set the kind of plot to be a regression plot</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                scatter_kws<span class="op">=</span><span class="bu">dict</span>(alpha<span class="op">=</span><span class="fl">0.1</span>), <span class="co"># set the transparency of the points to be 0.1 (10%)</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                line_kws<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">'red'</span>), <span class="co"># set the color of the regression line to red</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                height<span class="op">=</span><span class="dv">10</span>) <span class="co"># set the height of the plot to be 10 inches </span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Years of Schooling'</span>) <span class="co"># add a label to the x axis</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Hourly Wage'</span>) <span class="co"># add a label to the y axis</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(data<span class="op">=</span>reg_df, <span class="co"># plot a scatterplot with a regression line and two histograms</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                x<span class="op">=</span><span class="st">'sch'</span>, <span class="co"># set the x axis to be the years of schooling</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                y<span class="op">=</span><span class="st">'realhrwage'</span>, <span class="co"># set the y axis to be the hourly wage</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                kind<span class="op">=</span><span class="st">"reg"</span>,  <span class="co"># set the kind of plot to be a regression plot</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                scatter_kws<span class="op">=</span><span class="bu">dict</span>(alpha<span class="op">=</span><span class="fl">0.1</span>), <span class="co"># set the transparency of the points to be 0.1 (10%)</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                line_kws<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">'red'</span>), <span class="co"># set the color of the regression line to red</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                height<span class="op">=</span><span class="dv">10</span>) <span class="co"># set the height of the plot to be 10 inches </span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Years of Schooling'</span>) <span class="co"># add a label to the x axis</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Hourly Wage'</span>) <span class="co"># add a label to the y axis</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>Text(53.625, 0.5, 'Hourly Wage')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W08. Linear Regression_files/figure-html/cell-10-output-2.png" class="img-fluid"></p>
+</div>
 </div>
 <p>The plot above is cause for concern. From 0 to 5 years of schooling the model has underestimated hourly wages for every single observation. Conversely, at the far right tip of the regression line, we can see that the model <em>overestimates</em> income for many individuals with 18 years of schooling. This gives us reason to suspect that there may be asymmetry in the residuals of our model (heteroscedasticity). We’re going to fix this in the Exension section below. But for now, let’s proceed.</p>
 </section>
@@ -522,72 +762,83 @@ C. Multicollinearity </code></pre>
 <p><strong><code>Multicollinearity emerges when two or more independent variables which are highly correlated are included in a model.</code></strong> A key goal of regression analysis is to isolate the relationship between each independent variable and the dependent variable. The interpretation of a regression coefficient is that it represents the mean change in the dependent variable for each 1 unit change in an independent variable when you hold all of the other independent variables constant.</p>
 <p>The idea is that you can change the value of one independent variable and not the others. However, when independent variables are correlated, it indicates that changes in one variable are associated with shifts in another variable. The stronger the correlation, the more difficult it is to change one variable without changing another. See this <a href="https://statisticsbyjim.com/regression/multicollinearity-in-regression-analysis/">blog post</a> for a thorough explanation.</p>
 <p>One way of visually exporing multicollinearity is through a correlation matrix:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sns.heatmap(reg_df.corr(), <span class="co"># plot a correlation matrix </span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>            annot<span class="op">=</span><span class="va">True</span>, <span class="co"># show the correlation values on the plot</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>            fmt<span class="op">=</span><span class="st">".2f"</span>, <span class="co"># set the format of the correlation values to be two decimal places</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>            cmap<span class="op">=</span><span class="st">'coolwarm'</span>) <span class="co"># set the color palette to be coolwarm (blue for negative correlations, red for positive correlations)</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Correlation Matrix'</span>) <span class="co"># add a title</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>sns.heatmap(reg_df.corr(), <span class="co"># plot a correlation matrix </span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>            annot<span class="op">=</span><span class="va">True</span>, <span class="co"># show the correlation values on the plot</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>            fmt<span class="op">=</span><span class="st">".2f"</span>, <span class="co"># set the format of the correlation values to be two decimal places</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>            cmap<span class="op">=</span><span class="st">'coolwarm'</span>) <span class="co"># set the color palette to be coolwarm (blue for negative correlations, red for positive correlations)</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Correlation Matrix'</span>) <span class="co"># add a title</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>Text(0.5, 1.0, 'Correlation Matrix')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="W08. Linear Regression_files/figure-html/cell-11-output-2.png" class="img-fluid"></p>
+</div>
 </div>
 <p>This matrix has each of the continuous variables in <code>reg_df</code> on both axes. Each cell denotes the correlation between the corresponding variables. Naturally, on the diagonal we have a series of perfect correlations (1.00), as each variable is perfectly correlated with itself. <code>incwage</code> (annual salary) and <code>realhrwage</code> (hourly wage) are highly correlated with each other, which makes a lot of sense. This isn’t a concern for multicollinearity, though, since <code>realhrwage</code> will be our dependent variable. This type of correlation matrix is also a good way of conducting exploratory data analysis– we can already see that the next-highest set of correlations is between years of schooling and both hourly wages and annual salary.</p>
 <p>Though a very high correlagtion coefficient between independent variables is a cause for concern, the formal way of dealing with muticollinearity is through the use of the <strong><code>Variance Inflation Factor (VIF)</code></strong>. VIF is the ratio of the variance in a model with multiple predictors by the variance of a model with a single predictor:</p>
 <p><span class="math display">\[\large VIF_j=\frac{1}{1-R_{j}^{2}}\]</span></p>
 <p>VIFs start at 1 and have no upper limit. A value of 1 indicates that there is no correlation between this independent variable and any others. VIFs between 1 and 5 suggest that there is a moderate correlation, but it is not severe enough to warrant corrective measures. VIFs greater than 5 represent critical levels of multicollinearity where the coefficients are poorly estimated, and the p-values are questionable. More explanation of the theory can be found <a href="https://en.wikipedia.org/wiki/Variance_inflation_factor">here</a>.</p>
 <p>Below is a function that calculates VIF for each independent variable in a dataframe, and drops them if they exceed a threshold (set to 5).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculating VIF</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This function is amended from: https://stackoverflow.com/a/51329496/4667568</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> variance_inflation_factor </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tools.tools <span class="im">import</span> add_constant</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> drop_column_using_vif_(df, list_var_not_to_remove<span class="op">=</span><span class="va">None</span>, thresh<span class="op">=</span><span class="dv">5</span>):</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Calculates VIF each feature in a pandas dataframe, and repeatedly drop the columns with the highest VIF</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">    A constant must be added to variance_inflation_factor or the results will be incorrect</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">    :param df: the pandas dataframe containing only the predictor features, not the response variable</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">    :param list_var_not_to_remove: the list of variables that should not be removed even though it has a high VIF. For example, dummy (or indicator) variables represent a categorical variable with three or more categories.</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">    :param thresh: the max VIF value before the feature is removed from the dataframe</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">    :return: dataframe with multicollinear features removed</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># adding a constatnt item to the data</span></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        df_with_const <span class="op">=</span> add_constant(df)</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        vif_df <span class="op">=</span> pd.Series([variance_inflation_factor(df_with_const.values, i) </span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>               <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(df_with_const.shape[<span class="dv">1</span>])], name<span class="op">=</span> <span class="st">"VIF"</span>,</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>              index<span class="op">=</span>df_with_const.columns).to_frame()</span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># drop the const as const should not be removed</span></span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        vif_df <span class="op">=</span> vif_df.drop(<span class="st">'const'</span>)</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># drop the variables that should not be removed</span></span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> list_var_not_to_remove <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>            vif_df <span class="op">=</span> vif_df.drop(list_var_not_to_remove)</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Max VIF:'</span>, vif_df.VIF.<span class="bu">max</span>())</span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># if the largest VIF is above the thresh, remove a variable with the largest VIF</span></span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> vif_df.VIF.<span class="bu">max</span>() <span class="op">&gt;</span> thresh:</span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>            <span class="co"># If there are multiple variables with the maximum VIF, choose the first one</span></span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>            index_to_drop <span class="op">=</span> vif_df.index[vif_df.VIF <span class="op">==</span> vif_df.VIF.<span class="bu">max</span>()].tolist()[<span class="dv">0</span>]</span>
-<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'Dropping: </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(index_to_drop))</span>
-<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>            df <span class="op">=</span> df.drop(columns <span class="op">=</span> index_to_drop)</span>
-<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>            <span class="co"># No VIF is above threshold. Exit the loop</span></span>
-<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
-<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculating VIF</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This function is amended from: https://stackoverflow.com/a/51329496/4667568</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> variance_inflation_factor </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tools.tools <span class="im">import</span> add_constant</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> drop_column_using_vif_(df, list_var_not_to_remove<span class="op">=</span><span class="va">None</span>, thresh<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Calculates VIF each feature in a pandas dataframe, and repeatedly drop the columns with the highest VIF</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">    A constant must be added to variance_inflation_factor or the results will be incorrect</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">    :param df: the pandas dataframe containing only the predictor features, not the response variable</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">    :param list_var_not_to_remove: the list of variables that should not be removed even though it has a high VIF. For example, dummy (or indicator) variables represent a categorical variable with three or more categories.</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">    :param thresh: the max VIF value before the feature is removed from the dataframe</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co">    :return: dataframe with multicollinear features removed</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># adding a constatnt item to the data</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>        df_with_const <span class="op">=</span> add_constant(df)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        vif_df <span class="op">=</span> pd.Series([variance_inflation_factor(df_with_const.values, i) </span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>               <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(df_with_const.shape[<span class="dv">1</span>])], name<span class="op">=</span> <span class="st">"VIF"</span>,</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>              index<span class="op">=</span>df_with_const.columns).to_frame()</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># drop the const as const should not be removed</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        vif_df <span class="op">=</span> vif_df.drop(<span class="st">'const'</span>)</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># drop the variables that should not be removed</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> list_var_not_to_remove <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>            vif_df <span class="op">=</span> vif_df.drop(list_var_not_to_remove)</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Max VIF:'</span>, vif_df.VIF.<span class="bu">max</span>())</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># if the largest VIF is above the thresh, remove a variable with the largest VIF</span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> vif_df.VIF.<span class="bu">max</span>() <span class="op">&gt;</span> thresh:</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>            <span class="co"># If there are multiple variables with the maximum VIF, choose the first one</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>            index_to_drop <span class="op">=</span> vif_df.index[vif_df.VIF <span class="op">==</span> vif_df.VIF.<span class="bu">max</span>()].tolist()[<span class="dv">0</span>]</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'Dropping: </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(index_to_drop))</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>            df <span class="op">=</span> df.drop(columns <span class="op">=</span> index_to_drop)</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>            <span class="co"># No VIF is above threshold. Exit the loop</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we can implement this on our dataset:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ind_vars<span class="op">=</span>[<span class="st">'sex'</span>,<span class="st">'age'</span>,<span class="st">'sch'</span>, <span class="st">'union'</span>,<span class="st">'race'</span>]</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>vif <span class="op">=</span> drop_column_using_vif_(reg_df[ind_vars], thresh<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The columns remaining after VIF selection are:"</span>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vif.columns)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ind_vars<span class="op">=</span>[<span class="st">'sex'</span>,<span class="st">'age'</span>,<span class="st">'sch'</span>, <span class="st">'union'</span>,<span class="st">'race'</span>]</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>vif <span class="op">=</span> drop_column_using_vif_(reg_df[ind_vars], thresh<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The columns remaining after VIF selection are:"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vif.columns)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Max VIF: 1.0471509029112354
+The columns remaining after VIF selection are:
+Index(['sex', 'age', 'sch', 'union', 'race'], dtype='object')</code></pre>
+</div>
 </div>
 <p>The maximum VIF value encountered was 1.04– well within the acceptable range. Accordingly, the function hasn’t dropped any of the independent variables in our dataset.</p>
 <p>Having explored our data through visualizations and summary statistics, and checked the assumptions of linear regression, we’re now ready to begin building a model.</p>
@@ -600,12 +851,39 @@ C. Multicollinearity </code></pre>
 <p>In our case, we’re trying to predict hourly income– this is our <strong>dependent variable</strong>, and there can be only one per regression. The variable we’re using to predict hourly income is years of schooling, which is our <strong>independent variable</strong>. We can have multiple of these per regression. As such, the regression equation in our scenario looks like this:</p>
 <p><span class="math display">\[Hourly\ Income= \beta_0 + \beta_1 \times Years\ of\ Schooling +\epsilon \]</span></p>
 <p>Because the regression model will estimate the parameters <span class="math inline">\(\beta_0, \beta_1\)</span> and <span class="math inline">\(\epsilon\)</span>, we just need to supply python with <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>; We can do so by passing <code>realhrwage ~  sch</code> to the <code>ols()</code> function from statsmodels. This will run a regression of the form specified above, which we will store in an variable called <code>model</code>. We can get the output from this model using <code>model.summary()</code>:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.formula.api <span class="im">import</span> ols</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.iolib.summary2 <span class="im">import</span> summary_col</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>model<span class="op">=</span> ols(<span class="st">'realhrwage ~  sch'</span>, data<span class="op">=</span>reg_df).fit() <span class="co"># fit the model</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary()) <span class="co"># print the summary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.formula.api <span class="im">import</span> ols</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.iolib.summary2 <span class="im">import</span> summary_col</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>model<span class="op">=</span> ols(<span class="st">'realhrwage ~  sch'</span>, data<span class="op">=</span>reg_df).fit() <span class="co"># fit the model</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary()) <span class="co"># print the summary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             realhrwage   R-squared:                       0.181
+Model:                            OLS   Adj. R-squared:                  0.181
+Method:                 Least Squares   F-statistic:                 1.164e+04
+Date:                Fri, 01 Dec 2023   Prob (F-statistic):               0.00
+Time:                        09:05:19   Log-Likelihood:            -2.0503e+05
+No. Observations:               52750   AIC:                         4.101e+05
+Df Residuals:                   52748   BIC:                         4.101e+05
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P&gt;|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     -6.6246      0.266    -24.858      0.000      -7.147      -6.102
+sch            2.0327      0.019    107.887      0.000       1.996       2.070
+==============================================================================
+Omnibus:                    10230.138   Durbin-Watson:                   1.900
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            19817.137
+Skew:                           1.187   Prob(JB):                         0.00
+Kurtosis:                       4.838   Cond. No.                         73.7
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</code></pre>
+</div>
 </div>
 <p>There’s a lot going on in the regression output above. If you want a more detailed explanation of what each part means, check out this <a href="https://medium.com/swlh/interpreting-linear-regression-through-statsmodels-summary-4796d359035a">blog post</a>. In practice, we only need to focus on a couple parts of this output:</p>
 <ul>
@@ -640,9 +918,38 @@ C. Multicollinearity </code></pre>
 <li>“Compared to category <span class="math inline">\(a\)</span>, membership of category <span class="math inline">\(c\)</span> is associated with a <span class="math inline">\(\beta_2\)</span> change in <span class="math inline">\(y\)</span>.”</li>
 </ul>
 <p>Let’s see what this looks like in our regression output:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ols(<span class="st">'realhrwage ~  sch + age + C(sex)'</span>, data<span class="op">=</span>reg_df).fit() </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ols(<span class="st">'realhrwage ~  sch + age + C(sex)'</span>, data<span class="op">=</span>reg_df).fit() </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             realhrwage   R-squared:                       0.239
+Model:                            OLS   Adj. R-squared:                  0.239
+Method:                 Least Squares   F-statistic:                     5514.
+Date:                Fri, 01 Dec 2023   Prob (F-statistic):               0.00
+Time:                        09:05:19   Log-Likelihood:            -2.0310e+05
+No. Observations:               52750   AIC:                         4.062e+05
+Df Residuals:                   52746   BIC:                         4.062e+05
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+===============================================================================
+                  coef    std err          t      P&gt;|t|      [0.025      0.975]
+-------------------------------------------------------------------------------
+Intercept     -12.6722      0.330    -38.392      0.000     -13.319     -12.025
+C(sex)[T.2]    -5.2692      0.099    -52.967      0.000      -5.464      -5.074
+sch             2.1343      0.018    116.995      0.000       2.098       2.170
+age             0.1695      0.005     36.164      0.000       0.160       0.179
+==============================================================================
+Omnibus:                     9831.824   Durbin-Watson:                   1.995
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            19481.335
+Skew:                           1.131   Prob(JB):                         0.00
+Kurtosis:                       4.935   Cond. No.                         308.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</code></pre>
+</div>
 </div>
 <p>We now have 4 coefficients. In general, we don’t always have to interpret the Intercept coefficient. It’s not really that meaningful in this case, since now it denotes the predicted hourly income of someone who is male, has 0 years of schooling, and is 0 years old. It’s good to keep it in mind as a sense check, though. The rest of the coefficients can be interpreted as follows:</p>
 <ul>
@@ -668,18 +975,38 @@ C. Multicollinearity </code></pre>
 <h3 class="anchored" data-anchor-id="creating-a-regression-table">Creating a Regression Table</h3>
 <p>Now that we’ve got a good sense of how regressions work and how to interpret them, we need to communicate these results properly. Many of you have probably read journal articles in which regression results are reported, but I doubt you’ve ever seen the output of <code>model.summary()</code> copied and pasted in the text of an article. Instead, these results are reported following a fairly standardized convention: a regression table. It picks out the components of the model summary that we’re interested in, and formats them in a consistent and easy-to-interpret way. Luckly, the statsmodels package has a function called <code>summary_col</code> that takes a fitted model and formats it for us automatically; we just need to tweak a few options.</p>
 <p>In the example below, i’m going to run two regressions; one in which i filter the data to only include people from California, and another for people in Mississippi (the richest and poorest states, respectively), to see if the relationship between wages, sex, age, and schooling differ geographically. I’m then going to create a regression table in which each column is a different regression model, and row will contain the coefficient for a given independent variable with the standard error in parentheses underneath and the level of statistical significance (i.e., size of the p-value) denotes by stars such that: * p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>california <span class="op">=</span> ols(<span class="st">'realhrwage ~  sch + age + C(sex)'</span>, data<span class="op">=</span>reg_df[reg_df[<span class="st">'state'</span>]<span class="op">==</span><span class="dv">6</span>]).fit()  <span class="co"># fit a model to california-- i'm filtering the data using the FIPS code for california, which is 6</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>mississippi <span class="op">=</span> ols(<span class="st">'realhrwage ~  sch + age + C(sex)'</span>, data<span class="op">=</span>reg_df[reg_df[<span class="st">'state'</span>]<span class="op">==</span><span class="dv">28</span>]).fit()  <span class="co"># same thing for mississippi (FIPS code 28)</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>table<span class="op">=</span>summary_col( <span class="co"># create a regression table </span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    [california,mississippi], <span class="co"># pass the models to the summary_col function</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    stars<span class="op">=</span><span class="va">True</span>, <span class="co"># add stars denoting the p-values of the coefficient to the table; * p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    float_format<span class="op">=</span><span class="st">'</span><span class="sc">%0.3f</span><span class="st">'</span>, <span class="co"># set the decimal places to 3</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    model_names<span class="op">=</span>[<span class="st">'California'</span>,<span class="st">'Mississippi'</span>], <span class="co"># set the name of the model</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    info_dict <span class="op">=</span> {<span class="st">"N"</span>:<span class="kw">lambda</span> x: <span class="st">"</span><span class="sc">{0:d}</span><span class="st">"</span>.<span class="bu">format</span>(<span class="bu">int</span>(x.nobs))}) <span class="co"># add the number of observations to the table</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>california <span class="op">=</span> ols(<span class="st">'realhrwage ~  sch + age + C(sex)'</span>, data<span class="op">=</span>reg_df[reg_df[<span class="st">'state'</span>]<span class="op">==</span><span class="dv">6</span>]).fit()  <span class="co"># fit a model to california-- i'm filtering the data using the FIPS code for california, which is 6</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>mississippi <span class="op">=</span> ols(<span class="st">'realhrwage ~  sch + age + C(sex)'</span>, data<span class="op">=</span>reg_df[reg_df[<span class="st">'state'</span>]<span class="op">==</span><span class="dv">28</span>]).fit()  <span class="co"># same thing for mississippi (FIPS code 28)</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>table<span class="op">=</span>summary_col( <span class="co"># create a regression table </span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    [california,mississippi], <span class="co"># pass the models to the summary_col function</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    stars<span class="op">=</span><span class="va">True</span>, <span class="co"># add stars denoting the p-values of the coefficient to the table; * p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    float_format<span class="op">=</span><span class="st">'</span><span class="sc">%0.3f</span><span class="st">'</span>, <span class="co"># set the decimal places to 3</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    model_names<span class="op">=</span>[<span class="st">'California'</span>,<span class="st">'Mississippi'</span>], <span class="co"># set the name of the model</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    info_dict <span class="op">=</span> {<span class="st">"N"</span>:<span class="kw">lambda</span> x: <span class="st">"</span><span class="sc">{0:d}</span><span class="st">"</span>.<span class="bu">format</span>(<span class="bu">int</span>(x.nobs))}) <span class="co"># add the number of observations to the table</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=====================================
+               California Mississippi
+-------------------------------------
+Intercept      -12.136*** -10.111*** 
+               (1.030)    (3.497)    
+C(sex)[T.2]    -5.154***  -4.980***  
+               (0.350)    (0.924)    
+sch            2.096***   1.850***   
+               (0.053)    (0.205)    
+age            0.217***   0.115**    
+               (0.017)    (0.045)    
+R-squared      0.262      0.199      
+R-squared Adj. 0.262      0.193      
+N              5079       430        
+=====================================
+Standard errors in parentheses.
+* p&lt;.1, ** p&lt;.05, ***p&lt;.01</code></pre>
+</div>
 </div>
 <p>This layout lets us clearly explore our regresison results. This lets us clearly compare the coefficients of the same variable in different models. For example, we can see that men tend to earn $5.15 more per hour than women in California, but just $4.98 more per hour in Mississippi, and both of these results are statistically significant at the 1% level. This suggests that the wage gap is actually somewhat higher in California! Why might this be?</p>
 </section>
@@ -708,46 +1035,35 @@ C. Multicollinearity </code></pre>
 </section>
 <section id="extension" class="level2">
 <h2 class="anchored" data-anchor-id="extension">Extension</h2>
-<p>Though we’ve gotten some significant results and interesting insights from our modeling effort so far, we can further improve our model. In particular, we may want to revisit the way we’ve defined some of our variables, since we suspect that we may have some heteroscedasticity in our models, and have consequently been getting some weird results (e.g.&nbsp;negative hourly income). Let’s have a closer look at our main independent variable (years of schooling), and</p>
-<section id="years-of-schooling" class="level3">
-<h3 class="anchored" data-anchor-id="years-of-schooling">Years of Schooling</h3>
-<p>Let’s start with the main independent variable, Years of Schooling. Is it appropriate to think of this as a continuous variable, linearly related to hourly wages? A linear relationship should be consistent across the full range of data– in other words, the increase from 0 years of schooling to 1 year of schooling should have the same effect on wages as the increase from 11 to 12 years of schooling, even though this one year determines whether a person has a highschool diploma or not. We would probably expect the increase from 11 to 12 years of schooling to have a greater effect on wages than the change from 0 to 1 years of schooling.</p>
-<p>We could conceptualize of years of schooling instead as a categorical or ordinal variable. Below, i’ve used the <code>np.where()</code> function to create a new variable called <code>degrees</code> based on years of schooling such that all observations have 0</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>reg_df[<span class="st">'degrees'</span>]<span class="op">=</span>np.where(reg_df[<span class="st">'sch'</span>]<span class="op">==</span><span class="dv">12</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="co"># create a new variable called degrees that is equal to 1 if the person has 12 or more years of schooling and 0 otherwise</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>reg_df[<span class="st">'degrees'</span>]<span class="op">=</span>np.where(reg_df[<span class="st">'sch'</span>]<span class="op">==</span><span class="dv">16</span>, <span class="dv">2</span>, reg_df[<span class="st">'degrees'</span>]) <span class="co"># if the person has 16 years of schooling, set the degrees variable to 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="exercise-3" class="level4">
-<h4 class="anchored" data-anchor-id="exercise-3">Exercise</h4>
-<ol type="1">
-<li>Add a level to the <code>degrees</code> column that denotes having a PhD.</li>
-<li>Run a regression in which hourly wages is the dependent variable and degrees is a <strong>continuous</strong> independent variable, and interpret.</li>
-<li>Run the same regression again, but treat <code>degrees</code> as categorical. How does the interpretation change?</li>
-</ol>
-</section>
-</section>
+<p>Though we’ve gotten some significant results and interesting insights from our modeling effort so far, we can further improve our model. In particular, we may want to revisit the way we’ve defined some of our variables, since we suspect that we may have some heteroscedasticity in our models, and have consequently been getting some weird results (e.g.&nbsp;negative hourly income).</p>
 <section id="hourly-wages" class="level3">
 <h3 class="anchored" data-anchor-id="hourly-wages">Hourly Wages</h3>
 <p>When checking the regression assumptions, we suspected that there may be some heteroscedasticity– i.e., that our model performs better in some regions of the <span class="math inline">\(x\)</span> distribution compared to others; remember, it consistently underestimated hourly income for those with little/no schooling, as evidenced by the negative intercept and the regression scatterplot:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(data<span class="op">=</span>reg_df, x<span class="op">=</span><span class="st">'sch'</span>, y<span class="op">=</span><span class="st">'realhrwage'</span>, kind<span class="op">=</span><span class="st">"reg"</span>,  scatter_kws<span class="op">=</span><span class="bu">dict</span>(alpha<span class="op">=</span><span class="fl">0.1</span>), line_kws<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">'red'</span>), height<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(data<span class="op">=</span>reg_df, x<span class="op">=</span><span class="st">'sch'</span>, y<span class="op">=</span><span class="st">'realhrwage'</span>, kind<span class="op">=</span><span class="st">"reg"</span>,  scatter_kws<span class="op">=</span><span class="bu">dict</span>(alpha<span class="op">=</span><span class="fl">0.1</span>), line_kws<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">'red'</span>), height<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="W08. Linear Regression_files/figure-html/cell-18-output-1.png" class="img-fluid"></p>
+</div>
 </div>
 <p>We can more thoroughly diagnose heteroscedasticity <em>after</em> having run our regression models, since we have access to the model’s <strong>residuals</strong> (the difference between the observed values and the predicted values). Remember, one of the assumptions of linear regression is that the residuals are normally distributed. A Quantile-Quantile Plot (Q-Q Plot) is a plot of the quantiles of a sample against the quantiles of a theoretical distribution. The quantiles are the values that divide the range of a probability distribution into continuous intervals with equal probabilities. Thus, we can use a Q-Q plot to compare the residuals of our model to a normal distribution as follows:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ols(<span class="st">'realhrwage ~  sch'</span>, data<span class="op">=</span>reg_df).fit()  <span class="co"># fit a model</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>residuals <span class="op">=</span> model.resid <span class="co"># get the residuals</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make the figure wider</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> [<span class="dv">20</span>, <span class="dv">10</span>]</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>f, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>sns.histplot(residuals, kde<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>axes[<span class="dv">0</span>]) <span class="co"># plot the residuals</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Histogram of Residuals'</span>) <span class="co"># add a title</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>sm.qqplot(residuals, line<span class="op">=</span><span class="st">'45'</span>, fit<span class="op">=</span><span class="va">True</span>,  ax<span class="op">=</span>axes[<span class="dv">1</span>]) <span class="co"># plot the residuals</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'Q-Q Plot'</span>) <span class="co"># add a title</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>plt.show() <span class="co"># show the plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ols(<span class="st">'realhrwage ~  sch'</span>, data<span class="op">=</span>reg_df).fit()  <span class="co"># fit a model</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>residuals <span class="op">=</span> model.resid <span class="co"># get the residuals</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make the figure wider</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> [<span class="dv">20</span>, <span class="dv">10</span>]</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>f, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>sns.histplot(residuals, kde<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>axes[<span class="dv">0</span>]) <span class="co"># plot the residuals</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Histogram of Residuals'</span>) <span class="co"># add a title</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>sm.qqplot(residuals, line<span class="op">=</span><span class="st">'45'</span>, fit<span class="op">=</span><span class="va">True</span>,  ax<span class="op">=</span>axes[<span class="dv">1</span>]) <span class="co"># plot the residuals</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'Q-Q Plot'</span>) <span class="co"># add a title</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>plt.show() <span class="co"># show the plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="W08. Linear Regression_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
+</div>
 </div>
 <p>This Q-Q plot suggests that our residuals are not normally distributed, as very few of them are on the red line. This is probably due to the fact that the <code>realhrwage</code> variable is itself highly skewed.</p>
 <p>Log transformations are often recommended for skewed data, such as monetary measures or certain biological and demographic measures. Log transforming data usually has the effect of spreading out clumps of data and bringing together spread-out data. So instead of:</p>
@@ -755,27 +1071,33 @@ C. Multicollinearity </code></pre>
 <p>we get:</p>
 <p><span class="math display">\[\log{(Hourly\ Income)}= \beta_0 + \beta_1 \times Years\ of\ Schooling +\epsilon \]</span></p>
 <p>In effect, this means changing our belief that there is a linear relationship between schooling and income (a constant increase in x leads to a constant increase in y across the whole range of x). Qualitatively, this means</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>reg_df[<span class="st">'logwage'</span>]<span class="op">=</span>np.log(reg_df[<span class="st">'realhrwage'</span>])</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>sns.jointplot(data<span class="op">=</span>reg_df, x<span class="op">=</span><span class="st">'sch'</span>, y<span class="op">=</span><span class="st">'logwage'</span>, kind<span class="op">=</span><span class="st">"reg"</span>,  scatter_kws<span class="op">=</span><span class="bu">dict</span>(alpha<span class="op">=</span><span class="fl">0.1</span>), line_kws<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">'red'</span>), height<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>reg_df[<span class="st">'logwage'</span>]<span class="op">=</span>np.log(reg_df[<span class="st">'realhrwage'</span>])</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>sns.jointplot(data<span class="op">=</span>reg_df, x<span class="op">=</span><span class="st">'sch'</span>, y<span class="op">=</span><span class="st">'logwage'</span>, kind<span class="op">=</span><span class="st">"reg"</span>,  scatter_kws<span class="op">=</span><span class="bu">dict</span>(alpha<span class="op">=</span><span class="fl">0.1</span>), line_kws<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">'red'</span>), height<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="W08. Linear Regression_files/figure-html/cell-20-output-1.png" class="img-fluid"></p>
+</div>
 </div>
 <p>A few things are noticeably different in this plot. First, the histogram of <code>logwage</code> on the far right is a lot less skewed than the histogram of <code>realhrwage</code>. Consequently, the regression line seems to fit the data slightly better across the whole range of the data.</p>
 <p>We can generate the same residual histogram and Q-Q plot as before, but using a model in which <code>logwage</code> is the dependent variable:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>log_model <span class="op">=</span> ols(<span class="st">'logwage ~  sch'</span>, data<span class="op">=</span>reg_df).fit()  <span class="co"># fit a model</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>log_model_residuals <span class="op">=</span> log_model.resid <span class="co"># get the residuals</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make the figure wider</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> [<span class="dv">20</span>, <span class="dv">10</span>]</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>f, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>sns.histplot(log_model_residuals, kde<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>axes[<span class="dv">0</span>]) <span class="co"># plot the residuals</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Histogram of Residuals'</span>) <span class="co"># add a title</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>sm.qqplot(log_model_residuals, line<span class="op">=</span><span class="st">'45'</span>, fit<span class="op">=</span><span class="va">True</span>,  ax<span class="op">=</span>axes[<span class="dv">1</span>]) <span class="co"># plot the residuals</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'Q-Q Plot'</span>) <span class="co"># add a title</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>plt.show() <span class="co"># show the plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>log_model <span class="op">=</span> ols(<span class="st">'logwage ~  sch'</span>, data<span class="op">=</span>reg_df).fit()  <span class="co"># fit a model</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>log_model_residuals <span class="op">=</span> log_model.resid <span class="co"># get the residuals</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make the figure wider</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> [<span class="dv">20</span>, <span class="dv">10</span>]</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>f, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>sns.histplot(log_model_residuals, kde<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>axes[<span class="dv">0</span>]) <span class="co"># plot the residuals</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Histogram of Residuals'</span>) <span class="co"># add a title</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>sm.qqplot(log_model_residuals, line<span class="op">=</span><span class="st">'45'</span>, fit<span class="op">=</span><span class="va">True</span>,  ax<span class="op">=</span>axes[<span class="dv">1</span>]) <span class="co"># plot the residuals</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'Q-Q Plot'</span>) <span class="co"># add a title</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>plt.show() <span class="co"># show the plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="W08. Linear Regression_files/figure-html/cell-21-output-1.png" class="img-fluid"></p>
+</div>
 </div>
 <p>It’s not perfect, but it’s a lot better than the unlogged version; a large proportion of the residuals fall on the red line in the Q-Q plot, though they diverge at the tips. The histogram of residuals also seems to be less skewed, and more evenly distributed around 0.</p>
 </section>
@@ -784,24 +1106,57 @@ C. Multicollinearity </code></pre>
 <h2 class="anchored" data-anchor-id="coefficient-interpretation.">Coefficient interpretation.</h2>
 <p>Only the dependent/response variable is log-transformed. Exponentiate the coefficient, subtract one from this number, and multiply by 100. This gives the percent increase (or decrease) in the response for every one-unit increase in the independent variable. Here’s a <a href="https://data.library.virginia.edu/interpreting-log-transformations-in-a-linear-model/#:~:text=Interpret%20the%20coefficient%20as%20the,variable%20increases%20by%20about%200.20%25.">full guide</a> to interpreting the coefficients on log-transformed variables.</p>
 <p>First, let’s compare the unlogged and logged models:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>table<span class="op">=</span>summary_col( <span class="co"># create a regression table </span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    [model,log_model], <span class="co"># pass the models to the summary_col function</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    stars<span class="op">=</span><span class="va">True</span>, <span class="co"># add stars denoting the p-values of the coefficient to the table; * p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    float_format<span class="op">=</span><span class="st">'</span><span class="sc">%0.3f</span><span class="st">'</span>, <span class="co"># set the decimal places to 3</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    model_names<span class="op">=</span>[<span class="st">'Unlogged'</span>,<span class="st">'Logged'</span>], <span class="co"># set the name of the model</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    info_dict <span class="op">=</span> {<span class="st">"N"</span>:<span class="kw">lambda</span> x: <span class="st">"</span><span class="sc">{0:d}</span><span class="st">"</span>.<span class="bu">format</span>(<span class="bu">int</span>(x.nobs))}) <span class="co"># add the number of observations to the table</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>table<span class="op">=</span>summary_col( <span class="co"># create a regression table </span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    [model,log_model], <span class="co"># pass the models to the summary_col function</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    stars<span class="op">=</span><span class="va">True</span>, <span class="co"># add stars denoting the p-values of the coefficient to the table; * p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    float_format<span class="op">=</span><span class="st">'</span><span class="sc">%0.3f</span><span class="st">'</span>, <span class="co"># set the decimal places to 3</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    model_names<span class="op">=</span>[<span class="st">'Unlogged'</span>,<span class="st">'Logged'</span>], <span class="co"># set the name of the model</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    info_dict <span class="op">=</span> {<span class="st">"N"</span>:<span class="kw">lambda</span> x: <span class="st">"</span><span class="sc">{0:d}</span><span class="st">"</span>.<span class="bu">format</span>(<span class="bu">int</span>(x.nobs))}) <span class="co"># add the number of observations to the table</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=================================
+                Unlogged  Logged 
+---------------------------------
+Intercept      -6.625*** 1.573***
+               (0.266)   (0.012) 
+sch            2.033***  0.096***
+               (0.019)   (0.001) 
+R-squared      0.181     0.191   
+R-squared Adj. 0.181     0.191   
+N              52750     52750   
+=================================
+Standard errors in parentheses.
+* p&lt;.1, ** p&lt;.05, ***p&lt;.01</code></pre>
+</div>
 </div>
 <p>Interestingly, we can see that we’ve also got a 1% increase in <span class="math inline">\(R^2\)</span> just from logging the dependent variable. While the coefficient for schooling can be interpreted normally for the unlogged model (every additional year of schooling leads to a $2.03 increase in hourly wages), this is not the case for the logged model. We can interpret the coefficeint in the logged model as follows:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>b1<span class="op">=</span>log_model.params.sch <span class="co"># get the coefficient for sch</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>exp_b1<span class="op">=</span>np.exp(b1) <span class="co"># exponentiate the coefficient</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>pct_change<span class="op">=</span>(exp_b1<span class="op">-</span><span class="dv">1</span>)<span class="op">*</span><span class="dv">100</span> <span class="co"># multiply by 100 to get the percentage change</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'For every additional year of schooling, log wages increase by </span><span class="sc">{}</span><span class="st">%'</span>.<span class="bu">format</span>(<span class="bu">round</span>(pct_change,<span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>b1<span class="op">=</span>log_model.params.sch <span class="co"># get the coefficient for sch</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>exp_b1<span class="op">=</span>np.exp(b1) <span class="co"># exponentiate the coefficient</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>pct_change<span class="op">=</span>(exp_b1<span class="op">-</span><span class="dv">1</span>)<span class="op">*</span><span class="dv">100</span> <span class="co"># multiply by 100 to get the percentage change</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'For every additional year of schooling, log wages increase by </span><span class="sc">{}</span><span class="st">%'</span>.<span class="bu">format</span>(<span class="bu">round</span>(pct_change,<span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>For every additional year of schooling, log wages increase by 10.04%</code></pre>
 </div>
+</div>
+</section>
+<section id="assessed-question" class="level1">
+<h1>Assessed Question</h1>
+<p>Let’s dive in to our main independent variable, Years of Schooling. Is it appropriate to think of this as a continuous variable, linearly related to hourly wages? A linear relationship should be consistent across the full range of data– in other words, the increase from 0 years of schooling to 1 year of schooling should have the same effect on wages as the increase from 11 to 12 years of schooling, even though this one year determines whether a person has a highschool diploma or not. We would probably expect the increase from 11 to 12 years of schooling to have a greater effect on wages than the change from 0 to 1 years of schooling.</p>
+<p>We could conceptualize of years of schooling instead as a categorical or ordinal variable. Below, i’ve used the <code>np.where()</code> function to create a new variable called <code>degrees</code> based on years of schooling such that it is equal to 1 if the person has 12 or more years of schooling (highschool diploma), 2 if they have 16 or more years of schooling (university degree), and 0 otherwise.</p>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>reg_df[<span class="st">'degrees'</span>]<span class="op">=</span>np.where(reg_df[<span class="st">'sch'</span>]<span class="op">&gt;=</span><span class="dv">12</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="co"># create a new variable called degrees that is equal to 1 if the person has 12 or more years of schooling and 0 otherwise</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>reg_df[<span class="st">'degrees'</span>]<span class="op">=</span>np.where(reg_df[<span class="st">'sch'</span>]<span class="op">&gt;=</span><span class="dv">16</span>, <span class="dv">2</span>, reg_df[<span class="st">'degrees'</span>]) <span class="co"># if the person has 16 years of schooling, set the degrees variable to 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol type="1">
+<li>Add a level to the <code>degrees</code> column that denotes having an advanced degree (18 years of schooling).</li>
+<li>Run a regression in which hourly wages is the dependent variable and degrees is a <strong>categorical</strong> independent variable.</li>
+<li>Compared to someone with no highschool degree, how much more does someone with an advanced degree earn per hour?</li>
+</ol>
 
 
 </section>

@@ -758,7 +758,7 @@ The t-statistic is 9.364</code></pre>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>), dpi<span class="op">=</span><span class="dv">200</span>)</span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>tweets[<span class="st">'hour'</span>]<span class="op">=</span>pd.to_datetime(tweets[<span class="st">'hour'</span>])</span>
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>tweet<span class="op">=</span>datetime.datetime(<span class="dv">2022</span>, <span class="dv">10</span>, <span class="dv">28</span>)<span class="co">#.strftime('%d/%m/%Y %HH')</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>tweet<span class="op">=</span>datetime.datetime(<span class="dv">2022</span>, <span class="dv">10</span>, <span class="dv">28</span>)</span>
 <span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>pre_mean<span class="op">=</span>tweets[tweets[<span class="st">'hour'</span>]<span class="op">&lt;</span>tweet][<span class="st">'count'</span>].mean()</span>
 <span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>post_mean<span class="op">=</span>tweets[tweets[<span class="st">'hour'</span>]<span class="op">&gt;</span>tweet][<span class="st">'count'</span>].mean()</span>
