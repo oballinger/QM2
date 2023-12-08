@@ -17,7 +17,7 @@ book:
     - ./notebooks/W06. Merging and Joining.ipynb
     - ./notebooks/W07. Hypothesis Testing.ipynb
     - ./notebooks/W08. Linear Regression.ipynb
-    - ./notebooks/W09. Difference-in-Difference.ipynb
+    - ./notebooks/W09. Difference-in-Differences.ipynb
     - ./notebooks/W10. Regression Discontinuity.ipynb
   repo-url: https://github.com/oballinger/QM2/
   repo-actions: [edit]
