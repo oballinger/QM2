@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, enhanced, sharp corners, frame hidden, boxrule=0pt, breakable, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, breakable, boxrule=0pt, frame hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, enhanced]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -692,15 +692,19 @@ in 2023: https://storage.googleapis.com/qm2/wk1/spotify-2023.csv
 \tightlist
 \item
   Download the dataset and save it in the \texttt{./data/wk1/}
-  directory. (hint: curl)
+  directory.
 \item
-  Load the dataset as a pandas dataframe. (hint: pandas.read\_csv)
+  Load the dataset as a pandas dataframe, and inspect it. Two of the
+  column names have accidentally been swapped around. Use common sense
+  to figure out which ones these are before proceeding with your
+  analysis.
 \item
-  Sort the dataframe in descending order of streams. (hint:
-  sort\_values)
+  Filter the dataset to only contain songs in the key of C sharp.
+\item
+  Sort the dataframe in descending order of streams.
 \end{enumerate}
 
-QUESTION: what song has the highest number of streams in this dataset?
+QUESTION: which artist has the highest number of streams?
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2673,6 +2677,16 @@ mkdir: data/wk4: File exists
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+TypeError: Descriptors cannot not be created directly.
+If this call came from a _pb2.py file, your generated code is out of date and must be regenerated with protoc >= 3.19.0.
+If you cannot immediately regenerate your protos, some other possible workarounds are:
+ 1. Downgrade the protobuf package to 3.20.x or lower.
+ 2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).
+
+More information: https://developers.google.com/protocol-buffers/docs/news/2022-05-06#python-updates
+\end{verbatim}
+
 \hypertarget{downloading-and-reading-one-earnings-call}{%
 \section{Downloading and reading one earnings
 call}\label{downloading-and-reading-one-earnings-call}}
@@ -3623,8 +3637,8 @@ In the code cell below:
 \item
   Create a column that contains the subjectivity score for each tweet.
 \item
-  Filter the dataframe to discard tweets that are not subjective
-  (subjectivity score \textless{} 0.5) \emph{and} tweets that have
+  Filter the dataframe to keep only the tweets that are subjective
+  (subjectivity score \textgreater{} 0.5) \emph{and} tweets that have
   negative sentiment (polarity score \textless{} 0).
 \item
   Modify the code below to plot the distribution of the \#ExxonKnew
@@ -3646,7 +3660,7 @@ In the code cell below:
 \BuiltInTok{map}\NormalTok{.scatter(}
 \NormalTok{      x}\OperatorTok{=}\NormalTok{, }
 \NormalTok{      y}\OperatorTok{=}\NormalTok{, }
-\NormalTok{      color}\OperatorTok{=}\NormalTok{,}
+\NormalTok{      c}\OperatorTok{=}\NormalTok{,}
 \NormalTok{      latlon}\OperatorTok{=}\VariableTok{True}\NormalTok{, }
 \NormalTok{      vmin}\OperatorTok{={-}}\DecValTok{1}\NormalTok{, }
 \NormalTok{      vmax}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
