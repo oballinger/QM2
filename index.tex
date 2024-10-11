@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, interior hidden, borderline west={3pt}{0pt}{shadecolor}, breakable, enhanced, sharp corners, frame hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, interior hidden, breakable, enhanced, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, sharp corners]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -704,7 +704,7 @@ in 2023: https://storage.googleapis.com/qm2/wk1/spotify-2023.csv
   Sort the dataframe in descending order of streams.
 \end{enumerate}
 
-QUESTION: which artist has the highest number of streams?
+QUESTION: which artist has the song with the highest number of streams?
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1598,17 +1598,15 @@ wanted to calculate the average of a specific column.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# here, we\textquotesingle{}re creating a new dataframe called \textquotesingle{}country\textquotesingle{} in which each row is a country, and the values represent the number of nobel laureates. }
-\NormalTok{countries}\OperatorTok{=}\NormalTok{chem.groupby(}\StringTok{\textquotesingle{}Country[B]\textquotesingle{}}\NormalTok{).size()}
+\CommentTok{\# create a new dataframe called \textquotesingle{}country\textquotesingle{} in which each row is a country, and the values represent the number of nobel laureates. }
 
-\CommentTok{\#now let\textquotesingle{}s sort it in descending order}
-\NormalTok{countries.sort\_values(ascending}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\CommentTok{\# now sort it in descending order}
 
 \CommentTok{\# finally, plot the top 10 countries }
 \end{Highlighting}
 \end{Shaded}
 
-\emph{QUESTION: What country has the fourth most nobel prizes in
+\emph{QUESTION: What country has the sixth most nobel prizes in
 chemistry?}
 
 
