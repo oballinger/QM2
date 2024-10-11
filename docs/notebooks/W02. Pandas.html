@@ -1199,15 +1199,13 @@ Name: Net equivalised household income in 2010-11, week, dtype: float64</code></
 </div>
 <p>I’ll help you out with this next bit. We’ll be using the <code>groupby</code> function in pandas to group our dataframe such that each row is a country (rather than a person, as it currently is). We do this by using <code>&lt;dataframe&gt;.groupby('&lt;column name&gt;')</code>. Since we’re aggregating, we need to tell python how we want it to aggregate our values. In this case, we just want to count the number of rows for each country; we can do this using <code>.size()</code>. You can use many different aggregation functions, e.g.&nbsp;<code>.mean()</code> if you wanted to calculate the average of a specific column.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># here, we're creating a new dataframe called 'country' in which each row is a country, and the values represent the number of nobel laureates. </span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>countries<span class="op">=</span>chem.groupby(<span class="st">'Country[B]'</span>).size()</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co">#now let's sort it in descending order</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>countries.sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co"># finally, plot the top 10 countries </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a new dataframe called 'country' in which each row is a country, and the values represent the number of nobel laureates. </span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># now sort it in descending order</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># finally, plot the top 10 countries </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><em>QUESTION: What country has the fourth most nobel prizes in chemistry?</em></p>
+<p><em>QUESTION: What country has the sixth most nobel prizes in chemistry?</em></p>
 
 
 </section>
