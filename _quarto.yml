@@ -11,7 +11,7 @@ book:
     - index.qmd
     - ./notebooks/W01. Python Recap.ipynb
     - ./notebooks/W02. Pandas.ipynb
-    # - ./notebooks/W03. Spatial Data.ipynb
+    - ./notebooks/W03. Spatial Data.ipynb
     # - ./notebooks/W04. Natural Language Processing.ipynb
     # - ./notebooks/W05. Distributions and Basic Statistics.ipynb
     # - ./notebooks/W06. Merging and Joining.ipynb
