@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners, interior hidden, boxrule=0pt, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, sharp corners, interior hidden, frame hidden, breakable, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -2526,15 +2526,16 @@ function)
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Sort that dataframe to figure out which day had the worst AQI.
+  Sort that dataframe to figure out which day had the \textbf{second
+  worst} AQI.
 \item
   Plug that date into the \texttt{satellite\_plot()} function to
   visualize the corresponding satellite image. If you've done things
   correctly so far, you should see a big plume of smoke emanating from
-  the central region of california spreading northwards.
+  the mountains of california spreading northwards.
 \item
-  Clicking on a sensor will reveal its name-- three sensors just north
-  of the fire are caught under the plume. What are their names?
+  Clicking on a sensor will reveal its name-- which sensor is closest to
+  the plume's origin?
 \end{enumerate}
 
 \bookmarksetup{startatroot}
