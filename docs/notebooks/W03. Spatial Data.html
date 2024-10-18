@@ -64,6 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../notebooks/W04. Natural Language Processing.html" rel="next">
 <link href="../notebooks/W02. Pandas.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -213,6 +214,12 @@ ga('send', {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Spatiotemporal Data</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W04. Natural Language Processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -251,6 +258,7 @@ ga('send', {
   </ul></li>
   <li><a href="#combining-sensors-and-satellite-images" id="toc-combining-sensors-and-satellite-images" class="nav-link" data-scroll-target="#combining-sensors-and-satellite-images">Combining sensors and satellite images</a></li>
   <li><a href="#extension" id="toc-extension" class="nav-link" data-scroll-target="#extension">Extension</a></li>
+  <li><a href="#assessed-question" id="toc-assessed-question" class="nav-link" data-scroll-target="#assessed-question">Assessed Question</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W03. Spatial Data.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -274,7 +282,6 @@ ga('send', {
 
 </header>
 
-<p><a href="https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W03.%20Spatial%20Data.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
 <section id="workshop-3-open-in-colab" class="level2">
 <h2 class="anchored" data-anchor-id="workshop-3-open-in-colab"><em>Workshop 3</em> <a href="https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W03.%20Spatial%20Data.ipynb"><img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a></h2>
 <p>Sometimes the data we work with references points on the earth’s surface, unlocking a rich set of analytical possibilities. In today’s workshop, we’re going to be exploring the effect of the 2020 California Wildfires on air quality across the state. We’ll be using real air quality data collected by sensors and combining it with satellite imagery to show how toxic smoke from wildfires swept over America’s largest state.</p>
@@ -1002,6 +1009,15 @@ Name: 249, dtype: object</code></pre>
 </div>
 </div>
 <p>All the AQI sensors are showing green values, indicating generally good air quality. The satellite image shows a few wispy clouds, but no thick yellow smoke. Now change the date to September 15th, and see what happens!</p>
+</section>
+<section id="assessed-question" class="level1">
+<h1>Assessed Question</h1>
+<p>Earlier, we created a dataframe called <code>daily</code> in which we calculated the average daily AQI across the state for every day of the year. (hint: try re-generating this dataframe using the <code>Date</code> column rather than the <code>Day</code> column in the <code>.groupby()</code> function)</p>
+<ol type="1">
+<li>Sort that dataframe to figure out which day had the worst AQI.</li>
+<li>Plug that date into the <code>satellite_plot()</code> function to visualize the corresponding satellite image. If you’ve done things correctly so far, you should see a big plume of smoke emanating from the central region of california spreading northwards.</li>
+<li>Clicking on a sensor will reveal its name– three sensors just north of the fire are caught under the plume. What are their names?</li>
+</ol>
 
 
 </section>
@@ -1250,6 +1266,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../notebooks/W04. Natural Language Processing.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
