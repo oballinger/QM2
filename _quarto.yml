@@ -14,7 +14,7 @@ book:
     - ./notebooks/W03. Spatial Data.ipynb
     - ./notebooks/W04. Natural Language Processing.ipynb
     - ./notebooks/W05. Distributions and Basic Statistics.ipynb
-    # - ./notebooks/W06. Merging and Joining.ipynb
+    - ./notebooks/W06. Merging and Joining.ipynb
     # - ./notebooks/W07. Hypothesis Testing.ipynb
     # - ./notebooks/W08. Linear Regression.ipynb
     # - ./notebooks/W09. Difference-in-Differences.ipynb

@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, sharp corners, frame hidden, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, sharp corners, borderline west={3pt}{0pt}{shadecolor}, frame hidden, breakable, interior hidden, enhanced]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -3846,28 +3846,12 @@ numbers):
 \end{Highlighting}
 \end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\OperatorTok{!}\NormalTok{mkdir data}
-\OperatorTok{!}\NormalTok{mkdir data}\OperatorTok{/}\NormalTok{wk7}
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{cps.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{cps.csv}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-mkdir: data: File exists
-mkdir: data/wk7: File exists
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 22.4M  100 22.4M    0     0  15.5M      0  0:00:01  0:00:01 --:--:-- 15.6M
-\end{verbatim}
-
 Now that I've imported the libraries I'm going to be using, I'm ready to
 import the data:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{df}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}./data/wk7/cps.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{df}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}https://storage.googleapis.com/qm2/wk7/cps.csv\textquotesingle{}}\NormalTok{)}
 \NormalTok{df.head()}
 \end{Highlighting}
 \end{Shaded}
@@ -4172,7 +4156,7 @@ distribution of the \texttt{income} variable:
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-11-output-1.png}
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-10-output-1.png}
 
 }
 
@@ -4201,7 +4185,7 @@ accomodate these outliers. Let's try fixing the histogram up a bit.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-12-output-1.png}
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-11-output-1.png}
 
 }
 
@@ -4243,7 +4227,7 @@ Name: income, dtype: float64
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-13-output-2.png}
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-12-output-2.png}
 
 }
 
@@ -4385,7 +4369,7 @@ the function we just defined:
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-19-output-1.png}
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-18-output-1.png}
 
 }
 
@@ -4447,7 +4431,7 @@ The code below creates a ``standard normal'' distribution with a mean of
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-22-output-1.png}
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-21-output-1.png}
 
 }
 
@@ -4545,7 +4529,7 @@ samples of 10 observations:
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-24-output-1.png}
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-23-output-1.png}
 
 }
 
@@ -4624,7 +4608,7 @@ and \texttt{sample\_size}).
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-26-output-1.png}
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-25-output-1.png}
 
 }
 
@@ -4654,7 +4638,7 @@ called \texttt{men} which only contains male respondents, and one called
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-27-output-1.png}
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-26-output-1.png}
 
 }
 
@@ -4662,7 +4646,7 @@ called \texttt{men} which only contains male respondents, and one called
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-27-output-2.png}
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-26-output-2.png}
 
 }
 
@@ -4707,12 +4691,16 @@ distribution of their sample means on the same plot:
 \NormalTok{            x }\OperatorTok{=}\NormalTok{ np.linspace(xmin, xmax, }\DecValTok{100}\NormalTok{) }\CommentTok{\# create a range of values from the minimum to the maximum x{-}axis value}
 \NormalTok{            p }\OperatorTok{=}\NormalTok{ norm.pdf(x, mu, se) }\CommentTok{\# calculate the probability density function for the normal distribution}
 
+\NormalTok{            mean}\OperatorTok{=}\NormalTok{var.mean() }\CommentTok{\# calculate the mean of the variable}
+\NormalTok{            lower\_ci}\OperatorTok{=}\NormalTok{mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\FloatTok{1.96} \CommentTok{\# calculate the lower bound of the 95\% confidence interval}
+\NormalTok{            upper\_ci}\OperatorTok{=}\NormalTok{mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\FloatTok{1.96} \CommentTok{\# calculate the upper bound of the 95\% confidence interval}
+
 \NormalTok{            plt.plot(x, p, }\StringTok{\textquotesingle{}k\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{2}\NormalTok{) }\CommentTok{\# plot the normal distribution}
 \NormalTok{            plt.xlabel(xlab) }\CommentTok{\# add an x{-}axis label}
 \NormalTok{            plt.title(title) }\CommentTok{\# add a title}
-\NormalTok{            plt.axvline(var.mean(), color}\OperatorTok{=}\StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}solid\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{3}\NormalTok{) }\CommentTok{\# add a vertical line at the mean of the variable}
-\NormalTok{            plt.axvline(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
-\NormalTok{            plt.axvline(mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\DecValTok{2}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
+\NormalTok{            plt.axvline(mean, color}\OperatorTok{=}\StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}solid\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{3}\NormalTok{) }\CommentTok{\# add a vertical line at the mean of the variable}
+\NormalTok{            plt.axvline(lower\_ci, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{) }\CommentTok{\# add a vertical line at the mean minus 2 standard deviations}
+\NormalTok{            plt.axvline(upper\_ci, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{) }\CommentTok{\# add a vertical line at the mean plus 2 standard deviations}
 \NormalTok{            plt.legend() }\CommentTok{\# add a legend}
             
 \NormalTok{        plt.show()  }\CommentTok{\# show the plot }
@@ -4727,7 +4715,7 @@ distribution of their sample means on the same plot:
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-29-output-1.png}
+{\centering \includegraphics{notebooks/W05. Distributions and Basic Statistics_files/figure-pdf/cell-28-output-1.png}
 
 }
 
@@ -4754,6 +4742,1088 @@ women do not overlap at all tells us that the probability of this
 variation in incomes being due to random chance is extremely, extremely
 small. Thus, we can say that the observed difference in income between
 men and women is \textbf{statistically significant}.
+
+\bookmarksetup{startatroot}
+
+\hypertarget{assessed-question-4}{%
+\chapter{Assessed Question}\label{assessed-question-4}}
+
+Given that we've used functions to create these plots, we can make plots
+with different data relatively easily. As a reminder, here are the
+values for the sex, race, and schooling variable in our dataframe:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{year}: Survey year
+\item
+  \emph{age}: the person's age
+\item
+  \emph{sex}: the person's sex
+
+  \begin{itemize}
+  \tightlist
+  \item
+    1=male
+  \item
+    2=female
+  \end{itemize}
+\item
+  \emph{race}: the person's race
+
+  \begin{itemize}
+  \tightlist
+  \item
+    White non hispanic=1
+  \item
+    Black non hispanic=2
+  \item
+    Hispanic=3
+  \item
+    Other non hispanic=4
+  \end{itemize}
+\item
+  \emph{sch}: Educational attainment
+
+  \begin{itemize}
+  \tightlist
+  \item
+    None = 0,
+  \item
+    Grades 1-12 = 1-12
+  \item
+    Some University = 13,
+  \item
+    Associate's degree = 14,
+  \item
+    BA = 16
+  \item
+    Advanced Degree = 18
+  \end{itemize}
+\item
+  \emph{union}: Union membership
+
+  \begin{itemize}
+  \tightlist
+  \item
+    N/A = 0,
+  \item
+    No union coverage = 1,
+  \item
+    Member of labor union=2,
+  \item
+    Covered by union but not a member=3
+  \end{itemize}
+\item
+  \emph{incwage}: Wage and salary income
+\item
+  \emph{realhrwage}: Real Hourly Wage
+\item
+  \emph{occupation}: Occupation
+\item
+  \emph{ind}:
+  \href{https://www.census.gov/naics/?58967?yearbck=2002}{industry code}
+\end{enumerate}
+
+Intersectionality is an important consideration when thinking about
+inequality.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Create a new dataframe which restricts the census data to just white
+  men who have completed highschool or lower.
+\item
+  Do the same for black women with a Bachelor's degree or higher.
+\item
+  Use the \texttt{two\_hist()} function above to plot these two income
+  groups against each other.
+\end{enumerate}
+
+\emph{Part A:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Modify the function to ascertain the absolute difference in
+  \emph{population means} (i.e., the mean of sample means) between these
+  two groups. Round the result to an integer.
+\end{enumerate}
+
+\emph{Part B:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Is this difference likely to occur due to random chance? Answer using
+  a 95\% confidence interval.
+\end{enumerate}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{merging-and-joining}{%
+\chapter{Merging and Joining}\label{merging-and-joining}}
+
+\hypertarget{workshop-6-open-in-colab}{%
+\section[\emph{Workshop 6} ]{\texorpdfstring{\emph{Workshop 6}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W06.\%20Merging\%20and\%20Joining.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 6 Open In Colab}}\label{workshop-6-open-in-colab}}
+
+Sometimes, we will want to combine data from different sources about the
+same subject - perhaps we want to compare the GDP in a country with life
+expectancy, or the proportion of free schools meals with the level of
+unemployment.
+
+\hypertarget{aims-3}{%
+\subsection{Aims}\label{aims-3}}
+
+\begin{itemize}
+\tightlist
+\item
+  Understand joins
+\item
+  Work with joining dataframes in Pandas
+\item
+  Create your own examples
+\end{itemize}
+
+\hypertarget{downloading-the-data-2}{%
+\section{Downloading the Data}\label{downloading-the-data-2}}
+
+Let's grab the data we will need this week from our course website and
+save it into our data folder. If you've not already created a data
+folder then do so using the following command.
+
+Don't worry if it generates an error, that means you've already got a
+data folder.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\OperatorTok{!}\NormalTok{mkdir data}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+mkdir: cannot create directory ‘data’: File exists
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\OperatorTok{!}\NormalTok{mkdir data}\OperatorTok{/}\NormalTok{wk5}
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk3}\OperatorTok{/}\NormalTok{UN\_Life\_all.csv }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk5}\OperatorTok{/}\NormalTok{UN\_Life\_all.csv}
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk3}\OperatorTok{/}\NormalTok{UN\_Cities\_1214\_country.csv }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk5}\OperatorTok{/}\NormalTok{UN\_Cities\_1214\_country.csv}
+\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{s3.eu}\OperatorTok{{-}}\NormalTok{west}\OperatorTok{{-}}\FloatTok{2.}\ErrorTok{amazonaws}\NormalTok{.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk3}\OperatorTok{/}\NormalTok{UN\_Cities\_1214\_population.csv }\OperatorTok{{-}}\NormalTok{o .}\OperatorTok{/}\NormalTok{data}\OperatorTok{/}\NormalTok{wk5}\OperatorTok{/}\NormalTok{UN\_Cities\_1214\_population.csv}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  354k  100  354k    0     0   411k      0 --:--:-- --:--:-- --:--:--  410k
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 31445  100 31445    0     0  63397      0 --:--:-- --:--:-- --:--:-- 63397
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  373k  100  373k    0     0   471k      0 --:--:-- --:--:-- --:--:--  471k
+\end{verbatim}
+
+\hypertarget{joining-instructions}{%
+\section{Joining Instructions}\label{joining-instructions}}
+
+Joins are the combination of different datasets, and are common in
+relational databases as a way of performing queries. There are lots of
+examples of why and when we might want to do this, but most start with
+two tables of data. We're going to start with some data we've generated.
+
+I'm going to go back and work with fake data for a while, because it's
+clean and small and we can see what's going on - when we work with real
+data, we have to take great care that the data is clean, the indices
+match, and so on.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
+\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
+\ImportTok{import}\NormalTok{ random}
+\OperatorTok{\%}\NormalTok{matplotlib inline}
+\end{Highlighting}
+\end{Shaded}
+
+Let's create dataframes which represent fictitious values associated
+with people. Let's assume our data is anonymised because we're ethical
+researchers and don't want information about real people leaking out.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{people1 }\OperatorTok{=}\NormalTok{ pd.DataFrame(}\DecValTok{5}\OperatorTok{+}\NormalTok{np.random.randn(}\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{))}
+\NormalTok{people1.columns }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}units of alcohol drunk\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}cigarettes smoked\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}sleep per night\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}height\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}BMI\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{people1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& units of alcohol drunk & cigarettes smoked & sleep per night & height
+& BMI \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 4.589208 & 5.052479 & 5.514619 & 4.721543 & 6.076186 \\
+1 & 5.091470 & 4.275959 & 6.630442 & 7.084920 & 4.787786 \\
+2 & 5.751082 & 4.630197 & 5.286618 & 5.058565 & 3.803777 \\
+3 & 6.219418 & 6.131729 & 4.359941 & 5.165182 & 3.270455 \\
+4 & 5.930070 & 3.745579 & 4.980880 & 6.670358 & 5.003252 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{people2 }\OperatorTok{=}\NormalTok{ pd.DataFrame(}\DecValTok{5}\OperatorTok{+}\NormalTok{np.random.randn(}\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{))}
+\NormalTok{people2.columns }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}units of alcohol drunk\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}cigarettes smoked\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}sleep per night\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}height\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}BMI\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{people2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& units of alcohol drunk & cigarettes smoked & sleep per night & height
+& BMI \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 3.657942 & 5.022931 & 5.657866 & 5.342434 & 4.768451 \\
+1 & 5.801720 & 6.528911 & 3.863262 & 3.918306 & 3.233783 \\
+2 & 4.937641 & 4.726278 & 4.398084 & 5.610086 & 4.368852 \\
+\end{longtable}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{adding-new-observations}{%
+\chapter{Adding new observations}\label{adding-new-observations}}
+
+It looks as if we have some data about people (although we've just made
+it up), and a set of common measurements. It would be nice to have all
+of this in one place, so let's \emph{merge} them into one dataframe.
+We'll use the \emph{concat} command, which is short for
+\emph{concatenate}, or ``chain together''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{people3 }\OperatorTok{=}\NormalTok{ pd.concat([people1,people2])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{people3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& units of alcohol drunk & cigarettes smoked & sleep per night & height
+& BMI \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 4.656973 & 3.732003 & 5.204398 & 5.592159 & 3.964027 \\
+1 & 5.023007 & 3.480838 & 4.677067 & 5.065464 & 4.795884 \\
+2 & 7.415662 & 4.302678 & 3.746028 & 5.616205 & 4.797184 \\
+3 & 5.102570 & 4.572136 & 3.668020 & 2.840370 & 4.426059 \\
+4 & 5.393448 & 4.397537 & 6.849025 & 4.490472 & 5.248013 \\
+0 & 3.657942 & 5.022931 & 5.657866 & 5.342434 & 4.768451 \\
+1 & 5.801720 & 6.528911 & 3.863262 & 3.918306 & 3.233783 \\
+2 & 4.937641 & 4.726278 & 4.398084 & 5.610086 & 4.368852 \\
+\end{longtable}
+
+\hypertarget{what-is-the-problem-above}{%
+\subsection{What is the problem
+above?}\label{what-is-the-problem-above}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{people4 }\OperatorTok{=}\NormalTok{ pd.concat([people1,people2], ignore\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{people4}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& units of alcohol drunk & cigarettes smoked & sleep per night & height
+& BMI \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 4.656973 & 3.732003 & 5.204398 & 5.592159 & 3.964027 \\
+1 & 5.023007 & 3.480838 & 4.677067 & 5.065464 & 4.795884 \\
+2 & 7.415662 & 4.302678 & 3.746028 & 5.616205 & 4.797184 \\
+3 & 5.102570 & 4.572136 & 3.668020 & 2.840370 & 4.426059 \\
+4 & 5.393448 & 4.397537 & 6.849025 & 4.490472 & 5.248013 \\
+5 & 3.657942 & 5.022931 & 5.657866 & 5.342434 & 4.768451 \\
+6 & 5.801720 & 6.528911 & 3.863262 & 3.918306 & 3.233783 \\
+7 & 4.937641 & 4.726278 & 4.398084 & 5.610086 & 4.368852 \\
+\end{longtable}
+
+\texttt{ignore\_index} is very useful when we want a new DataFrame which
+only contains data from other DataFrames, but unrelated otherwise.
+
+\hypertarget{data-with-a-unique-index-adding-new-observations}{%
+\section{Data with a unique index: adding new
+observations}\label{data-with-a-unique-index-adding-new-observations}}
+
+Let's now examine data where the elements of study are not anonymous.
+Let's consider that we have some city data. If we have city names (or
+equivalent) in the index column, simply concatenating them would be
+fine, because the names would not repeat in the way the index has above.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df1 }\OperatorTok{=}\NormalTok{ pd.DataFrame(}\DecValTok{5}\OperatorTok{+}\NormalTok{np.random.randn(}\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{))}
+\NormalTok{df1.columns }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}area\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}population\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}mean temperature\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}elevation\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}annual rainfall\textquotesingle{}}\NormalTok{]}
+\NormalTok{df1.index }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}London\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Paris\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Beijing\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Medellin\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Port Elizabeth\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 4.150726 & 6.091615 & 5.638999 & 4.033120 & 5.312239 \\
+Paris & 6.406381 & 5.192887 & 5.165797 & 4.642474 & 5.776229 \\
+Beijing & 5.300187 & 4.790422 & 5.425208 & 4.857182 & 4.830031 \\
+Medellin & 5.248481 & 4.734017 & 4.762919 & 5.325021 & 4.415028 \\
+Port Elizabeth & 3.663045 & 5.555412 & 5.418251 & 4.369018 & 5.411102 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df2 }\OperatorTok{=}\NormalTok{ pd.DataFrame(}\DecValTok{5}\OperatorTok{+}\NormalTok{np.random.randn(}\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{))}
+\NormalTok{df2.columns }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}area\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}population\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}mean temperature\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}elevation\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}annual rainfall\textquotesingle{}}\NormalTok{]}
+\NormalTok{df2.index }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}Mumbai\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Sydney\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Boston\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Mumbai & 7.023555 & 4.045827 & 4.536805 & 5.383593 & 5.707156 \\
+Sydney & 5.444850 & 4.930251 & 3.803988 & 5.578729 & 6.248074 \\
+Boston & 3.380747 & 3.468165 & 4.166799 & 4.950791 & 5.094166 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df3 }\OperatorTok{=}\NormalTok{ pd.concat([df1,df2])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 4.150726 & 6.091615 & 5.638999 & 4.033120 & 5.312239 \\
+Paris & 6.406381 & 5.192887 & 5.165797 & 4.642474 & 5.776229 \\
+Beijing & 5.300187 & 4.790422 & 5.425208 & 4.857182 & 4.830031 \\
+Medellin & 5.248481 & 4.734017 & 4.762919 & 5.325021 & 4.415028 \\
+Port Elizabeth & 3.663045 & 5.555412 & 5.418251 & 4.369018 & 5.411102 \\
+Mumbai & 7.023555 & 4.045827 & 4.536805 & 5.383593 & 5.707156 \\
+Sydney & 5.444850 & 4.930251 & 3.803988 & 5.578729 & 6.248074 \\
+Boston & 3.380747 & 3.468165 & 4.166799 & 4.950791 & 5.094166 \\
+\end{longtable}
+
+\hypertarget{exercise-concat-continued}{%
+\section{Exercise: Concat continued}\label{exercise-concat-continued}}
+
+Repeat the above for fictitious values for New York, Tokyo, Manila and
+Budapest - concatenate into a new dataframe ``df''.
+
+\hypertarget{combining-on-attributes}{%
+\section{Combining on Attributes}\label{combining-on-attributes}}
+
+What if we're looking at the same locations but different attributes?
+Consider the same df1
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df1 }\OperatorTok{=}\NormalTok{ pd.DataFrame(}\DecValTok{5}\OperatorTok{+}\NormalTok{np.random.randn(}\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{))}
+\NormalTok{df1.columns }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}area\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}population\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}mean temperature\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}elevation\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}annual rainfall\textquotesingle{}}\NormalTok{]}
+\NormalTok{df1.index }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}London\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Paris\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Beijing\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Medellin\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Port Elizabeth\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 6.216092 & 4.902209 & 3.726599 & 4.628916 & 6.348860 \\
+Paris & 6.041971 & 3.477545 & 3.075159 & 2.630728 & 5.945750 \\
+Beijing & 4.117056 & 5.939825 & 5.166189 & 6.534852 & 4.581087 \\
+Medellin & 4.186988 & 5.007498 & 5.732247 & 5.746915 & 2.452759 \\
+Port Elizabeth & 5.755107 & 6.332844 & 5.603563 & 5.072384 & 6.222260 \\
+\end{longtable}
+
+But a new dataframe df4, which details the same locations, but has
+different information about them:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df4 }\OperatorTok{=}\NormalTok{ pd.DataFrame(}\DecValTok{5}\OperatorTok{+}\NormalTok{np.random.randn(}\DecValTok{5}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\NormalTok{df4.columns }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}Mean House Price\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}median income\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}walkability score\textquotesingle{}}\NormalTok{]}
+\NormalTok{df4.index }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}London\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Paris\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Beijing\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Medellin\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Port Elizabeth\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df4}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+& Mean House Price & median income & walkability score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 6.041301 & 4.795007 & 5.916860 \\
+Paris & 6.125245 & 3.869070 & 4.279607 \\
+Beijing & 4.853104 & 5.725823 & 4.187186 \\
+Medellin & 5.482517 & 3.667043 & 3.928093 \\
+Port Elizabeth & 5.565643 & 5.884004 & 5.007168 \\
+\end{longtable}
+
+We have to join ``on'' the index - meaning when merging the records,
+python will look at the index column.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_joined }\OperatorTok{=}\NormalTok{ df1.merge(df4, left\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{, right\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_joined}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall &
+Mean House Price & median income & walkability score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 6.216092 & 4.902209 & 3.726599 & 4.628916 & 6.348860 & 6.041301
+& 4.795007 & 5.916860 \\
+Paris & 6.041971 & 3.477545 & 3.075159 & 2.630728 & 5.945750 & 6.125245
+& 3.869070 & 4.279607 \\
+Beijing & 4.117056 & 5.939825 & 5.166189 & 6.534852 & 4.581087 &
+4.853104 & 5.725823 & 4.187186 \\
+Medellin & 4.186988 & 5.007498 & 5.732247 & 5.746915 & 2.452759 &
+5.482517 & 3.667043 & 3.928093 \\
+Port Elizabeth & 5.755107 & 6.332844 & 5.603563 & 5.072384 & 6.222260 &
+5.565643 & 5.884004 & 5.007168 \\
+\end{longtable}
+
+Note that this joins on the \emph{index}, not the row number - so if the
+order of elements in df4 is different, it should still work.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df4 }\OperatorTok{=}\NormalTok{ pd.DataFrame(np.random.randn(}\DecValTok{5}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\NormalTok{df4.columns }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}Mean House Price\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}median income\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}walkability score\textquotesingle{}}\NormalTok{]}
+\NormalTok{df4.index }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}Paris\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Port Elizabeth\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Beijing\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Medellin\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}London\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 6.216092 & 4.902209 & 3.726599 & 4.628916 & 6.348860 \\
+Paris & 6.041971 & 3.477545 & 3.075159 & 2.630728 & 5.945750 \\
+Beijing & 4.117056 & 5.939825 & 5.166189 & 6.534852 & 4.581087 \\
+Medellin & 4.186988 & 5.007498 & 5.732247 & 5.746915 & 2.452759 \\
+Port Elizabeth & 5.755107 & 6.332844 & 5.603563 & 5.072384 & 6.222260 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df4}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+& Mean House Price & median income & walkability score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Paris & 0.425225 & -0.446028 & -0.381586 \\
+Port Elizabeth & -0.918616 & 1.274748 & 0.355480 \\
+Beijing & 0.918480 & 1.060849 & -1.040598 \\
+Medellin & 1.414231 & 0.914922 & -0.393816 \\
+London & -1.036150 & -0.902475 & -0.417904 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_joined }\OperatorTok{=}\NormalTok{ df1.merge(df4, left\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{, right\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_joined}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall &
+Mean House Price & median income & walkability score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 6.216092 & 4.902209 & 3.726599 & 4.628916 & 6.348860 &
+-1.036150 & -0.902475 & -0.417904 \\
+Paris & 6.041971 & 3.477545 & 3.075159 & 2.630728 & 5.945750 & 0.425225
+& -0.446028 & -0.381586 \\
+Beijing & 4.117056 & 5.939825 & 5.166189 & 6.534852 & 4.581087 &
+0.918480 & 1.060849 & -1.040598 \\
+Medellin & 4.186988 & 5.007498 & 5.732247 & 5.746915 & 2.452759 &
+1.414231 & 0.914922 & -0.393816 \\
+Port Elizabeth & 5.755107 & 6.332844 & 5.603563 & 5.072384 & 6.222260 &
+-0.918616 & 1.274748 & 0.355480 \\
+\end{longtable}
+
+\hypertarget{merge-records}{%
+\section{Merge Records}\label{merge-records}}
+
+Consider now a case where we have data for some but not all cities; so
+df1 stil has data for these 5 cities:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 4.898594 & 6.625739 & 3.587877 & 6.063331 & 4.342769 \\
+Paris & 6.032702 & 3.479265 & 2.383832 & 5.251509 & 5.158178 \\
+Beijing & 4.368419 & 4.993774 & 2.942992 & 3.761624 & 6.002863 \\
+Medellin & 7.437921 & 5.228150 & 3.902431 & 4.437361 & 5.563400 \\
+Port Elizabeth & 7.053265 & 5.936734 & 5.842155 & 6.042136 & 7.057592 \\
+\end{longtable}
+
+But our new table, df5, contains data for three cities:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df5 }\OperatorTok{=}\NormalTok{ pd.DataFrame(}\DecValTok{5}\OperatorTok{+}\NormalTok{np.random.randn(}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\NormalTok{df5.columns }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}Mean House Price\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}median income\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}walkability score\textquotesingle{}}\NormalTok{]}
+\NormalTok{df5.index }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}London\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Paris\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Glasgow\textquotesingle{}}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df5}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+& Mean House Price & median income & walkability score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 4.848734 & 6.598818 & 5.442444 \\
+Paris & 5.294294 & 4.282418 & 5.741057 \\
+Glasgow & 5.375804 & 4.697775 & 4.393675 \\
+\end{longtable}
+
+\hypertarget{exercise-17}{%
+\section{Exercise:}\label{exercise-17}}
+
+How many cities appear in: - both dataframes - only df1 - only df5 -
+neither df1 nor df5?
+
+\hypertarget{way-back-venn}{%
+\section{Way Back Venn}\label{way-back-venn}}
+
+What is the mechanism for joining data where these mismatches exist?
+Well, there are several, starting with the\ldots{}
+
+\hypertarget{inner-join}{%
+\section{Inner Join:}\label{inner-join}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ IPython.display }\ImportTok{import}\NormalTok{ Image}
+
+\NormalTok{data\_path }\OperatorTok{=} \StringTok{"https://s3.eu{-}west{-}2.amazonaws.com/qm2/wk3/inner.png"}
+\NormalTok{Image(data\_path)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W06. Merging and Joining_files/figure-pdf/cell-33-output-1.png}
+
+}
+
+\end{figure}
+
+(Image from
+http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/)
+
+The inner join \emph{only} includes data whose index appears in both
+tables. Let's see what that looks like:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_joined }\OperatorTok{=}\NormalTok{ df1.merge(df5, left\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{, right\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_joined}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall &
+Mean House Price & median income & walkability score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 4.898594 & 6.625739 & 3.587877 & 6.063331 & 4.342769 & 4.848734
+& 6.598818 & 5.442444 \\
+Paris & 6.032702 & 3.479265 & 2.383832 & 5.251509 & 5.158178 & 5.294294
+& 4.282418 & 5.741057 \\
+\end{longtable}
+
+Here, we have a couple of arguments specifying the manner of the join -
+we have specified that we are joining on the index of the left and right
+dataset with the optional ``left\_index=True'' and
+``right\_index=True''. Less obviously, the \textbf{left} dataset is df1
+(because we're using \emph{df1.merge()} and the \textbf{right} dataset
+is df5 (because it appears as an argument in merge(). There's no special
+reason it shouldn't be the other way around, but for this function, it
+is this way around and we need to remember that when we use it.
+
+\hypertarget{inner-space}{%
+\section{Inner Space}\label{inner-space}}
+
+Although we haven't specified it, the merge() function has defaulted to
+an inner join (like the diagram above). We can specify how the join is
+calculated by changing the text in the optional argument ``how'':
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_joined }\OperatorTok{=}\NormalTok{ df1.merge(df5, left\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{, right\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{, how}\OperatorTok{=}\StringTok{\textquotesingle{}inner\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_joined}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall &
+Mean House Price & median income & walkability score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 4.898594 & 6.625739 & 3.587877 & 6.063331 & 4.342769 & 4.848734
+& 6.598818 & 5.442444 \\
+Paris & 6.032702 & 3.479265 & 2.383832 & 5.251509 & 5.158178 & 5.294294
+& 4.282418 & 5.741057 \\
+\end{longtable}
+
+\hypertarget{the-future-of-the-left}{%
+\section{The Future of The Left}\label{the-future-of-the-left}}
+
+The \emph{left} join includes \textbf{all} rows where the index appears
+on the \textbf{left} hand side of the join, and \textbf{any} data which
+\textbf{matches} it on the \textbf{right} hand side. If the index
+appears on the left but not the right, it will include the data from the
+left table, and have blanks for the columns on the right.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_path }\OperatorTok{=} \StringTok{"https://s3.eu{-}west{-}2.amazonaws.com/qm2/wk3/left.png"}
+\NormalTok{Image(data\_path)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W06. Merging and Joining_files/figure-pdf/cell-38-output-1.png}
+
+}
+
+\end{figure}
+
+What does \emph{this} look like? We will use the \emph{how=`left'}
+optional argument to create a left join:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_joined }\OperatorTok{=}\NormalTok{ df1.merge(df5, left\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{, right\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{, how}\OperatorTok{=}\StringTok{\textquotesingle{}left\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_joined}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllllll@{}}
+\toprule\noalign{}
+& area & population & mean temperature & elevation & annual rainfall &
+Mean House Price & median income & walkability score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+London & 4.898594 & 6.625739 & 3.587877 & 6.063331 & 4.342769 & 4.848734
+& 6.598818 & 5.442444 \\
+Paris & 6.032702 & 3.479265 & 2.383832 & 5.251509 & 5.158178 & 5.294294
+& 4.282418 & 5.741057 \\
+Beijing & 4.368419 & 4.993774 & 2.942992 & 3.761624 & 6.002863 & NaN &
+NaN & NaN \\
+Medellin & 7.437921 & 5.228150 & 3.902431 & 4.437361 & 5.563400 & NaN &
+NaN & NaN \\
+Port Elizabeth & 7.053265 & 5.936734 & 5.842155 & 6.042136 & 7.057592 &
+NaN & NaN & NaN \\
+\end{longtable}
+
+As we see, the missing data appears as \textbf{NaN} - Not a Number.
+
+\hypertarget{exercise-18}{%
+\section{Exercise:}\label{exercise-18}}
+
+Carry out \emph{right} and \emph{outer} joins on the dataframes df1 and
+df5 and explain how they're filtering and joining the data.
+
+\hypertarget{i-am-the-one-and-only}{%
+\section{I Am The One and Only}\label{i-am-the-one-and-only}}
+
+So far, we've carried out joins on data which have a \emph{one-to-one}
+relationship; data for cities or people. What if our data has a
+\emph{one-to-many} correspondence?
+
+\emph{Example:} We want to look at the quality of life in cities (a real
+student project from 2014). We have a dataset listing city-level
+characteristics for a number of cities in Europe, including the country
+each city is in. We also have a dataset listing the GDP, life expectancy
+and other indicators for a number of \emph{countries} in Europe. How do
+we create a dataframe which, for each city, lists all of the
+characteristics of a city and those of its parent country?
+
+We'll be working now with data from the UN, covering information about
+cities - real data this time. The UN has some great data, we've taken
+some from here and processed it in various ways:
+
+http://data.un.org/Data.aspx?d=POP\&f=tableCode\%3A240
+
+Let's load up data on city population - this set contains data for
+2012-2014 inclusive:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_path }\OperatorTok{=} \StringTok{"./data/wk5/UN\_Cities\_1214\_population.csv"}
+
+\NormalTok{city\_pop }\OperatorTok{=}\NormalTok{ pd.read\_csv(data\_path, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}latin1\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{city\_pop.head()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllllllll@{}}
+\toprule\noalign{}
+& Year & Area & Sex & City & City type & Record Type & Reliability &
+Source Year & Value & Value Footnotes \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 2013 & Total & Both Sexes & MARIEHAMN & City proper & Estimate - de
+jure & Final figure, complete & 2014 & 11370.0 & NaN \\
+1 & 2013 & Total & Male & MARIEHAMN & City proper & Estimate - de jure &
+Final figure, complete & 2014 & 5445.0 & NaN \\
+2 & 2013 & Total & Female & MARIEHAMN & City proper & Estimate - de jure
+& Final figure, complete & 2014 & 5925.0 & NaN \\
+3 & 2012 & Total & Both Sexes & MARIEHAMN & City proper & Estimate - de
+jure & Final figure, complete & 2013 & 11304.5 & NaN \\
+4 & 2012 & Total & Male & MARIEHAMN & City proper & Estimate - de jure &
+Final figure, complete & 2013 & 5408.0 & NaN \\
+\end{longtable}
+
+\hypertarget{exercise-19}{%
+\section{Exercise}\label{exercise-19}}
+
+There is a another datafile we downloaded called
+\emph{UN\_Cities\_1214\_country.csv}. This is saved to
+\emph{./data/wk5/UN\_Cities\_1214\_country.csv} - Load this into a
+dataframe called \emph{city\_c} with the city name as the index and view
+it; then, using \emph{merge} on city name with city\_pop to create a new
+dataframe called \emph{cities}.
+
+\textbf{Hints:} You'll notice that the index \textbf{won't} be the
+column you want to merge on in the city\_pop data. What column
+\emph{should} you merge on in city\_pop? Which column should you merge
+on in city\_c?
+
+The syntax for merging on a \textbf{column} (which is not the index) is
+to pass the column name to the optional `left\_on=' or `right\_on='
+arguments. And we don't use right\_index=True (or left\_index=True),
+depending on which we're using.
+
+So for example: \textbf{df1.merge(df2, left\_on=`Name',
+right\_index=True)} would join df1 (on the left) to df2 (on the right),
+using the column `Name' on the left (df1) and the index column (whatever
+that is) on the right (df2).
+
+\hypertarget{a-footnote-about-footnotes}{%
+\section{A footnote about footnotes}\label{a-footnote-about-footnotes}}
+
+Just a quick note - if you look at the primary UN data, you'll see
+footnotes which will confuse the hell out of Pandas. I've taken the
+footnotes out, but you can use .tail() to see whether there's any junk
+in the trunk, and remove it via a text editor.
+
+\hypertarget{clean-data}{%
+\section{Clean data}\label{clean-data}}
+
+We need to simplify this data a bit in the following ways:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  I'm going to focus on one year (2012)
+\item
+  I'm going to just look at ``Both Sexes'' (not focus on one gender)
+\item
+  I'm going to get rid of a column of data (the `Value Footnotes'
+  column) using the \emph{drop()} method.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cities }\OperatorTok{=}\NormalTok{ cities[cities[}\StringTok{\textquotesingle{}Sex\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}Both Sexes\textquotesingle{}}\NormalTok{]}
+\NormalTok{cities }\OperatorTok{=}\NormalTok{ cities[cities[}\StringTok{\textquotesingle{}Year\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{2012}\NormalTok{]}
+\NormalTok{cities.drop(}\StringTok{\textquotesingle{}Value Footnotes\textquotesingle{}}\NormalTok{, axis}\OperatorTok{=}\DecValTok{1}\NormalTok{, inplace}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+NameError: ignored
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cities.head()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{extension-in-my-place}{%
+\section{Extension: In My Place}\label{extension-in-my-place}}
+
+The command I used to get rid of that column is \emph{cities.drop(`Value
+Footnotes', axis=1, inplace=True)}. The syntax is not so complex - the
+first argument, \emph{`Value Footnotes'}, is just the name of the
+column; the second argument, \emph{axis=1}, tells Pandas to look for a
+column to remove (instead of a row which has \emph{axis=0}); the third
+and final argument, \emph{inplace=True}, is a command that tells Pandas
+to edit \emph{inplace}, i.e.~to edit the dataframe (\emph{cities})
+directly. When \emph{inplace} is False (the default), this command does
+not directly edit cities, but instead provide an output. So the syntax
+for that would be
+
+new\_cities = cities.drop(`Value Footnotes', axis=1)
+
+and new\_cities would be a version of \emph{cities} without the
+offending column. This is usually the safer option.
+
+\hypertarget{life-oh-life}{%
+\section{Life, Oh Life}\label{life-oh-life}}
+
+The UN also has useful data by country, so let's try and work with some
+of that and join it up with our city data. Let's work with Life
+Expectancy Data:
+
+http://data.un.org/Data.aspx?d=WDI\&f=Indicator\_Code\%3ASP.DYN.LE00.IN
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_path }\OperatorTok{=} \StringTok{"./data/wk5/UN\_Life\_all.csv"}
+\NormalTok{life }\OperatorTok{=}\NormalTok{ pd.read\_csv(data\_path, index\_col}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{life.head()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exercise-20}{%
+\section{Exercise:}\label{exercise-20}}
+
+In a new cell, clean up the above dataframe by
+
+\begin{itemize}
+\tightlist
+\item
+  removing the ``Value Footnotes'' Column
+\item
+  use only the most recent data (2012)
+\end{itemize}
+
+Let's make it a little clearer what ``Value'' refers to, by renaming the
+column. This is one way to do that:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{life.rename(columns}\OperatorTok{=}\NormalTok{\{}\StringTok{\textquotesingle{}Value\textquotesingle{}}\NormalTok{:}\StringTok{\textquotesingle{}Life Expectancy\textquotesingle{}}\NormalTok{\}, inplace}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{life.head()}
+\end{Highlighting}
+\end{Shaded}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{exercise-21}{%
+\chapter{Exercise}\label{exercise-21}}
+
+Now, merge this data with the cities data to show life expectancy for
+each city (based on the country it is in), and show the first 5 rows.
+
+How much data was ``missing'' in the merge?
+
+Relabel the City Population column so it's clear what it represents.
+
+\textbf{Extension:} Plot population against life expectancy. Use plot's
+\emph{optional arguments} to specify the x column, y column, and that
+kind=`scatter'.
+
+\textbf{Don't forget to include a title and axis labels!}
+
+\hypertarget{recap-joins}{%
+\section{Recap: Joins}\label{recap-joins}}
+
+Pandas has \textbf{four} join methods:
+
+\begin{verbatim}
+- Left Join: use **only** keys from **left** DataFrame. SQL: [left outer join](http://goo.gl/JICveI)
+- Right Join: use **only** keys from **right** DataFrame. SQL: [right outer join](http://goo.gl/TrrHjQ)
+- Outer Join: use union of **keys from both** DataFrames. SQL: [full outer join](http://goo.gl/bVRqO8)
+- Inner Join: use **intersection of keys** from both DataFrames. SQL: [inner join](http://goo.gl/Cf1MF8)
+\end{verbatim}
 
 
 
