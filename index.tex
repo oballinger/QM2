@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, sharp corners, borderline west={3pt}{0pt}{shadecolor}, frame hidden, breakable, interior hidden, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, interior hidden, frame hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -4834,9 +4834,10 @@ inequality.
 \tightlist
 \item
   Create a new dataframe which restricts the census data to just white
-  men who have completed highschool or lower.
+  men who have completed highschool (and only highschool).
 \item
-  Do the same for black women with a Bachelor's degree or higher.
+  Do the same for hispanic women with a Bachelor's degree (and only a
+  Bachelor's).
 \item
   Use the \texttt{two\_hist()} function above to plot these two income
   groups against each other.
