@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, interior hidden, frame hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, frame hidden, interior hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -4871,9 +4871,9 @@ inequality.
 \hypertarget{merging-and-joining}{%
 \chapter{Merging and Joining}\label{merging-and-joining}}
 
-\hypertarget{workshop-6-open-in-colab}{%
-\section[\emph{Workshop 6} ]{\texorpdfstring{\emph{Workshop 6}
-\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W06.\%20Merging\%20and\%20Joining.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 6 Open In Colab}}\label{workshop-6-open-in-colab}}
+\hypertarget{reading-week-open-in-colab}{%
+\section[\emph{Reading Week} ]{\texorpdfstring{\emph{Reading Week}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/RW.\%20Merging\%20and\%20Joining.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Reading Week Open In Colab}}\label{reading-week-open-in-colab}}
 
 Sometimes, we will want to combine data from different sources about the
 same subject - perhaps we want to compare the GDP in a country with life
@@ -5454,7 +5454,7 @@ Well, there are several, starting with the\ldots{}
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W06. Merging and Joining_files/figure-pdf/cell-33-output-1.png}
+{\centering \includegraphics{notebooks/RW. Merging and Joining_files/figure-pdf/cell-33-output-1.png}
 
 }
 
@@ -5552,7 +5552,7 @@ left table, and have blanks for the columns on the right.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W06. Merging and Joining_files/figure-pdf/cell-38-output-1.png}
+{\centering \includegraphics{notebooks/RW. Merging and Joining_files/figure-pdf/cell-38-output-1.png}
 
 }
 
@@ -5627,7 +5627,7 @@ Let's load up data on city population - this set contains data for
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data\_path }\OperatorTok{=} \StringTok{"./data/wk5/UN\_Cities\_1214\_population.csv"}
+\NormalTok{data\_path }\OperatorTok{=} \StringTok{"data/wk5/UN\_Cities\_1214\_population.csv"}
 
 \NormalTok{city\_pop }\OperatorTok{=}\NormalTok{ pd.read\_csv(data\_path, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}latin1\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
@@ -5664,10 +5664,11 @@ Final figure, complete & 2013 & 5408.0 & NaN \\
 
 There is a another datafile we downloaded called
 \emph{UN\_Cities\_1214\_country.csv}. This is saved to
-\emph{./data/wk5/UN\_Cities\_1214\_country.csv} - Load this into a
+\texttt{data/wk5/UN\_Cities\_1214\_country.csv} - Load this into a
 dataframe called \emph{city\_c} with the city name as the index and view
 it; then, using \emph{merge} on city name with city\_pop to create a new
-dataframe called \emph{cities}.
+dataframe called \emph{cities}. You'll probably get some errors. google
+the error messages, or ask ChatGPT/Gemini to help you understand them.
 
 \textbf{Hints:} You'll notice that the index \textbf{won't} be the
 column you want to merge on in the city\_pop data. What column
@@ -5757,8 +5758,7 @@ http://data.un.org/Data.aspx?d=WDI\&f=Indicator\_Code\%3ASP.DYN.LE00.IN
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data\_path }\OperatorTok{=} \StringTok{"./data/wk5/UN\_Life\_all.csv"}
-\NormalTok{life }\OperatorTok{=}\NormalTok{ pd.read\_csv(data\_path, index\_col}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
+\NormalTok{life }\OperatorTok{=}\NormalTok{ pd.read\_csv(}\StringTok{\textquotesingle{}https://s3.eu{-}west{-}2.amazonaws.com/qm2/wk3/UN\_Life\_all.csv\textquotesingle{}}\NormalTok{, index\_col}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -5796,35 +5796,673 @@ column. This is one way to do that:
 \end{Highlighting}
 \end{Shaded}
 
-\bookmarksetup{startatroot}
-
-\hypertarget{exercise-21}{%
-\chapter{Exercise}\label{exercise-21}}
-
 Now, merge this data with the cities data to show life expectancy for
 each city (based on the country it is in), and show the first 5 rows.
 
-How much data was ``missing'' in the merge?
+Plot population against life expectancy. Use plot's \emph{optional
+arguments} to specify the x column, y column, and that kind=`scatter'.
 
-Relabel the City Population column so it's clear what it represents.
+Question: How much data was ``missing'' in the merge?
 
-\textbf{Extension:} Plot population against life expectancy. Use plot's
-\emph{optional arguments} to specify the x column, y column, and that
-kind=`scatter'.
+\bookmarksetup{startatroot}
 
-\textbf{Don't forget to include a title and axis labels!}
+\hypertarget{hypothesis-testing}{%
+\chapter{Hypothesis Testing}\label{hypothesis-testing}}
 
-\hypertarget{recap-joins}{%
-\section{Recap: Joins}\label{recap-joins}}
+\hypertarget{workshop-6-open-in-colab}{%
+\section[\emph{Workshop 6} ]{\texorpdfstring{\emph{Workshop 6}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W06.\%20Hypothesis\%20Testing.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 6 Open In Colab}}\label{workshop-6-open-in-colab}}
 
-Pandas has \textbf{four} join methods:
+For the rest of this course, we'll be working with data from the U.S.
+Census \href{https://www.census.gov/programs-surveys/cps.html}{Current
+Population Survey (CPS)}.
+
+\hypertarget{aims-4}{%
+\subsection{Aims:}\label{aims-4}}
+
+\begin{itemize}
+\tightlist
+\item
+  Understanding:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Confidence Intervals
+  \item
+    Hypothesis Testing
+
+    \begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \tightlist
+    \item
+      Stating the Null and Alternative Hypotheses
+    \item
+      Selecting a Critical Value
+    \item
+      Calculating the Test Statistic
+    \item
+      Making a Decision
+    \end{enumerate}
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{getting-started-2}{%
+\section{Getting Started}\label{getting-started-2}}
+
+We will be following on from the analysis we conducted in Workshop 5
+(Distributions and Basic Statistics). We visually explored differences
+in the income levels between different groups of people in the US
+census. Now, we are going to conduct hypothesis testing to see if those
+differences are statistically significant.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#This tells python to draw the graphs "inline" {-} in the notebook}
+\OperatorTok{\%}\NormalTok{matplotlib inline  }
+\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
+\ImportTok{from}\NormalTok{ scipy.stats }\ImportTok{import}\NormalTok{ norm}
+\ImportTok{import}\NormalTok{ statistics}
+\ImportTok{import}\NormalTok{ seaborn }\ImportTok{as}\NormalTok{ sns}
+
+\ImportTok{import}\NormalTok{ pylab}
+\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
+\CommentTok{\# make the plots (graphs) a little wider by default}
+\NormalTok{pylab.rcParams[}\StringTok{\textquotesingle{}figure.figsize\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ (}\FloatTok{10.}\NormalTok{, }\FloatTok{8.}\NormalTok{)}
+\NormalTok{sns.}\BuiltInTok{set}\NormalTok{(font\_scale}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
+\NormalTok{sns.set\_style(}\StringTok{"white"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}https://storage.googleapis.com/qm2/wk7/cps.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{].astype(}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{)}
+\NormalTok{df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{df[}\StringTok{\textquotesingle{}incwage\textquotesingle{}}\NormalTok{]}\OperatorTok{/}\DecValTok{1000}
+\NormalTok{df}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\DecValTok{200}\NormalTok{]}
+\NormalTok{df}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{2013}\NormalTok{] }\CommentTok{\# filter the dataframe to only contain 2013 data}
+\NormalTok{df.head()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllllllllll@{}}
+\toprule\noalign{}
+& year & state & age & sex & race & sch & ind & union & incwage &
+realhrwage & occupation & income \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+20 & 2013 & 50 & 62 & 1 & 1 & 14.0 & 8090 & 1.0 & 57000.0 & 23.889143 &
+. & 57.0 \\
+32 & 2013 & 39 & 59 & 1 & 1 & 13.0 & 9590 & 0.0 & 62000.0 & 29.726475 &
+Consruction, Extraction, Installation & 62.0 \\
+34 & 2013 & 44 & 44 & 1 & 3 & 12.0 & 7290 & 0.0 & 45000.0 & 20.745834 &
+. & 45.0 \\
+36 & 2013 & 12 & 41 & 1 & 1 & 12.0 & 7070 & 1.0 & 28000.0 & 12.293828 &
+Managers & 28.0 \\
+37 & 2013 & 33 & 35 & 1 & 1 & 12.0 & 770 & 0.0 & 42500.0 & 20.377020 &
+Transportation and materials moving & 42.5 \\
+\end{longtable}
+
+This is once again the U.S. census data from Week 5. As a reminder, our
+dataframe has 10 columns:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{year}: Survey year
+\item
+  \emph{age}: the person's age
+\item
+  \emph{sex}: the person's sex
+
+  \begin{itemize}
+  \tightlist
+  \item
+    1=male
+  \item
+    2=female
+  \end{itemize}
+\item
+  \emph{race}: the person's race
+
+  \begin{itemize}
+  \tightlist
+  \item
+    White non hispanic=1
+  \item
+    Black non hispanic=2
+  \item
+    Hispanic=3
+  \item
+    Other non hispanic=4)
+  \end{itemize}
+\item
+  \emph{sch}: Educational attainment
+
+  \begin{itemize}
+  \tightlist
+  \item
+    None = 0,
+  \item
+    Grades 1-12 = 1-12
+  \item
+    Some University = 13,
+  \item
+    Associate's degree = 14,
+  \item
+    BA = 16
+  \item
+    Advanced Degree = 18
+  \end{itemize}
+\item
+  \emph{union}: Union membership
+
+  \begin{itemize}
+  \tightlist
+  \item
+    N/A = 0,
+  \item
+    No union coverage = 1,
+  \item
+    Member of labor union=2,
+  \item
+    Covered by union but not a member=3
+  \end{itemize}
+\item
+  \emph{incwage}: Wage and salary income
+\item
+  \emph{realhrwage}: Real Hourly Wage
+\item
+  \emph{occupation}: Occupation
+\item
+  \emph{ind}:
+  \href{https://www.census.gov/naics/?58967?yearbck=2002}{industry code}
+\end{enumerate}
+
+\hypertarget{confidence-intervals}{%
+\section{Confidence Intervals}\label{confidence-intervals}}
+
+So far in this workshop, we've had the luxury of being able to draw many
+random samples and plot the distributions of their sample means to infer
+the population mean. The Central Limit Theorem lets us assume that these
+sample means are normally distributed, and consequently that there is a
+95.45\% chance that the \textbf{population mean} within two standard
+errors of the \textbf{sample mean}. This allows us to make inferences on
+the basis of \emph{a single sample}. The standard error is the
+
+\hypertarget{sample-standard-deviation}{%
+\subsection{Sample Standard Deviation}\label{sample-standard-deviation}}
+
+\[\huge s = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (x_i - \overline{x})^2}\]
+
+\hypertarget{standard-error}{%
+\subsection{Standard Error}\label{standard-error}}
+
+\[\huge se = \frac{s}{\sqrt{n}}\]
+
+Given a large enough sample \(x\), we can build a 95\% confidence
+interval as follows:
+
+\[ \huge 95\% CI = \overline{x} \pm (1.96 \times se)\]
+
+Let's draw a sample of 1000 random individuals from our data, and
+compute a 95\% confidence interval to estimate the population mean for
+income. We'll begin by creating a swarmplot to get a sense of how the
+data are distributed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sample}\OperatorTok{=}\NormalTok{df.sample(}\DecValTok{1000}\NormalTok{) }\CommentTok{\# draw a random sample of 1000 observations from the dataframe}
+\NormalTok{sns.swarmplot(data }\OperatorTok{=}\NormalTok{ sample, y}\OperatorTok{=}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{) }\CommentTok{\# plot a swarmplot of income}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Income Distribution\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{verbatim}
-- Left Join: use **only** keys from **left** DataFrame. SQL: [left outer join](http://goo.gl/JICveI)
-- Right Join: use **only** keys from **right** DataFrame. SQL: [right outer join](http://goo.gl/TrrHjQ)
-- Outer Join: use union of **keys from both** DataFrames. SQL: [full outer join](http://goo.gl/bVRqO8)
-- Inner Join: use **intersection of keys** from both DataFrames. SQL: [inner join](http://goo.gl/Cf1MF8)
+Text(0.5, 1.0, 'Income Distribution')
 \end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W06. Hypothesis Testing_files/figure-pdf/cell-4-output-2.png}
+
+}
+
+\end{figure}
+
+Now let's set about calculating the 95\% confidence interval and
+plotting it on our swarmplot. Luckily, the components we need to this
+are easy to calculate. We just need the mean, standard deviation, and
+number of observations. All of these are provided by the
+\texttt{.describe()} function, which calculates summary statistics for a
+sample.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{desc}\OperatorTok{=}\NormalTok{sample[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{].describe() }\CommentTok{\# calculate descriptive statistics for the sample}
+\BuiltInTok{print}\NormalTok{(desc) }\CommentTok{\# print the descriptive statistics}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+count    1000.000000
+mean       47.677568
+std        33.041244
+min         0.700000
+25%        25.000000
+50%        40.000000
+75%        62.000000
+max       190.000000
+Name: income, dtype: float64
+\end{verbatim}
+
+From the set of descriptive statistics, we can pull out the relevant
+components, calculate the standard error, and create a 95\% confidence
+interval as follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mean}\OperatorTok{=}\NormalTok{desc[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{] }\CommentTok{\# set the mean equal to a variable called "mean"}
+\NormalTok{std}\OperatorTok{=}\NormalTok{desc[}\StringTok{\textquotesingle{}std\textquotesingle{}}\NormalTok{] }\CommentTok{\# set the standard deviation equal to a variable called "std"}
+\NormalTok{n}\OperatorTok{=}\NormalTok{desc[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{] }\CommentTok{\# set the sample size equal to a variable called "n"}
+\NormalTok{se}\OperatorTok{=}\NormalTok{std}\OperatorTok{/}\NormalTok{np.sqrt(n) }\CommentTok{\# calculate the standard error of the mean}
+
+\BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}The mean is\textquotesingle{}}\NormalTok{, }\BuiltInTok{round}\NormalTok{(mean, }\DecValTok{2}\NormalTok{), }\StringTok{\textquotesingle{}with a standard error of\textquotesingle{}}\NormalTok{, }\BuiltInTok{round}\NormalTok{(se, }\DecValTok{2}\NormalTok{)) }\CommentTok{\# print the mean and standard error}
+
+\NormalTok{upper\_ci }\OperatorTok{=}\NormalTok{ mean}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\FloatTok{1.96} \CommentTok{\# calculate the upper confidence interval}
+\NormalTok{lower\_ci }\OperatorTok{=}\NormalTok{ mean}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\FloatTok{1.96} \CommentTok{\# calculate the lower confidence interval}
+
+\BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}The 95}\SpecialCharTok{\% c}\StringTok{onfidence interval is\textquotesingle{}}\NormalTok{, }\BuiltInTok{round}\NormalTok{(lower\_ci, }\DecValTok{2}\NormalTok{), }\StringTok{\textquotesingle{}to\textquotesingle{}}\NormalTok{, }\BuiltInTok{round}\NormalTok{(upper\_ci, }\DecValTok{2}\NormalTok{)) }\CommentTok{\# print the confidence interval}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+The mean is 47.68 with a standard error of 1.04
+The 95% confidence interval is 45.63 to 49.73
+\end{verbatim}
+
+Finally, let's plot these bounds on our swarmplot to graphically show
+this range. We can now claim that based on our sample, there is a 95\%
+chance that the true population mean of income (shown in red) lies
+within this range.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sns.swarmplot(data }\OperatorTok{=}\NormalTok{ sample, y}\OperatorTok{=}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{,alpha}\OperatorTok{=}\FloatTok{0.5}\NormalTok{) }\CommentTok{\# plot a swarmplot of income}
+\NormalTok{plt.axhline(df[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{].mean(), color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}solid\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{3}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}Population Mean\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a horizontal line at the mean}
+\NormalTok{plt.axhline(upper\_ci, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{3}\NormalTok{) }\CommentTok{\# add a dashed black line at the upper confidence interval}
+\NormalTok{plt.axhline(lower\_ci, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\DecValTok{3}\NormalTok{) }\CommentTok{\# add a dashed black line at the lower confidence interval}
+
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Income Distribution, 95\% Confidence Interval\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Text(0.5, 1.0, 'Income Distribution, 95% Confidence Interval')
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W06. Hypothesis Testing_files/figure-pdf/cell-7-output-2.png}
+
+}
+
+\end{figure}
+
+\hypertarget{hypothesis-testing-1}{%
+\section{Hypothesis Testing}\label{hypothesis-testing-1}}
+
+If we create a boxplot of income disaggregated by sex using our sample,
+we can observe that men seem to earn more than women:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sns.boxplot(data}\OperatorTok{=}\NormalTok{sample , x}\OperatorTok{=}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{).set\_xticklabels([}\StringTok{\textquotesingle{}Men\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Women\textquotesingle{}}\NormalTok{]) }\CommentTok{\# make a box plot of income by sex}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[Text(0, 0, 'Men'), Text(1, 0, 'Women')]
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W06. Hypothesis Testing_files/figure-pdf/cell-8-output-2.png}
+
+}
+
+\end{figure}
+
+But is this difference statistically significant? It could just be due
+to sampling error, random chance. \textbf{Hypothesis testing} provides a
+framework through which we can formally evaluate the likelihood of
+encountering an effect as extreme (in this case, the the difference
+between the mean incomes between both groups) as the one we observe in
+our data. There are four main steps in hypothesis testing:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  State the hypotheses. H0 states that there is no difference between
+  the two population means.
+\item
+  Select an \(\alpha\) level (e.g.~95\% confidence), and select a
+  corresponding \textbf{critical value} (1.96 for large samples)
+\item
+  Compute the test statistic.
+\item
+  Make a decision; if the test statistic exceeds the critical value, we
+  \textbf{reject the null hypothesis}.
+\end{enumerate}
+
+Steps 1, 2, and 4 remain fairly constant regardless of what kind of
+hypothesis testing you're conducting. Step 3 can vary quite a bit, as
+there are many different statistical tests that fall under the umbrella
+of hypothesis testing. In today's workshop we'll be using the Student's
+T-Test (more on that in a second). For now, let's begin the process of
+hypothesis testing a
+
+\hypertarget{state-the-hypotheses}{%
+\subsection{1. State the hypotheses}\label{state-the-hypotheses}}
+
+\hypertarget{the-null-hypothesis}{%
+\subsubsection{The Null Hypothesis}\label{the-null-hypothesis}}
+
+\begin{itemize}
+\tightlist
+\item
+  \(H_0\) : There is no difference in the mean income between men and
+  women
+\item
+  \(H_0\) : \(\overline{x}_{men} = \overline{x}_{women}\)
+\end{itemize}
+
+\hypertarget{the-alternative-hypothesis}{%
+\subsubsection{The Alternative
+Hypothesis}\label{the-alternative-hypothesis}}
+
+\begin{itemize}
+\tightlist
+\item
+  \(H_a\) : There is a difference in the mean income between men and
+  women
+\item
+  \(H_a\) : \(\overline{x}_{men} \neq \overline{x}_{women}\)
+\end{itemize}
+
+\hypertarget{select-an-alpha-level}{%
+\subsection{\texorpdfstring{2. Select an \(\alpha\)
+level}{2. Select an \textbackslash alpha level}}\label{select-an-alpha-level}}
+
+Locate the critical region; the critical values for the t statistic are
+obtained using degrees of freedom (\(df=n-2\)). Given that we have 1000
+observations, \(df=998\). If \(df>1000\), you can simply memorize the
+following critical values:
+
+\begin{itemize}
+\tightlist
+\item
+  At the 95\% confidence level, the critical value is 1.96
+\item
+  At the 99\% confidence level, the critical value is 2.58
+\end{itemize}
+
+If our test statistic exceeds either of these values, we can reject the
+null hypothesis with the according level of confidence. The function
+below creates a plot which provides a visual reference for these values,
+but isn't really necessary for the process of hypothesis testing. The
+function accepts one argument \texttt{test\_statistic}, which it will
+use to plot a vertical red line. If the red line falls within the dotted
+lines, we fail to reject the null hypothesis at the corresponding
+confidence level. If it's outside of these bounds, we reject the null
+hypothesis.
+
+In the last line of code below, i've called the function to plot a test
+statistic of -2.3; Would we reject the null hypothesis at the 95\%
+confidence level? what about the 99\% level?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ plot\_z(test\_statistic):}
+\NormalTok{    mu, se}\OperatorTok{=} \DecValTok{0}\NormalTok{, }\DecValTok{1} \CommentTok{\# create two variables, a mean "mu" equal to zero, and standard deviation "se" equal to 1}
+\NormalTok{    x }\OperatorTok{=}\NormalTok{ np.linspace(mu }\OperatorTok{{-}} \DecValTok{3}\OperatorTok{*}\NormalTok{se, mu }\OperatorTok{+} \DecValTok{3}\OperatorTok{*}\NormalTok{se, }\DecValTok{100}\NormalTok{) }\CommentTok{\# create a range of values from {-}3 to 3 standard deviations}
+
+\NormalTok{    plt.plot(x, norm.pdf(x, mu, se)) }\CommentTok{\# plot the normal distribution}
+\NormalTok{    plt.axvline(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\FloatTok{1.96}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}µ ± 1.96σ (95}\SpecialCharTok{\% c}\StringTok{onfidence)\textquotesingle{}}\NormalTok{) }\CommentTok{\# plot a vertical line at the mean plus 2 standard deviations}
+\NormalTok{    plt.axvline(mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\FloatTok{1.96}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)  }\CommentTok{\# plot a vertical line at the mean minus 2 standard deviations}
+\NormalTok{    plt.axvline(mu}\OperatorTok{{-}}\NormalTok{se}\OperatorTok{*}\FloatTok{2.58}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}µ ± 2.58σ (99}\SpecialCharTok{\% c}\StringTok{onfidence)\textquotesingle{}}\NormalTok{) }\CommentTok{\# plot a vertical line at the mean plus 2 standard deviations}
+\NormalTok{    plt.axvline(mu}\OperatorTok{+}\NormalTok{se}\OperatorTok{*}\FloatTok{2.58}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)  }\CommentTok{\# plot a vertical line at the mean minus 2 standard deviations}
+    
+\NormalTok{    plt.axvline(test\_statistic, color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}solid\textquotesingle{}}\NormalTok{, linewidth}\OperatorTok{=}\FloatTok{1.5}\NormalTok{,label}\OperatorTok{=}\StringTok{\textquotesingle{}Test Statistic\textquotesingle{}}\NormalTok{) }\CommentTok{\# plot a vertical line at the test statistic}
+
+
+\NormalTok{    plt.ylim(}\DecValTok{0}\NormalTok{,}\FloatTok{0.4}\NormalTok{)}
+\NormalTok{    plt.legend()}
+\NormalTok{    plt.title(}\StringTok{\textquotesingle{}Z Distribution\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
+\NormalTok{    plt.show()}
+
+\NormalTok{plot\_z(}\OperatorTok{{-}}\FloatTok{2.3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W06. Hypothesis Testing_files/figure-pdf/cell-9-output-1.png}
+
+}
+
+\end{figure}
+
+\hypertarget{calculate-the-test-statistic-the-students-t-test}{%
+\subsection{3. Calculate the Test Statistic (The Student's
+T-Test)}\label{calculate-the-test-statistic-the-students-t-test}}
+
+The Student's T-Test is an \emph{independent-measures design} which is
+used in situations where a researcher has no prior knowledge about
+either of the two populations (or treatments) being compared. In
+particular, the population means and standard deviations are all
+unknown. Because the population variances are not known, these values
+must be estimated from the sample data.
+
+The purpose of a T-test is to determine whether the sample mean
+difference indicates a real mean difference between the two populations
+or whether the obtained difference is simply the result of sampling
+error. Given two groups, \(x_1\) and \(x_2\), the \(t\) statistic is
+calculated as:
+
+\[ \Huge t = {\frac{\overline{x_1}-\overline{x_2}} {\sqrt{\frac{s^2_1}{n_1} + \frac{s^2_2}{n_2}}}} \]
+
+Where:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\overline{x}\): Sample Mean
+\item
+  \(s^2\): Sample Standard Deviation
+\item
+  \(n\): Number of observations
+\end{itemize}
+
+We've already seen how to calculate each of these components when we
+made the 95\% confidence interval above using the \texttt{.describe()}
+function. To calculate the t-statistic, we just have to plug these
+values into the formula above and do some basic arithmetic. I've put
+together a function that does this below, which accepts two main
+arguments, \texttt{group1} and \texttt{group2}. For each group it
+calculates descriptive statistics, and uses these values to calculate
+the t-statistic. It also has an optional argument \texttt{plot}, which
+when set to \texttt{True} will plot a 95\% confidence interval for each
+group. It defaults to \texttt{False}, meaning that it won't generate the
+plot.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ manual\_ttest(group1, group2, plot}\OperatorTok{=}\VariableTok{False}\NormalTok{): }\CommentTok{\# define a function called "manual\_ttest" that takes two groups and a boolean value for whether or not to plot the results as arguments}
+    
+\NormalTok{    desc1, desc2}\OperatorTok{=}\NormalTok{group1.describe(), group2.describe() }\CommentTok{\# get descriptive statistics for both samples}
+    
+\NormalTok{    n1,std1,mean1 }\OperatorTok{=}\NormalTok{ desc1[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{], desc1[}\StringTok{\textquotesingle{}std\textquotesingle{}}\NormalTok{] ,desc1[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{] }\CommentTok{\# get the sample size, standard deviation, and mean of the first sample}
+\NormalTok{    n2,std2,mean2 }\OperatorTok{=}\NormalTok{ desc2[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{], desc2[}\StringTok{\textquotesingle{}std\textquotesingle{}}\NormalTok{] ,desc2[}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{] }\CommentTok{\# get the sample size, standard deviation, and mean of the second sample}
+    
+    \CommentTok{\# calculate standard errors}
+\NormalTok{    se1, se2 }\OperatorTok{=}\NormalTok{ std1}\OperatorTok{**}\DecValTok{2}\OperatorTok{/}\NormalTok{n1, std2}\OperatorTok{**}\DecValTok{2}\OperatorTok{/}\NormalTok{n2 }\CommentTok{\# \textquotesingle{}**2\textquotesingle{} is the same as squaring the number}
+
+    \CommentTok{\# standard error on the difference between the samples}
+\NormalTok{    sed }\OperatorTok{=}\NormalTok{ np.sqrt(se1 }\OperatorTok{+}\NormalTok{ se2)}
+
+    \CommentTok{\# calculate the t statistic}
+\NormalTok{    t\_stat }\OperatorTok{=}\NormalTok{ (mean1 }\OperatorTok{{-}}\NormalTok{ mean2) }\OperatorTok{/}\NormalTok{ sed}
+
+    \CommentTok{\# print the results}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Group 1: n=\%.0f, mean=}\SpecialCharTok{\%.3f}\StringTok{, std=}\SpecialCharTok{\%.3f}\StringTok{"} \OperatorTok{\%}\NormalTok{ (n1,mean1,std1)) }
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Group 2: n=\%.0f, mean=}\SpecialCharTok{\%.3f}\StringTok{, std=}\SpecialCharTok{\%.3f}\StringTok{"} \OperatorTok{\%}\NormalTok{ (n2,mean2,std2))}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}The t{-}statistic is }\SpecialCharTok{\%.3f}\StringTok{\textquotesingle{}} \OperatorTok{\%}\NormalTok{ t\_stat) }\CommentTok{\# print the t{-}statistic}
+
+    \ControlFlowTok{if}\NormalTok{ plot}\OperatorTok{==}\VariableTok{True}\NormalTok{: }\CommentTok{\# if the plot argument is set to True, plot the results}
+\NormalTok{        groups}\OperatorTok{=}\NormalTok{pd.DataFrame() }\CommentTok{\# create an empty dataframe}
+\NormalTok{        i}\OperatorTok{=}\DecValTok{1} \CommentTok{\# create a counter variable called "i" and set it equal to 1}
+        
+        \ControlFlowTok{for}\NormalTok{ group }\KeywordTok{in}\NormalTok{ [group1, group2]: }\CommentTok{\# loop through each group in the list of groups}
+\NormalTok{            plot\_df}\OperatorTok{=}\NormalTok{pd.DataFrame(\{}\StringTok{\textquotesingle{}Values\textquotesingle{}}\NormalTok{: group,}\StringTok{\textquotesingle{}Group\textquotesingle{}}\NormalTok{:i\}) }\CommentTok{\# create a dataframe with the values of the group and a column called "Group" that contains the group number}
+\NormalTok{            groups}\OperatorTok{=}\NormalTok{groups.append(plot\_df) }\CommentTok{\# append the dataframe to the list of dataframes}
+\NormalTok{            i}\OperatorTok{+=}\DecValTok{1} \CommentTok{\# increase the counter by 1}
+        
+\NormalTok{        sns.pointplot(data}\OperatorTok{=}\NormalTok{groups , x}\OperatorTok{=}\StringTok{\textquotesingle{}Group\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}Values\textquotesingle{}}\NormalTok{,errorbar}\OperatorTok{=}\NormalTok{(}\StringTok{\textquotesingle{}ci\textquotesingle{}}\NormalTok{, }\DecValTok{95}\NormalTok{), color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, join}\OperatorTok{=}\VariableTok{False}\NormalTok{, capsize}\OperatorTok{=}\FloatTok{.8}\NormalTok{) }\CommentTok{\# plot the means of the groups with a 95\% confidence interval}
+\NormalTok{        plt.title(}\StringTok{\textquotesingle{}Comparison of Group Means with 95\% Confidence Intervals\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
+    
+    \ControlFlowTok{return}\NormalTok{ t\_stat }\CommentTok{\# return the t{-}statistic}
+\end{Highlighting}
+\end{Shaded}
+
+Having defined the function, we can now call it to calculate a t-test
+for the difference in income between men and women
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{men}\OperatorTok{=}\NormalTok{sample[sample[}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{] }\CommentTok{\# filter the sample to only include men}
+\NormalTok{women}\OperatorTok{=}\NormalTok{sample[sample[}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{2}\NormalTok{] }\CommentTok{\# filter the sample to only include women}
+
+\NormalTok{t }\OperatorTok{=}\NormalTok{ manual\_ttest(men[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{],women[}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]) }\CommentTok{\# run the t{-}test function and store the t{-}statistic in a variable called "t"}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Group 1: n=485, mean=57.435, std=36.610
+Group 2: n=515, mean=38.489, std=26.179
+The t-statistic is 9.364
+\end{verbatim}
+
+\hypertarget{make-a-decision}{%
+\subsection{4. Make a Decision}\label{make-a-decision}}
+
+If the t statistic indicates that the obtained difference between sample
+means (numerator) is substantially greater than the difference expected
+by chance (denominator), we reject H0 and conclude that there is a real
+mean difference between the two populations or treatments. Let plot the
+T-statistic from our test against the critical values:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plot\_z(t) }\CommentTok{\# plot the test statistic on the z distribution}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W06. Hypothesis Testing_files/figure-pdf/cell-12-output-1.png}
+
+}
+
+\end{figure}
+
+Based on the plot above, can we reject the null hypothesis that there is
+no difference in mean income between men and women?
+
+\hypertarget{exercise-21}{%
+\subsection{Exercise}\label{exercise-21}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  From the main dataframe \texttt{df}, draw a sample of 500 white men.
+  Using t-tests, investigate whether there are statistically significant
+  discrepancies in pay between white men and other groups (note: it
+  would be best to sample 500 people in each of those groups as well).
+  Between what groups does there exist the most significant pay gap?
+\item
+  Some of this variation may be due to occupation. Compare income
+  disparities between men and women within different occupations. Which
+  occupation has the largest pay gap? which has the smallest?
+\item
+  \href{https://journals.sagepub.com/doi/abs/10.1177/0730888401028004005}{Research
+  suggests} that within occupational groups, collective bargaining
+  through union membership reduces pay gaps. Read the abstract of this
+  article, and try to replicate the analysis using our dataset.
+\end{enumerate}
+
+\hypertarget{assessed-question-5}{%
+\section{Assessed Question}\label{assessed-question-5}}
+
+When Elon musk bought Twitter, he promisted to restore ``free speech''
+to the platform. He heralded this new era with a tweet on 28/10/2022,
+which read ``the bird is freed''. A tidal wave of hate speech ensued
+instead.
+
+Using twitter's API, I downloaded tweets containing a racial slur. Using
+the groupby function and regex, I counted the number of mentions of this
+word per hour on the platform for about a month before the takeover, and
+a few days thereafter. I've saved these counts (but not the tweets
+themselves) as a csv file called ``elon\_tweets.csv''.
+
+The code below downloads this csv file, and plots the number of
+slur-containing tweets over time.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ datetime}
+\ImportTok{from}\NormalTok{ matplotlib.pyplot }\ImportTok{import}\NormalTok{ figure}
+\ImportTok{import}\NormalTok{ matplotlib.dates }\ImportTok{as}\NormalTok{ mdates}
+
+\NormalTok{tweets}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}https://storage.googleapis.com/qm2/wk7/elon\_twitter.csv\textquotesingle{}}\NormalTok{) }\CommentTok{\# read in the data}
+\NormalTok{figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{4}\NormalTok{), dpi}\OperatorTok{=}\DecValTok{200}\NormalTok{)}
+\NormalTok{tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{pd.to\_datetime(tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{])}
+
+\NormalTok{tweet}\OperatorTok{=}\NormalTok{datetime.datetime(}\DecValTok{2022}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{28}\NormalTok{)}
+
+\NormalTok{pre\_mean}\OperatorTok{=}\NormalTok{tweets[tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\NormalTok{tweet][}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{].mean()}
+\NormalTok{post\_mean}\OperatorTok{=}\NormalTok{tweets[tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\NormalTok{tweet][}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{].mean()}
+\NormalTok{pct\_change}\OperatorTok{=} \BuiltInTok{int}\NormalTok{(((post\_mean}\OperatorTok{{-}}\NormalTok{pre\_mean)}\OperatorTok{/}\NormalTok{pre\_mean)}\OperatorTok{*}\DecValTok{100}\NormalTok{)}
+
+\NormalTok{plt.ylabel(}\StringTok{\textquotesingle{}Hourly Slur Tweets\textquotesingle{}}\NormalTok{)}
+
+\NormalTok{plt.plot\_date(tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{], tweets[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{], }\StringTok{\textquotesingle{}b\textquotesingle{}}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.axvline(tweet, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}"the bird is freed"\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.legend()}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Elon Musk tweets "The bird is freed"; Tweets containing racial slurs increase }\SpecialCharTok{\{\}}\StringTok{\%\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(pct\_change))}
+\NormalTok{plt.gca().xaxis.set\_major\_locator(mdates.DayLocator())}
+\NormalTok{plt.gca().xaxis.set\_major\_formatter(mdates.DateFormatter(}\StringTok{\textquotesingle{}}\SpecialCharTok{\%d}\StringTok{/\%m\textquotesingle{}}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+/var/folders/6q/jt4x0r8n1rs0kbrrqrbj61fr0000gn/T/ipykernel_97088/4258694155.py:17: UserWarning: color is redundantly defined by the 'color' keyword argument and the fmt string "b" (-> color=(0.2980392156862745, 0.4470588235294118, 0.6901960784313725, 1)). The keyword argument will take precedence.
+  plt.plot_date(tweets['hour'], tweets['count'], 'b', color='red')
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W06. Hypothesis Testing_files/figure-pdf/cell-14-output-2.png}
+
+}
+
+\end{figure}
 
 
 

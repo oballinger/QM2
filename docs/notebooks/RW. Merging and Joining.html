@@ -64,6 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../notebooks/W06. Hypothesis Testing.html" rel="next">
 <link href="../notebooks/W05. Distributions and Basic Statistics.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -123,7 +124,7 @@ ga('send', {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notebooks/W06. Merging and Joining.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Merging and Joining</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notebooks/RW. Merging and Joining.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Merging and Joining</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -226,8 +227,14 @@ ga('send', {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W06. Merging and Joining.html" class="sidebar-item-text sidebar-link active">
+  <a href="../notebooks/RW. Merging and Joining.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Merging and Joining</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W06. Hypothesis Testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Hypothesis Testing</span></span></a>
   </div>
 </li>
     </ul>
@@ -240,7 +247,7 @@ ga('send', {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#workshop-6-open-in-colab" id="toc-workshop-6-open-in-colab" class="nav-link active" data-scroll-target="#workshop-6-open-in-colab"><em>Workshop 6</em> <img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a>
+  <li><a href="#reading-week-open-in-colab" id="toc-reading-week-open-in-colab" class="nav-link active" data-scroll-target="#reading-week-open-in-colab"><em>Reading Week</em> <img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a>
   <ul class="collapse">
   <li><a href="#aims" id="toc-aims" class="nav-link" data-scroll-target="#aims">Aims</a></li>
   </ul></li>
@@ -267,12 +274,8 @@ ga('send', {
   <li><a href="#life-oh-life" id="toc-life-oh-life" class="nav-link" data-scroll-target="#life-oh-life">Life, Oh Life</a></li>
   <li><a href="#exercise-3" id="toc-exercise-3" class="nav-link" data-scroll-target="#exercise-3">Exercise:</a></li>
   </ul></li>
-  <li><a href="#exercise-4" id="toc-exercise-4" class="nav-link" data-scroll-target="#exercise-4">Exercise</a>
-  <ul class="collapse">
-  <li><a href="#recap-joins" id="toc-recap-joins" class="nav-link" data-scroll-target="#recap-joins">Recap: Joins</a></li>
-  </ul></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W06. Merging and Joining.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/RW. Merging and Joining.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -294,8 +297,8 @@ ga('send', {
 
 </header>
 
-<section id="workshop-6-open-in-colab" class="level2">
-<h2 class="anchored" data-anchor-id="workshop-6-open-in-colab"><em>Workshop 6</em> <a href="https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W06.%20Merging%20and%20Joining.ipynb"><img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a></h2>
+<section id="reading-week-open-in-colab" class="level2">
+<h2 class="anchored" data-anchor-id="reading-week-open-in-colab"><em>Reading Week</em> <a href="https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/RW.%20Merging%20and%20Joining.ipynb"><img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a></h2>
 <p>Sometimes, we will want to combine data from different sources about the same subject - perhaps we want to compare the GDP in a country with life expectancy, or the proportion of free schools meals with the level of unemployment.</p>
 <section id="aims" class="level3">
 <h3 class="anchored" data-anchor-id="aims">Aims</h3>
@@ -2586,7 +2589,7 @@ ga('send', {
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"https://s3.eu-west-2.amazonaws.com/qm2/wk3/inner.png"</span></span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>Image(data_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="32">
-<p><img src="W06. Merging and Joining_files/figure-html/cell-33-output-1.png" class="img-fluid"></p>
+<p><img src="RW. Merging and Joining_files/figure-html/cell-33-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>(Image from http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/)</p>
@@ -2862,7 +2865,7 @@ ga('send', {
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"https://s3.eu-west-2.amazonaws.com/qm2/wk3/left.png"</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>Image(data_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="37">
-<p><img src="W06. Merging and Joining_files/figure-html/cell-38-output-1.png" class="img-fluid"></p>
+<p><img src="RW. Merging and Joining_files/figure-html/cell-38-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>What does <em>this</em> look like? We will use the <em>how=‘left’</em> optional argument to create a left join:</p>
@@ -3042,7 +3045,7 @@ ga('send', {
 <p>http://data.un.org/Data.aspx?d=POP&amp;f=tableCode%3A240</p>
 <p>Let’s load up data on city population - this set contains data for 2012-2014 inclusive:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"./data/wk5/UN_Cities_1214_population.csv"</span></span>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"data/wk5/UN_Cities_1214_population.csv"</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>city_pop <span class="op">=</span> pd.read_csv(data_path, encoding<span class="op">=</span><span class="st">'latin1'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -3220,7 +3223,7 @@ ga('send', {
 </section>
 <section id="exercise-2" class="level2">
 <h2 class="anchored" data-anchor-id="exercise-2">Exercise</h2>
-<p>There is a another datafile we downloaded called <em>UN_Cities_1214_country.csv</em>. This is saved to <em>./data/wk5/UN_Cities_1214_country.csv</em> - Load this into a dataframe called <em>city_c</em> with the city name as the index and view it; then, using <em>merge</em> on city name with city_pop to create a new dataframe called <em>cities</em>.</p>
+<p>There is a another datafile we downloaded called <em>UN_Cities_1214_country.csv</em>. This is saved to <code>data/wk5/UN_Cities_1214_country.csv</code> - Load this into a dataframe called <em>city_c</em> with the city name as the index and view it; then, using <em>merge</em> on city name with city_pop to create a new dataframe called <em>cities</em>. You’ll probably get some errors. google the error messages, or ask ChatGPT/Gemini to help you understand them.</p>
 <p><strong>Hints:</strong> You’ll notice that the index <strong>won’t</strong> be the column you want to merge on in the city_pop data. What column <em>should</em> you merge on in city_pop? Which column should you merge on in city_c?</p>
 <p>The syntax for merging on a <strong>column</strong> (which is not the index) is to pass the column name to the optional ‘left_on=’ or ‘right_on=’ arguments. And we don’t use right_index=True (or left_index=True), depending on which we’re using.</p>
 <p>So for example: <strong>df1.merge(df2, left_on=‘Name’, right_index=True)</strong> would join df1 (on the left) to df2 (on the right), using the column ‘Name’ on the left (df1) and the index column (whatever that is) on the right (df2).</p>
@@ -3260,8 +3263,7 @@ ga('send', {
 <p>The UN also has useful data by country, so let’s try and work with some of that and join it up with our city data. Let’s work with Life Expectancy Data:</p>
 <p>http://data.un.org/Data.aspx?d=WDI&amp;f=Indicator_Code%3ASP.DYN.LE00.IN</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"./data/wk5/UN_Life_all.csv"</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>life <span class="op">=</span> pd.read_csv(data_path, index_col<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>life <span class="op">=</span> pd.read_csv(<span class="st">'https://s3.eu-west-2.amazonaws.com/qm2/wk3/UN_Life_all.csv'</span>, index_col<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>life.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -3281,22 +3283,9 @@ ga('send', {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>life.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-</section>
-<section id="exercise-4" class="level1">
-<h1>Exercise</h1>
 <p>Now, merge this data with the cities data to show life expectancy for each city (based on the country it is in), and show the first 5 rows.</p>
-<p>How much data was “missing” in the merge?</p>
-<p>Relabel the City Population column so it’s clear what it represents.</p>
-<p><strong>Extension:</strong> Plot population against life expectancy. Use plot’s <em>optional arguments</em> to specify the x column, y column, and that kind=‘scatter’.</p>
-<p><strong>Don’t forget to include a title and axis labels!</strong></p>
-<section id="recap-joins" class="level2">
-<h2 class="anchored" data-anchor-id="recap-joins">Recap: Joins</h2>
-<p>Pandas has <strong>four</strong> join methods:</p>
-<pre><code>- Left Join: use **only** keys from **left** DataFrame. SQL: [left outer join](http://goo.gl/JICveI)
-- Right Join: use **only** keys from **right** DataFrame. SQL: [right outer join](http://goo.gl/TrrHjQ)
-- Outer Join: use union of **keys from both** DataFrames. SQL: [full outer join](http://goo.gl/bVRqO8)
-- Inner Join: use **intersection of keys** from both DataFrames. SQL: [inner join](http://goo.gl/Cf1MF8)</code></pre>
+<p>Plot population against life expectancy. Use plot’s <em>optional arguments</em> to specify the x column, y column, and that kind=‘scatter’.</p>
+<p>Question: How much data was “missing” in the merge?</p>
 
 
 </section>
@@ -3543,6 +3532,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../notebooks/W06. Hypothesis Testing.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Hypothesis Testing</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
