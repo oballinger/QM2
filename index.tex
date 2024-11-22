@@ -191,11 +191,11 @@
 
 \title{Quantitative Methods 2}
 \author{Ollie Ballinger}
-\date{2023-10-10}
+\date{2024-10-10}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, interior hidden, sharp corners, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced, frame hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, enhanced, interior hidden, frame hidden, borderline west={3pt}{0pt}{shadecolor}, breakable, sharp corners]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -6472,6 +6472,1265 @@ significant?
 procedure, investigate wheter there was a statistically significant
 increase in hate speech following Elon Musk's tweet. Make note of the T
 statistic and the P value.}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{regression}{%
+\chapter{Regression}\label{regression}}
+
+\hypertarget{workshop-7-open-in-colab}{%
+\section[\emph{Workshop 7} ]{\texorpdfstring{\emph{Workshop 7}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W07.\%20Linear\%20Regression.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 7 Open In Colab}}\label{workshop-7-open-in-colab}}
+
+\hypertarget{aims-5}{%
+\subsection{Aims:}\label{aims-5}}
+
+In this workshop, we're going to be modeling the relationship between
+education and income. More precisely, we're going to be looking at the
+effect of increasing education on hourly wages using Ordinary Least
+Squares regression. We're going to accomplish this in four steps:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Summary Statistics
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Table of Summary Statistics
+  \end{itemize}
+\item
+  Visualisation
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Exploratory Plots
+  \end{itemize}
+\item
+  Assumptions
+
+  \begin{itemize}
+  \tightlist
+  \item
+    A. Independence
+  \item
+    B. Heteroscedasticity: Regression plots + Q-Q plot
+  \item
+    C. Multicollinearity: VIF + Correlation Matrix
+  \end{itemize}
+\item
+  Regression
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Regression Table
+  \end{itemize}
+\end{enumerate}
+
+If you're conducting a regression, you must complete the steps above,
+and produce each item indicated by a bullet point.
+
+\hypertarget{getting-started-3}{%
+\section{Getting Started}\label{getting-started-3}}
+
+As always we'll start by importing the libraries I need
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#This tells python to draw the graphs "inline" {-} in the notebook}
+\OperatorTok{\%}\NormalTok{matplotlib inline  }
+\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
+\ImportTok{import}\NormalTok{ statsmodels.api }\ImportTok{as}\NormalTok{ sm}
+\ImportTok{from}\NormalTok{ math }\ImportTok{import}\NormalTok{ sqrt}
+\ImportTok{from}\NormalTok{ numpy.random }\ImportTok{import}\NormalTok{ seed}
+\ImportTok{from}\NormalTok{ numpy.random }\ImportTok{import}\NormalTok{ randn}
+\ImportTok{from}\NormalTok{ numpy }\ImportTok{import}\NormalTok{ mean}
+\ImportTok{from}\NormalTok{ scipy.stats }\ImportTok{import}\NormalTok{ sem}
+\ImportTok{import}\NormalTok{ statistics }
+\ImportTok{import}\NormalTok{ seaborn }\ImportTok{as}\NormalTok{ sns}
+\ImportTok{from}\NormalTok{ IPython.display }\ImportTok{import}\NormalTok{ display, Math, Latex, display\_latex}
+\ImportTok{import}\NormalTok{ plotly.express }\ImportTok{as}\NormalTok{ px}
+\ImportTok{import}\NormalTok{ pylab}
+\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
+\CommentTok{\# make the plots (graphs) a little wider by default}
+\NormalTok{pylab.rcParams[}\StringTok{\textquotesingle{}figure.figsize\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ (}\FloatTok{10.}\NormalTok{, }\FloatTok{8.}\NormalTok{)}
+\NormalTok{sns.}\BuiltInTok{set}\NormalTok{(font\_scale}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
+\NormalTok{sns.set\_style(}\StringTok{"white"}\NormalTok{)}
+
+\end{Highlighting}
+\end{Shaded}
+
+Now that I've imported the libraries I'm going to be using, I'm ready to
+import the data:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}https://storage.googleapis.com/qm2/wk7/cps.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{df.head()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllllllllll@{}}
+\toprule\noalign{}
+& year & state & age & sex & race & sch & ind & union & incwage &
+realhrwage & occupation \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 1990 & 36 & 58 & 1 & 3 & 12.0 & 871 & 0.0 & 14200.0 & 12.269874 &
+Office and Admin Support \\
+1 & 2009 & 5 & 28 & 1 & 1 & 12.0 & 8660 & 1.0 & 17680.0 & 8.635149 &
+Office and Admin Support \\
+2 & 1990 & 36 & 37 & 1 & 1 & 14.0 & 380 & 1.0 & 28000.0 & 21.169851 &
+. \\
+3 & 1990 & 6 & 34 & 1 & 1 & 18.0 & 740 & 1.0 & 27500.0 & 20.447746 &
+Computer and Math Technicians \\
+4 & 1981 & 51 & 38 & 1 & 4 & 13.0 & 798 & NaN & 17000.0 & 18.892282 &
+Managers \\
+\end{longtable}
+
+Our dataframe has 10 columns:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{year}: Survey year
+\item
+  \emph{age}: the person's age
+\item
+  \emph{sex}: the person's sex
+
+  \begin{itemize}
+  \tightlist
+  \item
+    1=male
+  \item
+    2=female
+  \end{itemize}
+\item
+  \emph{race}: the person's race
+
+  \begin{itemize}
+  \tightlist
+  \item
+    White non hispanic=1
+  \item
+    Black non hispanic=2
+  \item
+    Hispanic=3
+  \item
+    Other non hispanic=4)
+  \end{itemize}
+\item
+  \emph{sch}: Educational attainment
+
+  \begin{itemize}
+  \tightlist
+  \item
+    None = 0,
+  \item
+    Grades 1-12 = 1-12
+  \item
+    Some University = 13,
+  \item
+    Associate's degree = 14,
+  \item
+    BA = 16
+  \item
+    Advanced Degree = 18
+  \end{itemize}
+\item
+  \emph{union}: Union membership
+
+  \begin{itemize}
+  \tightlist
+  \item
+    N/A = 0,
+  \item
+    No union coverage = 1,
+  \item
+    Member of labor union=2,
+  \item
+    Covered by union but not a member=3
+  \end{itemize}
+\item
+  \emph{incwage}: Wage and salary income
+\item
+  \emph{realhrwage}: Real Hourly Wage
+\item
+  \emph{occupation}: Occupation
+\item
+  \emph{ind}:
+  \href{https://www.census.gov/naics/?58967?yearbck=2002}{industry code}
+\item
+  \emph{state}:
+  \href{https://www.bls.gov/respondents/mwr/electronic-data-interchange/appendix-d-usps-state-abbreviations-and-fips-codes.htm}{FIPS
+  code} denoting the state of residence.
+\end{enumerate}
+
+We'll begin, as we did with last week's workshop, by selecting the year
+2013 in our data and making sure that all the variables that represent
+categories are stored as categorical in python:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{reg\_df}\OperatorTok{=}\NormalTok{df[df[}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{2013}\NormalTok{].drop([}\StringTok{\textquotesingle{}year\textquotesingle{}}\NormalTok{],axis}\OperatorTok{=}\DecValTok{1}\NormalTok{) }\CommentTok{\# filter the whole dataset to 2013 and drop year column}
+\NormalTok{reg\_df[[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}union\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}occupation\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}ind\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]]}\OperatorTok{=}\NormalTok{reg\_df[[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}union\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}occupation\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}ind\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]].astype(}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{) }\CommentTok{\# convert these columns to categorical}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{summary-statistics-1}{%
+\section{1. Summary Statistics}\label{summary-statistics-1}}
+
+Once our data has been cleaned and all our variables are stored as the
+appropriate type, we can start with the first step of any regression
+project: creating a table of summary statistics. This is an important
+part of the process, since it gives the reader a qualitative
+understanding of your data before you analyze it. It also serves to
+demonstrate that you've cleaned the data appropriately, and that the
+measures of the variables make sense.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{summary}\OperatorTok{=}\NormalTok{reg\_df.describe().}\BuiltInTok{round}\NormalTok{(}\DecValTok{2}\NormalTok{)  }\CommentTok{\# generate summary statistics, and round everything to 2 decimal degrees}
+\NormalTok{summary}\OperatorTok{=}\NormalTok{summary.T }\CommentTok{\#.T transposes the table (rows become columns and vice versa)}
+\NormalTok{summary}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllllll@{}}
+\toprule\noalign{}
+& count & mean & std & min & 25\% & 50\% & 75\% & max \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+age & 53790.0 & 42.91 & 10.56 & 25.00 & 34.00 & 43.00 & 51.00 & 64.0 \\
+sch & 53790.0 & 13.93 & 2.74 & 0.00 & 12.00 & 13.00 & 16.00 & 18.0 \\
+incwage & 53790.0 & 51821.86 & 60163.45 & 38.00 & 24000.00 & 40000.00 &
+63000.00 & 1102999.0 \\
+realhrwage & 53790.0 & 24.38 & 151.90 & 2.01 & 12.17 & 18.44 & 28.12 &
+34760.8 \\
+\end{longtable}
+
+This table is already informative. I now know that the average person in
+this dataset is 42 years old, has around 14 years of schooling, and
+makes \$24/hour (or \$51,821/year). However, it's also useful to spot
+potential errors in data entry that may warrant greater attention.
+
+Notice the max value for real hourly wage. Despite the fact that those
+in the top 75\% of earners make \$28.12/hour, someone is making \$34,760
+per hour. Must be nice (or, may be a data entry error). Either way,
+because regresisons are sensitive to this sort of outlier, we should
+remove it. I've defined a function below that calculates the quartiles
+and filters out observations that are more than three times as far away
+form the top quartile as the top quartile is from the bottom one. This
+was a somewhat arbitrary choice, but it allows me to be consistent if I
+want to apply it to other variables. You could also just pick a cutoff
+qualitatively and justify it (e.g.~``I will focus on those making up to
+\$250k per year, since they represent the population i'm trying to
+understand'').
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ filter\_outliers(var):}
+\NormalTok{    q1 }\OperatorTok{=}\NormalTok{ var.quantile(}\FloatTok{0.25}\NormalTok{) }\CommentTok{\# calculate the first quartile}
+\NormalTok{    q3 }\OperatorTok{=}\NormalTok{ var.quantile(}\FloatTok{0.75}\NormalTok{) }\CommentTok{\# calculate the third quartile}
+\NormalTok{    iqr }\OperatorTok{=}\NormalTok{ q3 }\OperatorTok{{-}}\NormalTok{ q1 }\CommentTok{\# calculate the interquartile range}
+\NormalTok{    low }\OperatorTok{=}\NormalTok{ q1 }\OperatorTok{{-}} \DecValTok{3}\OperatorTok{*}\NormalTok{iqr }\CommentTok{\# calculate the lower bound}
+\NormalTok{    high }\OperatorTok{=}\NormalTok{ q3 }\OperatorTok{+} \DecValTok{3}\OperatorTok{*}\NormalTok{iqr }\CommentTok{\# calculate the upper bound}
+\NormalTok{    filtered }\OperatorTok{=}\NormalTok{ reg\_df[(var }\OperatorTok{\textgreater{}}\NormalTok{ low) }\OperatorTok{\&}\NormalTok{ (var }\OperatorTok{\textless{}}\NormalTok{ high)] }\CommentTok{\# filter  the values that are within the bounds}
+\NormalTok{    dropped\_observations}\OperatorTok{=} \BuiltInTok{len}\NormalTok{(var)}\OperatorTok{{-}}\BuiltInTok{len}\NormalTok{(filtered) }\CommentTok{\# calculate the number of observations that were dropped}
+
+    \BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}Dropped }\SpecialCharTok{\{\}}\StringTok{ observations\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(dropped\_observations))}
+    \ControlFlowTok{return}\NormalTok{  filtered}
+
+\NormalTok{reg\_df}\OperatorTok{=}\NormalTok{filter\_outliers(reg\_df[}\StringTok{\textquotesingle{}realhrwage\textquotesingle{}}\NormalTok{]) }\CommentTok{\# filter outliers from realhrwage}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Dropped 1040 observations
+\end{verbatim}
+
+We can see that this operation dropped 1040 observations that had
+extreme values in the ``realhrwage'' variable. Let's re-generate the
+table of summary statistics and only keep four columns: count, mean,
+standard deviaiton, minimum, and maximum.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{summary}\OperatorTok{=}\NormalTok{reg\_df.describe().}\BuiltInTok{round}\NormalTok{(}\DecValTok{2}\NormalTok{).T}
+\NormalTok{summary[[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}mean\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}std\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}min\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}max\textquotesingle{}}\NormalTok{]]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& count & mean & std & min & max \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+age & 52750.0 & 42.84 & 10.57 & 25.00 & 64.00 \\
+sch & 52750.0 & 13.88 & 2.73 & 0.00 & 18.00 \\
+incwage & 52750.0 & 46849.39 & 33376.96 & 38.00 & 353000.00 \\
+realhrwage & 52750.0 & 21.59 & 13.03 & 2.01 & 75.81 \\
+\end{longtable}
+
+\hypertarget{visualization}{%
+\section{2. Visualization}\label{visualization}}
+
+The summary statistics table provides us with a good overview of some of
+the variables we're interested in. However, you'll notice that it omits
+many of the other variables in our dataset: the categorical ones. This
+is because calculating the mean, standard deviation, etc. of something
+like the ``occupation'' column doesn't really make sense. For that, we
+turn to visualization.
+
+\hypertarget{visualizing-the-distribution-of-categorical-variables}{%
+\subsection{Visualizing the distribution of categorical
+variables}\label{visualizing-the-distribution-of-categorical-variables}}
+
+So far in this course we've been using a python library called
+Matplotlib to make our visualizations, which we've been calling using
+the `plt' alias. But this isn't the only one that is avaialble to us.
+\href{https://seaborn.pydata.org/}{Seaborn} is another library that has
+some cool plotting functions that are more geared towards statistical
+analysis. We've already imported seaborn above, and we'll be calling it
+using the alias ``sns''. We can use it in conjunction with matplotlib.
+
+To get a sense of the distribution of our categorical variables, we'll
+make some plots that count the number of observations in each category.
+Let's start with the race category:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sns.countplot(data}\OperatorTok{=}\NormalTok{reg\_df, x}\OperatorTok{=}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{) }\CommentTok{\# plot the union variable}
+
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Race\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
+\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{) }\CommentTok{\# remove the x axis label}
+\NormalTok{plt.xticks(ticks}\OperatorTok{=}\NormalTok{[}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{],labels}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}White\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Black\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Hispanic\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Other\textquotesingle{}}\NormalTok{]) }\CommentTok{\# replace the x axis labels with more descriptive labels}
+\NormalTok{plt.show() }\CommentTok{\# show the plot}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W07. Linear Regression_files/figure-pdf/cell-8-output-1.png}
+
+}
+
+\end{figure}
+
+\hypertarget{exercise-22}{%
+\subsection{Exercise}\label{exercise-22}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Generate an equivalent plot for the other categorical columns
+\item
+  What is the most common industry code, and what does it correpsond to?
+\end{enumerate}
+
+\hypertarget{assumptions}{%
+\section{3. Assumptions}\label{assumptions}}
+
+Once you've generated summary statistics for your continuous variables
+and exploratory plots for the categorical ones, it's time to start
+thinking about the relationships \emph{between} the variables. Today,
+we're going to be modeling a linear relationship between income and
+years of schooling, by means of a \textbf{linear regression}. But before
+we do that, we need to check a couple things-- all statistical tests
+have a number of assumptions that must be satisfied in order to yield
+robust results. Before we run a regression, we must check that the
+assumptions in this case are satisfied. There are four main ones:
+
+\begin{verbatim}
+A. Indepdendence 
+B. Homoscedasticity
+C. Multicollinearity 
+\end{verbatim}
+
+Let's go through them one by one.
+
+\hypertarget{a.-independence}{%
+\subsection{A. Independence}\label{a.-independence}}
+
+\textbf{\texttt{Linear\ regression\ assumes\ that\ measurements\ for\ each\ sample\ subject\ are\ in\ no\ way\ influenced\ by\ or\ related\ to\ the\ measurements\ of\ other\ subjects.}}
+
+Though in the full CPS dataset we have repeat observations of the same
+individual over time, we've only been analyzing one year's worth of
+data, so we satisfy the independence assumption. If we ran a regression
+on the full sample over multiple years, \emph{this would violate the
+independence assumption}. It's very possible to run a regression with
+repeat observations of the same units (people, places, etc.) over time,
+but you need to use a special type of regression called a \textbf{panel
+regression}. More on that next week.
+
+\hypertarget{b.-homoscedasticity}{%
+\subsection{B. Homoscedasticity}\label{b.-homoscedasticity}}
+
+\textbf{\texttt{Linear\ regression\ assumes\ that\ the\ variance\ of\ residuals\ is\ the\ same\ for\ any\ value\ of\ x,\ and\ that\ residuals\ are\ normally\ distributed\ with\ a\ mean\ of\ 0.}}
+
+This is a complicated way of saying your regression line should fit
+consistently across the full range of \(x\) values. If there are really
+small residuals (i.e., all the data points are close to the line) for
+low values of \(x\), but larger residuals for high values of \(x\), the
+regression is not performing well-- we wouldn't have the same confidence
+in our predictions at different values of \(x\). Similarly, if all the
+residuals are on one side of the regression line in different parts of
+the \(x\) range, the model will consistently over/underestimate in those
+regions. When the variance of residuals from a regression model are
+inconsistent, we have \textbf{\texttt{Heteroscedasticity}}.
+
+We can explore potential heteroscedasticity by visually inspecting a
+regression plot. In our case, we're primarily interested in the
+relationship between years of schooling and hourly wages, so we'll be
+plotting these variables against eachother. \texttt{sns.jointplot()}
+lets us create a plot with four components which can help us diagnose
+potential heteroscedasticity:
+
+\begin{itemize}
+\tightlist
+\item
+  The main plot is a scatterplot between hourly wages on the y axis, and
+  years of schooling on the x axis.
+\item
+  A regression line overlaid on this plot lets us see the relationship
+  between our model and the underlying data
+\item
+  A histogram to the right of the plot shows the distribution of the
+  hourly wages variable, which is heavily skewed.
+\item
+  A histogram above the plot shows the distribution of the years of
+  schooling variable, which has an almost bimodal form.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sns.jointplot(data}\OperatorTok{=}\NormalTok{reg\_df, }\CommentTok{\# plot a scatterplot with a regression line and two histograms}
+\NormalTok{                x}\OperatorTok{=}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{, }\CommentTok{\# set the x axis to be the years of schooling}
+\NormalTok{                y}\OperatorTok{=}\StringTok{\textquotesingle{}realhrwage\textquotesingle{}}\NormalTok{, }\CommentTok{\# set the y axis to be the hourly wage}
+\NormalTok{                kind}\OperatorTok{=}\StringTok{"reg"}\NormalTok{,  }\CommentTok{\# set the kind of plot to be a regression plot}
+\NormalTok{                scatter\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(alpha}\OperatorTok{=}\FloatTok{0.1}\NormalTok{), }\CommentTok{\# set the transparency of the points to be 0.1 (10\%)}
+\NormalTok{                line\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{), }\CommentTok{\# set the color of the regression line to red}
+\NormalTok{                height}\OperatorTok{=}\DecValTok{10}\NormalTok{) }\CommentTok{\# set the height of the plot to be 10 inches }
+
+\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}Years of Schooling\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a label to the x axis}
+\NormalTok{plt.ylabel(}\StringTok{\textquotesingle{}Hourly Wage\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a label to the y axis}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Text(53.625, 0.5, 'Hourly Wage')
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W07. Linear Regression_files/figure-pdf/cell-9-output-2.png}
+
+}
+
+\end{figure}
+
+The plot above is cause for concern. From 0 to 5 years of schooling the
+model has underestimated hourly wages for every single observation.
+Conversely, at the far right tip of the regression line, we can see that
+the model \emph{overestimates} income for many individuals with 18 years
+of schooling. This gives us reason to suspect that there may be
+asymmetry in the residuals of our model (heteroscedasticity). We're
+going to fix this in the Exension section below. But for now, let's
+proceed.
+
+\hypertarget{c.-multicollinearity}{%
+\subsection{C. Multicollinearity}\label{c.-multicollinearity}}
+
+\textbf{\texttt{Multicollinearity\ emerges\ when\ two\ or\ more\ independent\ variables\ which\ are\ highly\ correlated\ are\ included\ in\ a\ model.}}
+A key goal of regression analysis is to isolate the relationship between
+each independent variable and the dependent variable. The interpretation
+of a regression coefficient is that it represents the mean change in the
+dependent variable for each 1 unit change in an independent variable
+when you hold all of the other independent variables constant.
+
+The idea is that you can change the value of one independent variable
+and not the others. However, when independent variables are correlated,
+it indicates that changes in one variable are associated with shifts in
+another variable. The stronger the correlation, the more difficult it is
+to change one variable without changing another. See this
+\href{https://statisticsbyjim.com/regression/multicollinearity-in-regression-analysis/}{blog
+post} for a thorough explanation.
+
+One way of visually exporing multicollinearity is through a correlation
+matrix:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sns.heatmap(reg\_df[[}\StringTok{\textquotesingle{}incwage\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}realhrwage\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}age\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{]].corr(), }\CommentTok{\# plot a correlation matrix }
+\NormalTok{            annot}\OperatorTok{=}\VariableTok{True}\NormalTok{, }\CommentTok{\# show the correlation values on the plot}
+\NormalTok{            fmt}\OperatorTok{=}\StringTok{".2f"}\NormalTok{, }\CommentTok{\# set the format of the correlation values to be two decimal places}
+\NormalTok{            cmap}\OperatorTok{=}\StringTok{\textquotesingle{}coolwarm\textquotesingle{}}\NormalTok{) }\CommentTok{\# set the color palette to be coolwarm (blue for negative correlations, red for positive correlations)}
+
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Correlation Matrix\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Text(0.5, 1.0, 'Correlation Matrix')
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W07. Linear Regression_files/figure-pdf/cell-10-output-2.png}
+
+}
+
+\end{figure}
+
+This matrix has each of the continuous variables in \texttt{reg\_df} on
+both axes. Each cell denotes the correlation between the corresponding
+variables. Naturally, on the diagonal we have a series of perfect
+correlations (1.00), as each variable is perfectly correlated with
+itself. \texttt{incwage} (annual salary) and \texttt{realhrwage} (hourly
+wage) are highly correlated with each other, which makes a lot of sense.
+This isn't a concern for multicollinearity, though, since
+\texttt{realhrwage} will be our dependent variable. This type of
+correlation matrix is also a good way of conducting exploratory data
+analysis-- we can already see that the next-highest set of correlations
+is between years of schooling and both hourly wages and annual salary.
+
+Though a very high correlagtion coefficient between independent
+variables is a cause for concern, the formal way of dealing with
+muticollinearity is through the use of the
+\textbf{\texttt{Variance\ Inflation\ Factor\ (VIF)}}. VIF is the ratio
+of the variance in a model with multiple predictors by the variance of a
+model with a single predictor:
+
+\[\large VIF_j=\frac{1}{1-R_{j}^{2}}\]
+
+VIFs start at 1 and have no upper limit. A value of 1 indicates that
+there is no correlation between this independent variable and any
+others. VIFs between 1 and 5 suggest that there is a moderate
+correlation, but it is not severe enough to warrant corrective measures.
+VIFs greater than 5 represent critical levels of multicollinearity where
+the coefficients are poorly estimated, and the p-values are
+questionable. More explanation of the theory can be found
+\href{https://en.wikipedia.org/wiki/Variance_inflation_factor}{here}.
+
+Below is a function that calculates VIF for each independent variable in
+a dataframe, and drops them if they exceed a threshold (set to 5).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# calculating VIF}
+\CommentTok{\# This function is amended from: https://stackoverflow.com/a/51329496/4667568}
+
+\ImportTok{from}\NormalTok{ statsmodels.stats.outliers\_influence }\ImportTok{import}\NormalTok{ variance\_inflation\_factor }
+\ImportTok{from}\NormalTok{ statsmodels.tools.tools }\ImportTok{import}\NormalTok{ add\_constant}
+
+\KeywordTok{def}\NormalTok{ drop\_column\_using\_vif\_(df, list\_var\_not\_to\_remove}\OperatorTok{=}\VariableTok{None}\NormalTok{, thresh}\OperatorTok{=}\DecValTok{5}\NormalTok{):}
+    \CommentTok{\textquotesingle{}\textquotesingle{}\textquotesingle{}}
+\CommentTok{    Calculates VIF each feature in a pandas dataframe, and repeatedly drop the columns with the highest VIF}
+\CommentTok{    A constant must be added to variance\_inflation\_factor or the results will be incorrect}
+
+\CommentTok{    :param df: the pandas dataframe containing only the predictor features, not the response variable}
+\CommentTok{    :param list\_var\_not\_to\_remove: the list of variables that should not be removed even though it has a high VIF. For example, dummy (or indicator) variables represent a categorical variable with three or more categories.}
+\CommentTok{    :param thresh: the max VIF value before the feature is removed from the dataframe}
+\CommentTok{    :return: dataframe with multicollinear features removed}
+\CommentTok{    \textquotesingle{}\textquotesingle{}\textquotesingle{}}
+    \ControlFlowTok{while} \VariableTok{True}\NormalTok{:}
+        \CommentTok{\# adding a constatnt item to the data}
+\NormalTok{        df\_with\_const }\OperatorTok{=}\NormalTok{ add\_constant(df)}
+
+\NormalTok{        vif\_df }\OperatorTok{=}\NormalTok{ pd.Series([variance\_inflation\_factor(df\_with\_const.values, i) }
+               \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(df\_with\_const.shape[}\DecValTok{1}\NormalTok{])], name}\OperatorTok{=} \StringTok{"VIF"}\NormalTok{,}
+\NormalTok{              index}\OperatorTok{=}\NormalTok{df\_with\_const.columns).to\_frame()}
+
+        \CommentTok{\# drop the const as const should not be removed}
+\NormalTok{        vif\_df }\OperatorTok{=}\NormalTok{ vif\_df.drop(}\StringTok{\textquotesingle{}const\textquotesingle{}}\NormalTok{)}
+        
+        \CommentTok{\# drop the variables that should not be removed}
+        \ControlFlowTok{if}\NormalTok{ list\_var\_not\_to\_remove }\KeywordTok{is} \KeywordTok{not} \VariableTok{None}\NormalTok{:}
+\NormalTok{            vif\_df }\OperatorTok{=}\NormalTok{ vif\_df.drop(list\_var\_not\_to\_remove)}
+            
+        \BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}Max VIF:\textquotesingle{}}\NormalTok{, vif\_df.VIF.}\BuiltInTok{max}\NormalTok{())}
+        
+        \CommentTok{\# if the largest VIF is above the thresh, remove a variable with the largest VIF}
+        \ControlFlowTok{if}\NormalTok{ vif\_df.VIF.}\BuiltInTok{max}\NormalTok{() }\OperatorTok{\textgreater{}}\NormalTok{ thresh:}
+            \CommentTok{\# If there are multiple variables with the maximum VIF, choose the first one}
+\NormalTok{            index\_to\_drop }\OperatorTok{=}\NormalTok{ vif\_df.index[vif\_df.VIF }\OperatorTok{==}\NormalTok{ vif\_df.VIF.}\BuiltInTok{max}\NormalTok{()].tolist()[}\DecValTok{0}\NormalTok{]}
+            \BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}Dropping: }\SpecialCharTok{\{\}}\StringTok{\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(index\_to\_drop))}
+\NormalTok{            df }\OperatorTok{=}\NormalTok{ df.drop(columns }\OperatorTok{=}\NormalTok{ index\_to\_drop)}
+        \ControlFlowTok{else}\NormalTok{:}
+            \CommentTok{\# No VIF is above threshold. Exit the loop}
+            \ControlFlowTok{break}
+
+    \ControlFlowTok{return}\NormalTok{ df}
+\end{Highlighting}
+\end{Shaded}
+
+Now we can implement this on our dataset:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ind\_vars}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}age\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}union\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{]}
+
+\NormalTok{vif }\OperatorTok{=}\NormalTok{ drop\_column\_using\_vif\_(reg\_df[ind\_vars], thresh}\OperatorTok{=}\DecValTok{5}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"The columns remaining after VIF selection are:"}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(vif.columns)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Max VIF: 1.0471509029112354
+The columns remaining after VIF selection are:
+Index(['sex', 'age', 'sch', 'union', 'race'], dtype='object')
+\end{verbatim}
+
+The maximum VIF value encountered was 1.04-- well within the acceptable
+range. Accordingly, the function hasn't dropped any of the independent
+variables in our dataset.
+
+Having explored our data through visualizations and summary statistics,
+and checked the assumptions of linear regression, we're now ready to
+begin building a model.
+
+\hypertarget{regression-1}{%
+\section{4. Regression}\label{regression-1}}
+
+Remember, the Ordinary Least Squares (OLS) regression seeks to find a
+straight line that best describes the relationship between two
+variables:
+
+\[y= \beta_0 + \beta_1x+\epsilon \]
+
+In our case, we're trying to predict hourly income-- this is our
+\textbf{dependent variable}, and there can be only one per regression.
+The variable we're using to predict hourly income is years of schooling,
+which is our \textbf{independent variable}. We can have multiple of
+these per regression. As such, the regression equation in our scenario
+looks like this:
+
+\[Hourly\ Income= \beta_0 + \beta_1 \times Years\ of\ Schooling +\epsilon \]
+
+Because the regression model will estimate the parameters
+\(\beta_0, \beta_1\) and \(\epsilon\), we just need to supply python
+with \(x\) and \(y\); We can do so by passing
+\texttt{realhrwage\ \textasciitilde{}\ \ sch} to the \texttt{ols()}
+function from statsmodels. This will run a regression of the form
+specified above, which we will store in an variable called
+\texttt{model}. We can get the output from this model using
+\texttt{model.summary()}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ statsmodels.formula.api }\ImportTok{import}\NormalTok{ ols}
+\ImportTok{from}\NormalTok{ statsmodels.iolib.summary2 }\ImportTok{import}\NormalTok{ summary\_col}
+
+\NormalTok{model}\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}realhrwage \textasciitilde{}  sch\textquotesingle{}}\NormalTok{, data}\OperatorTok{=}\NormalTok{reg\_df).fit() }\CommentTok{\# fit the model}
+\BuiltInTok{print}\NormalTok{(model.summary()) }\CommentTok{\# print the summary}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             realhrwage   R-squared:                       0.181
+Model:                            OLS   Adj. R-squared:                  0.181
+Method:                 Least Squares   F-statistic:                 1.164e+04
+Date:                Fri, 01 Dec 2023   Prob (F-statistic):               0.00
+Time:                        09:05:19   Log-Likelihood:            -2.0503e+05
+No. Observations:               52750   AIC:                         4.101e+05
+Df Residuals:                   52748   BIC:                         4.101e+05
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     -6.6246      0.266    -24.858      0.000      -7.147      -6.102
+sch            2.0327      0.019    107.887      0.000       1.996       2.070
+==============================================================================
+Omnibus:                    10230.138   Durbin-Watson:                   1.900
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            19817.137
+Skew:                           1.187   Prob(JB):                         0.00
+Kurtosis:                       4.838   Cond. No.                         73.7
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+\end{verbatim}
+
+There's a lot going on in the regression output above. If you want a
+more detailed explanation of what each part means, check out this
+\href{https://medium.com/swlh/interpreting-linear-regression-through-statsmodels-summary-4796d359035a}{blog
+post}. In practice, we only need to focus on a couple parts of this
+output:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{R-squared}: This value tells the proportion of the variation
+  in our dependent variable (realhrwage) that is explained by the model
+  we fit. In this case we can interpret it as follows:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{18.1\% of the variation in hourly wages can be explained by
+    this regresion model}
+  \end{itemize}
+\item
+  \texttt{coef}: These are our \(\beta\) estimates; it is the slope of
+  the regression line that describes the relationship between a given
+  independent variable (sch) and the dependent variable (realhrwage).
+  There are two coefficients listed under this
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{sch}: This is \(\beta_1\), the slope coefficient on the
+    years of schooling variable. It tells us the change in \(y\) that
+    results from a 1-unit increase in \(x\). In robotic terms, we can
+    interpret it as follows:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \textbf{A 1 unit increase in \texttt{sch} leads to a 2.0327
+      increase in \texttt{realhrwage}}. But we are not robots, and both
+      of these variables are in units that we can interpret in plain
+      english. Here's a more natural interpretation:
+    \item
+      \textbf{On average, every additional year of schooling is
+      associated with a \$2.03 increase in hourly wages.}
+    \end{itemize}
+  \item
+    \texttt{Intercept}: This is \(\beta_0\). It tells us the value of
+    \(y\) when all of the independent variables in the model are held at
+    0. In this case, it can be interpreted as
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \textbf{According to our model, a person with 0 years of schooling
+      is predicted to earn -\$6.62 per hour}
+    \item
+      Naturally, this is a nonsensical prediction. There are no jobs
+      that pay negative wages. We'll examine why this is happening in
+      the next section, when we look into the assumptions of linear
+      regression.
+    \end{itemize}
+  \end{itemize}
+\item
+  \texttt{P\textgreater{}\textbar{}t\textbar{}}: this is known as the
+  ``p-value'', and is the main measure of statistical significance.
+  \textbf{A p-value denotes the probability of obtaining a result at
+  least as extreme as the one observed, assuming that the null
+  hypothesis is true}. In the case of a regression, the null hypothesis
+  is that there is no relationship between our variables-- increasing
+  \(x\) has no effect on \(y\). In other words, that the regression line
+  is flat: \(\beta_1=0\) . A p-value of 0.05 means that the coefficient
+  is statistically significant at the 5\% level. In our case, the
+  p-value is 0.000 (note: this doesn't mean it's equal to zero, just
+  very very small), and we can therefore reject the null hypothesis that
+  \(\beta_1=0\) at the 1\% confidence level. However, this isn't the end
+  of the story-- remember our weird negative intercept, and the fact
+  that our model explains less than 20\% of the variation in hourly
+  wages (\(R^2=0.181\)). For a good overview of what exactly a p-value
+  is, and why we should be cautious when interpreting them, see this
+  \href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6532382/}{journal
+  article}.
+\end{itemize}
+
+\hypertarget{categorical-variables}{%
+\subsection{Categorical Variables}\label{categorical-variables}}
+
+The results of our first regression seem to show that the more education
+a person has, the higher their hourly wage. This makes intuitive sense,
+but it's probably not the whole picture. We may also suspect that older
+people earn more, since they have more experience and are more senior.
+We've also seen i previous classes that there are significant
+disparities in income. Considering we have data on all these variables,
+we can set up the following model:
+
+\[Hourly\ Income= \beta_0 + \beta_1 \times Years\ of\ Schooling + \beta_2 \times Age + \beta_3 \times Sex +\epsilon \]
+
+When we convert this equation into the python equivalent, it will look
+like this:
+
+\texttt{realhrwage\ \textasciitilde{}\ \ sch\ +\ age\ +\ C(sex)}
+
+Notice that for the sex variable is put within \texttt{C()}. This is how
+we indicate that the variable in question is categorical, and that it
+should be treated differently. Unlike a continuous variable, we're not
+interested in the change in \(y\) that results from a 1 unit increase in
+\(x\), since our units have no meaningful order. Instead, we'll have to
+pick one of the categories (called a \textbf{base
+category}/\textbf{reference category}), and compare each of the other
+categories in that variable against this one. You can specify the base
+category explicitly (for example
+\texttt{realhrwage\ \textasciitilde{}\ \ sch\ +\ age\ +\ C(sex,\ Treatment(reference=2))}
+makes women the base category), or python will pick one for you. As
+such, for a categorical variable with \(n\) categories, we get \(n-1\)
+coefficeints which denote the change in \(y\) associated with membership
+of a given category compared to the base category. For example, if we
+have a categorical variable with three levels \(a, b, c\) where \(a\) is
+the base category, we would get \emph{two} coefficients: \(\beta_1 b\)
+and \(\beta_2 c\). Then we would interpret the resulting coefficient as
+
+\begin{itemize}
+\tightlist
+\item
+  ``Compared to category \(a\), membership of category \(b\) is
+  associated with a \(\beta_1\) change in \(y\).''
+\item
+  ``Compared to category \(a\), membership of category \(c\) is
+  associated with a \(\beta_2\) change in \(y\).''
+\end{itemize}
+
+Let's see what this looks like in our regression output:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}realhrwage \textasciitilde{}  sch + age + C(sex)\textquotesingle{}}\NormalTok{, data}\OperatorTok{=}\NormalTok{reg\_df).fit() }
+\BuiltInTok{print}\NormalTok{(model.summary())}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             realhrwage   R-squared:                       0.239
+Model:                            OLS   Adj. R-squared:                  0.239
+Method:                 Least Squares   F-statistic:                     5514.
+Date:                Fri, 01 Dec 2023   Prob (F-statistic):               0.00
+Time:                        09:05:19   Log-Likelihood:            -2.0310e+05
+No. Observations:               52750   AIC:                         4.062e+05
+Df Residuals:                   52746   BIC:                         4.062e+05
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+===============================================================================
+                  coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------
+Intercept     -12.6722      0.330    -38.392      0.000     -13.319     -12.025
+C(sex)[T.2]    -5.2692      0.099    -52.967      0.000      -5.464      -5.074
+sch             2.1343      0.018    116.995      0.000       2.098       2.170
+age             0.1695      0.005     36.164      0.000       0.160       0.179
+==============================================================================
+Omnibus:                     9831.824   Durbin-Watson:                   1.995
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            19481.335
+Skew:                           1.131   Prob(JB):                         0.00
+Kurtosis:                       4.935   Cond. No.                         308.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+\end{verbatim}
+
+We now have 4 coefficients. In general, we don't always have to
+interpret the Intercept coefficient. It's not really that meaningful in
+this case, since now it denotes the predicted hourly income of someone
+who is male, has 0 years of schooling, and is 0 years old. It's good to
+keep it in mind as a sense check, though. The rest of the coefficients
+can be interpreted as follows:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{C(sex){[}T.2{]}}: On average, women earn \$5.2 less per hour
+  than men.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    {[}T.2{]} in this line denotes the category in this variable
+    associated with the given coefficient. So this is telling us that
+    what is being shown is the coefficient associated with membership of
+    category 2 in the sex variable; based on the description of the
+    variables above, we know that sex=1 indicates men, and sex=2
+    indicates women. Naturally, we don't see a coefficient for
+    \texttt{C(sex){[}T.1{]}}, because this is the \emph{base category}.
+  \end{itemize}
+\item
+  \texttt{sch}: Every additional year of schooling is associated with a
+  \$2.13 increase in hourly income
+\item
+  \texttt{age}: Every additional year of age is associated with a \$0.16
+  increase in hourly income
+\end{itemize}
+
+\hypertarget{exercise-23}{%
+\subsection{Exercise}\label{exercise-23}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Estimate a regression of the following form and store the results in a
+  variable called \textbf{model1}:
+\end{enumerate}
+
+\[Hourly\ Income= \beta_0 + \beta_1 \times Years\ of\ Schooling + \beta_2 \times Age + \beta_3 \times Sex + \beta_4 \times Union\ Membership + \beta_5 \times Race +\epsilon \]
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Intepret each of the coefficients appropriately. Make note of the
+  statistical significance of each result, and comment on the overall
+  fit of the model.
+\end{enumerate}
+
+\hypertarget{creating-a-regression-table}{%
+\subsection{Creating a Regression
+Table}\label{creating-a-regression-table}}
+
+Now that we've got a good sense of how regressions work and how to
+interpret them, we need to communicate these results properly. Many of
+you have probably read journal articles in which regression results are
+reported, but I doubt you've ever seen the output of
+\texttt{model.summary()} copied and pasted in the text of an article.
+Instead, these results are reported following a fairly standardized
+convention: a regression table. It picks out the components of the model
+summary that we're interested in, and formats them in a consistent and
+easy-to-interpret way. Luckly, the statsmodels package has a function
+called \texttt{summary\_col} that takes a fitted model and formats it
+for us automatically; we just need to tweak a few options.
+
+In the example below, i'm going to run two regressions; one in which i
+filter the data to only include people from California, and another for
+people in Mississippi (the richest and poorest states, respectively), to
+see if the relationship between wages, sex, age, and schooling differ
+geographically. I'm then going to create a regression table in which
+each column is a different regression model, and row will contain the
+coefficient for a given independent variable with the standard error in
+parentheses underneath and the level of statistical significance (i.e.,
+size of the p-value) denotes by stars such that: * p\textless0.05, **
+p\textless0.01, *** p\textless0.001.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{california }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}realhrwage \textasciitilde{}  sch + age + C(sex)\textquotesingle{}}\NormalTok{, data}\OperatorTok{=}\NormalTok{reg\_df[reg\_df[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{6}\NormalTok{]).fit()  }\CommentTok{\# fit a model to california{-}{-} i\textquotesingle{}m filtering the data using the FIPS code for california, which is 6}
+\NormalTok{mississippi }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}realhrwage \textasciitilde{}  sch + age + C(sex)\textquotesingle{}}\NormalTok{, data}\OperatorTok{=}\NormalTok{reg\_df[reg\_df[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{28}\NormalTok{]).fit()  }\CommentTok{\# same thing for mississippi (FIPS code 28)}
+
+\NormalTok{table}\OperatorTok{=}\NormalTok{summary\_col( }\CommentTok{\# create a regression table }
+\NormalTok{    [california,mississippi], }\CommentTok{\# pass the models to the summary\_col function}
+\NormalTok{    stars}\OperatorTok{=}\VariableTok{True}\NormalTok{, }\CommentTok{\# add stars denoting the p{-}values of the coefficient to the table; * p\textless{}0.05, ** p\textless{}0.01, *** p\textless{}0.001}
+\NormalTok{    float\_format}\OperatorTok{=}\StringTok{\textquotesingle{}}\SpecialCharTok{\%0.3f}\StringTok{\textquotesingle{}}\NormalTok{, }\CommentTok{\# set the decimal places to 3}
+\NormalTok{    model\_names}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}California\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Mississippi\textquotesingle{}}\NormalTok{], }\CommentTok{\# set the name of the model}
+\NormalTok{    info\_dict }\OperatorTok{=}\NormalTok{ \{}\StringTok{"N"}\NormalTok{:}\KeywordTok{lambda}\NormalTok{ x: }\StringTok{"}\SpecialCharTok{\{0:d\}}\StringTok{"}\NormalTok{.}\BuiltInTok{format}\NormalTok{(}\BuiltInTok{int}\NormalTok{(x.nobs))\}) }\CommentTok{\# add the number of observations to the table}
+
+\BuiltInTok{print}\NormalTok{(table)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+=====================================
+               California Mississippi
+-------------------------------------
+Intercept      -12.136*** -10.111*** 
+               (1.030)    (3.497)    
+C(sex)[T.2]    -5.154***  -4.980***  
+               (0.350)    (0.924)    
+sch            2.096***   1.850***   
+               (0.053)    (0.205)    
+age            0.217***   0.115**    
+               (0.017)    (0.045)    
+R-squared      0.262      0.199      
+R-squared Adj. 0.262      0.193      
+N              5079       430        
+=====================================
+Standard errors in parentheses.
+* p<.1, ** p<.05, ***p<.01
+\end{verbatim}
+
+This layout lets us clearly explore our regresison results. This lets us
+clearly compare the coefficients of the same variable in different
+models. For example, we can see that men tend to earn \$5.15 more per
+hour than women in California, but just \$4.98 more per hour in
+Mississippi, and both of these results are statistically significant at
+the 1\% level. This suggests that the wage gap is actually somewhat
+higher in California! Why might this be?
+
+\hypertarget{exercise-24}{%
+\subsection{Exercise}\label{exercise-24}}
+
+\[ Hourly\ Income= \beta_0 + \beta_1 \times Years\ of\ Schooling + \beta_2 \times Age + \beta_3 \times Sex + \beta_4 \times Union\ Membership + \beta_5 \times Race +\epsilon \]
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Run five regressions, each of the form above (same as earlier):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    In the first model, run the regression on the full sample contained
+    in \texttt{reg\_df}. In subsequent modles, restrict the sample to
+    the following professions:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Production
+    \item
+      Farmers
+    \item
+      Bankers
+    \item
+      Doctors \& Lawyers
+    \end{itemize}
+  \end{itemize}
+\item
+  Create a regression table containing the results of each model in a
+  separate column
+\item
+  Interpret the coefficients on the union related variables
+
+  \begin{itemize}
+  \tightlist
+  \item
+    How does union membership affect hourly wages across different
+    sectors?
+  \item
+    How does the gender wage gap vary across sectors?
+  \end{itemize}
+\end{enumerate}
+
+\hypertarget{extension-2}{%
+\section{Extension}\label{extension-2}}
+
+Though we've gotten some significant results and interesting insights
+from our modeling effort so far, we can further improve our model. In
+particular, we may want to revisit the way we've defined some of our
+variables, since we suspect that we may have some heteroscedasticity in
+our models, and have consequently been getting some weird results
+(e.g.~negative hourly income).
+
+\hypertarget{hourly-wages}{%
+\subsection{Hourly Wages}\label{hourly-wages}}
+
+When checking the regression assumptions, we suspected that there may be
+some heteroscedasticity-- i.e., that our model performs better in some
+regions of the \(x\) distribution compared to others; remember, it
+consistently underestimated hourly income for those with little/no
+schooling, as evidenced by the negative intercept and the regression
+scatterplot:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sns.jointplot(data}\OperatorTok{=}\NormalTok{reg\_df, x}\OperatorTok{=}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}realhrwage\textquotesingle{}}\NormalTok{, kind}\OperatorTok{=}\StringTok{"reg"}\NormalTok{,  scatter\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(alpha}\OperatorTok{=}\FloatTok{0.1}\NormalTok{), line\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{), height}\OperatorTok{=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W07. Linear Regression_files/figure-pdf/cell-17-output-1.png}
+
+}
+
+\end{figure}
+
+We can more thoroughly diagnose heteroscedasticity \emph{after} having
+run our regression models, since we have access to the model's
+\textbf{residuals} (the difference between the observed values and the
+predicted values). Remember, one of the assumptions of linear regression
+is that the residuals are normally distributed. A Quantile-Quantile Plot
+(Q-Q Plot) is a plot of the quantiles of a sample against the quantiles
+of a theoretical distribution. The quantiles are the values that divide
+the range of a probability distribution into continuous intervals with
+equal probabilities. Thus, we can use a Q-Q plot to compare the
+residuals of our model to a normal distribution as follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}realhrwage \textasciitilde{}  sch\textquotesingle{}}\NormalTok{, data}\OperatorTok{=}\NormalTok{reg\_df).fit()  }\CommentTok{\# fit a model}
+\NormalTok{residuals }\OperatorTok{=}\NormalTok{ model.resid }\CommentTok{\# get the residuals}
+
+\CommentTok{\# make the figure wider}
+\NormalTok{plt.rcParams[}\StringTok{"figure.figsize"}\NormalTok{] }\OperatorTok{=}\NormalTok{ [}\DecValTok{20}\NormalTok{, }\DecValTok{10}\NormalTok{]}
+
+\NormalTok{f, axes }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{sns.histplot(residuals, kde}\OperatorTok{=}\VariableTok{True}\NormalTok{, ax}\OperatorTok{=}\NormalTok{axes[}\DecValTok{0}\NormalTok{]) }\CommentTok{\# plot the residuals}
+\NormalTok{axes[}\DecValTok{0}\NormalTok{].set\_title(}\StringTok{\textquotesingle{}Histogram of Residuals\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
+
+\NormalTok{sm.qqplot(residuals, line}\OperatorTok{=}\StringTok{\textquotesingle{}45\textquotesingle{}}\NormalTok{, fit}\OperatorTok{=}\VariableTok{True}\NormalTok{,  ax}\OperatorTok{=}\NormalTok{axes[}\DecValTok{1}\NormalTok{]) }\CommentTok{\# plot the residuals}
+\NormalTok{axes[}\DecValTok{1}\NormalTok{].set\_title(}\StringTok{\textquotesingle{}Q{-}Q Plot\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
+
+\NormalTok{plt.show() }\CommentTok{\# show the plot}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W07. Linear Regression_files/figure-pdf/cell-18-output-1.png}
+
+}
+
+\end{figure}
+
+This Q-Q plot suggests that our residuals are not normally distributed,
+as very few of them are on the red line. This is probably due to the
+fact that the \texttt{realhrwage} variable is itself highly skewed.
+
+Log transformations are often recommended for skewed data, such as
+monetary measures or certain biological and demographic measures. Log
+transforming data usually has the effect of spreading out clumps of data
+and bringing together spread-out data. So instead of:
+
+\[Hourly\ Income= \beta_0 + \beta_1 \times Years\ of\ Schooling +\epsilon \]
+
+we get:
+
+\[\log{(Hourly\ Income)}= \beta_0 + \beta_1 \times Years\ of\ Schooling +\epsilon \]
+
+In effect, this means changing our belief that there is a linear
+relationship between schooling and income (a constant increase in x
+leads to a constant increase in y across the whole range of x).
+Qualitatively, this means
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{reg\_df[}\StringTok{\textquotesingle{}logwage\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.log(reg\_df[}\StringTok{\textquotesingle{}realhrwage\textquotesingle{}}\NormalTok{])}
+\NormalTok{sns.jointplot(data}\OperatorTok{=}\NormalTok{reg\_df, x}\OperatorTok{=}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}logwage\textquotesingle{}}\NormalTok{, kind}\OperatorTok{=}\StringTok{"reg"}\NormalTok{,  scatter\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(alpha}\OperatorTok{=}\FloatTok{0.1}\NormalTok{), line\_kws}\OperatorTok{=}\BuiltInTok{dict}\NormalTok{(color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{), height}\OperatorTok{=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W07. Linear Regression_files/figure-pdf/cell-19-output-1.png}
+
+}
+
+\end{figure}
+
+A few things are noticeably different in this plot. First, the histogram
+of \texttt{logwage} on the far right is a lot less skewed than the
+histogram of \texttt{realhrwage}. Consequently, the regression line
+seems to fit the data slightly better across the whole range of the
+data.
+
+We can generate the same residual histogram and Q-Q plot as before, but
+using a model in which \texttt{logwage} is the dependent variable:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{log\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}logwage \textasciitilde{}  sch\textquotesingle{}}\NormalTok{, data}\OperatorTok{=}\NormalTok{reg\_df).fit()  }\CommentTok{\# fit a model}
+\NormalTok{log\_model\_residuals }\OperatorTok{=}\NormalTok{ log\_model.resid }\CommentTok{\# get the residuals}
+
+\CommentTok{\# make the figure wider}
+\NormalTok{plt.rcParams[}\StringTok{"figure.figsize"}\NormalTok{] }\OperatorTok{=}\NormalTok{ [}\DecValTok{20}\NormalTok{, }\DecValTok{10}\NormalTok{]}
+
+\NormalTok{f, axes }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{sns.histplot(log\_model\_residuals, kde}\OperatorTok{=}\VariableTok{True}\NormalTok{, ax}\OperatorTok{=}\NormalTok{axes[}\DecValTok{0}\NormalTok{]) }\CommentTok{\# plot the residuals}
+\NormalTok{axes[}\DecValTok{0}\NormalTok{].set\_title(}\StringTok{\textquotesingle{}Histogram of Residuals\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
+
+\NormalTok{sm.qqplot(log\_model\_residuals, line}\OperatorTok{=}\StringTok{\textquotesingle{}45\textquotesingle{}}\NormalTok{, fit}\OperatorTok{=}\VariableTok{True}\NormalTok{,  ax}\OperatorTok{=}\NormalTok{axes[}\DecValTok{1}\NormalTok{]) }\CommentTok{\# plot the residuals}
+\NormalTok{axes[}\DecValTok{1}\NormalTok{].set\_title(}\StringTok{\textquotesingle{}Q{-}Q Plot\textquotesingle{}}\NormalTok{) }\CommentTok{\# add a title}
+
+\NormalTok{plt.show() }\CommentTok{\# show the plot}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W07. Linear Regression_files/figure-pdf/cell-20-output-1.png}
+
+}
+
+\end{figure}
+
+It's not perfect, but it's a lot better than the unlogged version; a
+large proportion of the residuals fall on the red line in the Q-Q plot,
+though they diverge at the tips. The histogram of residuals also seems
+to be less skewed, and more evenly distributed around 0.
+
+\hypertarget{coefficient-interpretation.}{%
+\section{Coefficient
+interpretation.}\label{coefficient-interpretation.}}
+
+Only the dependent/response variable is log-transformed. Exponentiate
+the coefficient, subtract one from this number, and multiply by 100.
+This gives the percent increase (or decrease) in the response for every
+one-unit increase in the independent variable. Here's a
+\href{https://data.library.virginia.edu/interpreting-log-transformations-in-a-linear-model/\#:~:text=Interpret\%20the\%20coefficient\%20as\%20the,variable\%20increases\%20by\%20about\%200.20\%25.}{full
+guide} to interpreting the coefficients on log-transformed variables.
+
+First, let's compare the unlogged and logged models:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{table}\OperatorTok{=}\NormalTok{summary\_col( }\CommentTok{\# create a regression table }
+\NormalTok{    [model,log\_model], }\CommentTok{\# pass the models to the summary\_col function}
+\NormalTok{    stars}\OperatorTok{=}\VariableTok{True}\NormalTok{, }\CommentTok{\# add stars denoting the p{-}values of the coefficient to the table; * p\textless{}0.05, ** p\textless{}0.01, *** p\textless{}0.001}
+\NormalTok{    float\_format}\OperatorTok{=}\StringTok{\textquotesingle{}}\SpecialCharTok{\%0.3f}\StringTok{\textquotesingle{}}\NormalTok{, }\CommentTok{\# set the decimal places to 3}
+\NormalTok{    model\_names}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}Unlogged\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Logged\textquotesingle{}}\NormalTok{], }\CommentTok{\# set the name of the model}
+\NormalTok{    info\_dict }\OperatorTok{=}\NormalTok{ \{}\StringTok{"N"}\NormalTok{:}\KeywordTok{lambda}\NormalTok{ x: }\StringTok{"}\SpecialCharTok{\{0:d\}}\StringTok{"}\NormalTok{.}\BuiltInTok{format}\NormalTok{(}\BuiltInTok{int}\NormalTok{(x.nobs))\}) }\CommentTok{\# add the number of observations to the table}
+
+\BuiltInTok{print}\NormalTok{(table)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+=================================
+                Unlogged  Logged 
+---------------------------------
+Intercept      -6.625*** 1.573***
+               (0.266)   (0.012) 
+sch            2.033***  0.096***
+               (0.019)   (0.001) 
+R-squared      0.181     0.191   
+R-squared Adj. 0.181     0.191   
+N              52750     52750   
+=================================
+Standard errors in parentheses.
+* p<.1, ** p<.05, ***p<.01
+\end{verbatim}
+
+Interestingly, we can see that we've also got a 1\% increase in \(R^2\)
+just from logging the dependent variable. While the coefficient for
+schooling can be interpreted normally for the unlogged model (every
+additional year of schooling leads to a \$2.03 increase in hourly
+wages), this is not the case for the logged model. We can interpret the
+coefficeint in the logged model as follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{b1}\OperatorTok{=}\NormalTok{log\_model.params.sch }\CommentTok{\# get the coefficient for sch}
+\NormalTok{exp\_b1}\OperatorTok{=}\NormalTok{np.exp(b1) }\CommentTok{\# exponentiate the coefficient}
+
+\NormalTok{pct\_change}\OperatorTok{=}\NormalTok{(exp\_b1}\OperatorTok{{-}}\DecValTok{1}\NormalTok{)}\OperatorTok{*}\DecValTok{100} \CommentTok{\# multiply by 100 to get the percentage change}
+\BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}For every additional year of schooling, log wages increase by }\SpecialCharTok{\{\}}\StringTok{\%\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(}\BuiltInTok{round}\NormalTok{(pct\_change,}\DecValTok{2}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+For every additional year of schooling, log wages increase by 10.04%
+\end{verbatim}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{assessed-question-6}{%
+\chapter{Assessed Question}\label{assessed-question-6}}
+
+Filter the dataframe to only contain people who work in construction,
+extraction and installation. Compared to those who are covered by a
+union but not themselves members, what is the difference in log hourly
+earnings for union members? Is this difference statistically
+significant?
 
 
 
