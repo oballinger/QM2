@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, sharp corners, breakable, interior hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, enhanced, sharp corners, breakable, interior hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -7731,6 +7731,717 @@ extraction and installation. Compared to those who are covered by a
 union but not themselves members, what is the difference in log hourly
 earnings for union members? Is this difference statistically
 significant?
+
+\bookmarksetup{startatroot}
+
+\hypertarget{difference-in-differences}{%
+\chapter{Difference in Differences}\label{difference-in-differences}}
+
+\hypertarget{workshop-08-open-in-colab}{%
+\section[\emph{Workshop 08} ]{\texorpdfstring{\emph{Workshop 08}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W08.\%20Diff-in-Diff.ipynb}{\protect\includegraphics{index_files/mediabag/colab-badge.png}}}{Workshop 08 Open In Colab}}\label{workshop-08-open-in-colab}}
+
+\hypertarget{aims-6}{%
+\subsection{Aims:}\label{aims-6}}
+
+This workshop builds on last week's material, replicating analysis in
+published academic research on the relationship between minimum wages
+and unemployment.
+
+As always we'll start by importing the libraries I need
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#!pip install linearmodels}
+\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
+\ImportTok{import}\NormalTok{ seaborn }\ImportTok{as}\NormalTok{ sns}
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
+\ImportTok{import}\NormalTok{ plotly}
+\ImportTok{import}\NormalTok{ plotly.express }\ImportTok{as}\NormalTok{ px}
+\ImportTok{import}\NormalTok{ warnings}
+\ImportTok{from}\NormalTok{ statsmodels.formula.api }\ImportTok{import}\NormalTok{ ols}
+\ImportTok{from}\NormalTok{ statsmodels.iolib.summary2 }\ImportTok{import}\NormalTok{ summary\_col}
+\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
+
+\NormalTok{warnings.filterwarnings(}\StringTok{\textquotesingle{}ignore\textquotesingle{}}\NormalTok{)}
+\NormalTok{sns.}\BuiltInTok{set}\NormalTok{(font\_scale}\OperatorTok{=}\FloatTok{1.5}\NormalTok{)}
+\NormalTok{sns.set\_style(}\StringTok{"white"}\NormalTok{)}
+\NormalTok{plt.rcParams[}\StringTok{\textquotesingle{}figure.figsize\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ (}\DecValTok{12}\NormalTok{, }\DecValTok{8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{0.3194}}@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\#\# Panel Regression \\
+\href{https://www.pewresearch.org/politics/2012/04/17/with-voters-focused-on-economy-obama-lead-narrows/}{Surveys}
+indicate that ``jobs'' are consistently one of the most important issues
+among voters in U.S. presidential elections, and that Republicans are
+\href{https://thehill.com/homenews/campaign/3700047-republicans-hold-14-point-advantage-on-which-party-would-do-better-job-on-economy-poll/}{typically
+perceived} as better in handling the economy than Democrats. An
+\href{https://www.nbcnews.com/news/us-news/where-did-trump-make-election-gains-unemployment-data-tells-surprising-n1247935}{article}
+in NBC claims that ``analysis of unemployment and voting data found that
+the president's share of the vote held steady or increased in each of
+the 20 counties with the highest rise in unemployment from September
+2019 to September 2020. And his vote share improved by 1 percentage
+point or more in 70 of the 100 hardest-hit counties.'' Let's look into
+this. \\
+\#\#\# Data Collection \\
+There are only 50 states in the U.S. but there are over 3000 counties--
+this allows us to increase our sample size and perform a more
+fine-grained analysis. This is particularly important if we're
+interested in investigating the relationship between unemployment and
+voting behaviour, because of the urban-rural divide. For example, with
+in the state of New York there are probably vast differences in social
+and economic factors relevant to voting behaviour between Manhattan and
+very rural areas; this variation is lost when we look at aggregate
+state-level resutls, but visible when we look at the county-level. As
+such, in addition to the datasets we've just imported, we're going to be
+downloading county-level unemployment data straight from the BLS using
+the loop below. \\
+::: \{.cell\} \\
+Part of the cleaning process in the cell above involves the creation of
+a column called ``county\_fips''-- this stands for
+\href{https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt\#:~:text=FIPS\%20codes\%20are\%20numbers\%20which,to\%20which\%20the\%20county\%20belongs.}{Federal
+Information Processing System}. This is a code that uniquely identifies
+states and counties in the U.S. A two digit FIPS code identifies states
+(e.g.~01: Alabama, 02: Alaska, etc.) and a five digit fips code
+identifies counties (e.g.~010001: Atauga County, Alabama; 02068: Denali
+Borough, Alaska). Notice, the first two digits of the five-digit county
+FIPS code indicates the state. Boring, yes, but these codes are
+imperative in allowing us to join county- and state- level datasets from
+different sources quicky and easily. Imagine what a nightmare it would
+be to try to join them using the names of the counties, having to deal
+with capitalizations, punctuation, etc. Yikes. \\
+\#\#\# Maps \\
+Great-- we've now got clean, county-level unemployment and population
+data spanning from 1990-2022 on an annual basis. Lets make a map to
+explore the spatial distribution of unemployment across time in the U.S.
+In order to do that, we're going to need a spatial file that tells us
+the shapes of the counties; I've imported it as a variable called
+\texttt{county\_polygons}. We're then going to create an map using the
+\href{https://plotly.com/python/}{Plotly} library, which is great for
+making pretty, interactive maps and plots. It will have a slider on the
+bottom that lets us view unemployment in different years. It's doing
+quite a bit under the hood so it will take some time to plot. Be
+patient. \\
+::: \{.cell\} ``` \{.python .cell-code\} import json !mkdir data !mkdir
+data/wk10/ !curl
+https://storage.googleapis.com/qm2/wk10/geojson-counties-fips.json -o
+data/wk10/geojson-counties-fips.json \\
+county\_polygons =
+json.load(open(``data/wk10/geojson-counties-fips.json'')) ``` ::: \\
+::: \{.cell\} ``` \{.python .cell-code\}
+plot\_sample=counties{[}counties{[}`year'{]}\textgreater2007{]} \#
+subset the data to only include years after 2007 -- it would take too
+long to plot all of the data \\
+px.choropleth( \# plot a choropleth map using the plotly express (px)
+library plot\_sample, \# load the dataframe locations=`county\_fips', \#
+set the location column to the state code geojson=county\_polygons, \#
+set the location mode to USA states (you could add your own custom
+geojson/spatial file here) scope=`usa', \# set the scope to the USA, so
+that it only plots the states color=``unemployment'', \# set the color
+of the states to correspond to the unemployment rate
+animation\_frame=plot\_sample{[}``year''{]}.astype(str), \# set the
+animation frame to the date, creating a slider at the bottom of the map
+color\_continuous\_scale=px.colors.sequential.Viridis, \# set the color
+scale to Viridis, a commonly used color scale range\_color={[}0, 10{]},
+\# set the range of the color scale to 0-10 height=1000) \# set the
+height of the map to 1000 pixels ``` ::: \\
+This map is interactive-- meaning you can zoom in, pan around, and hover
+over it to get further information on the unemployment level in each
+county. You can also use the slider at the bottom to toggle between
+different years; if you move the slider from 2008 to 2009, you'll see
+lots of yellow suddenly appearing. A similar thing happens between 2019
+and 2020. What's going on? Play around with this map for a second, and
+make note of spatial and temporal trends in unemployment. \\
+Now we're going to do the same thing for the elections data, which I've
+taken the liberty of cleaning. Let's load it up as a dataframe called
+\texttt{elections}, and make another map in which we plot vote shares in
+various elections such that red shows republican support, and blue shows
+democratic support. \\
+::: \{.cell\} \\
+Explore the map above. What do you notice about republican vote share,
+particularly as it relates to the previous map of unemployment? \\
+Now we've got two datasets-- one on unemployment and another on election
+results. We want to merge them but CAREFUL: each row corresponds to the
+value of a variable \(x\) in county \(i\) and time \(t\) (so,
+\(x_{it}\)); for example, the value in the first row of our dataset
+under the unemployment column would be \(unemployment_{01001, 2000}\);
+i.e., the unemployment rate in Atauga County, Alabama (FIPS code 01001),
+in the year 2000. When our data has this structure (\(x_{it}\)), we call
+it \textbf{panel data}. It must be handled differently from
+\textbf{cross sectional data} (\(x_i\)), from merging to estimation. \\
+We can't just merge on \(i\) or \(t\), we need to merge on both. We can
+do so as follows: \\
+::: \{.cell\} \\
+\#\#\# Exercise \\
+OK. Our data is clean and ready for analysis. Because we're going to be
+investigating the relationship between unempoyment rates and republican
+voteshare via a regression model, we're going to need to follow the four
+steps of regression modeling from
+\href{https://oballinger.github.io/QM2/notebooks/W09.\%20Linear\%20Regression.html}{last
+week}. \\
+First, formulate a research question (complete with null and alternative
+hypothesis), and then follow these steps for our dataset, \texttt{df\_c}
+(bonus points if you account for the influence of population). \\
+1. Summary Statistics * Table of Summary Statistics 2. Visualisation *
+Exploratory Plots 3. Assumptions * A. Independence * B.
+Heteroscedasticity: Regression plots + Q-Q plot * C. Multicollinearity:
+VIF + Correlation Matrix 4. Regression * Regression Table \\
+For the moment, when you run the regression, ignore the fact that we
+have panel data and just run a regular regression of the form
+\(\huge Y= \beta_0 + \beta_1X+\epsilon \) \\
+\#\#\# Accounting for Space and Time \\
+If you've done things correctly, you'll notice two things. First, the
+appears to be a generally negative relationship between unemployment and
+republican voteshare; in other words, places with higher unemployment
+tend to vote \emph{against} republicans. Second, we've egregiously
+violated the independence assumption. We have repeat observations of the
+same individuals (counties) over time. As such, this result may be
+biased unless we account for space and time. \\
+As we saw in the lecture, panel data actually contains \emph{two}
+sources of variation: differences \emph{between} individuals (in this
+case, counties), and \emph{within} individuials. So, a simple research
+question such as ``Does unemployment increase republican voteshare'' is
+actually two different questions: \\
+1. Does a higher level of unemployment lead to higher republican vote
+shares \textbf{between counties}? 2. Does an \emph{increase} in the
+unemployment rate over time lead to an \emph{increase} in republican
+vote shares \textbf{within counties}? \\
+Neither is more important than the other, but we must be careful not to
+conflate them as they are very different questions. A straighforward way
+of answering the first question would be to get rid of the time
+dimension in our data by running a separate regression for each year: \\
+::: \{.cell\} ``` \{.python .cell-code\} models={[}{]} \# create empty
+list to store the models names={[}{]} \# create empty list to store the
+names of the models years=df\_c{[}`year'{]}.unique() \\
+for year in years: \# loop through years from 2000 to 2020 in increments
+of 4 election=df\_c{[}df\_c{[}`year'{]}==year{]} \# subset the data to
+only include the year of interest model= ols(`r\_votes \textasciitilde{}
+unemployment + population', data=election).fit() \# run a regression of
+the republican vote share on the unemployment rate models.append(model)
+\# append the model to the list of models names.append(str(year)) \#
+append the name of the model to the list of names \\
+table=summary\_col( \# create a regression table models, \# pass the
+models to the summary\_col function stars=True, \# add stars denoting
+the p-values of the coefficient to the table; * p\textless0.05, **
+p\textless0.01, *** p\textless0.001 float\_format=`\%0.3f', \# set the
+decimal places to 3 model\_names=names, \# set the names of the model
+info\_dict = \{``N'':lambda x: ``\{0:d\}''.format(int(x.nobs))\}) \# add
+the number of observations to the table \\
+print(table) \# print the table ``` ::: \\
+This table is pretty informative. Using what we learned from last week,
+we can say that for the 2020 election, \\
+* A 1\% increase in the unemployment rate was associated with a 2.3\%
+\emph{decrease} in republican voteshare. * A 1000-person increase in
+population was associated with 0.029\% decrease in republican voteshare.
+* both of these results are statistically signifiant at the 0.01 level.
+* 23\% of the variation in republican voteshare can be explained by
+unemployment and population. \\
+Crucially, ``increase'' in this context pertains to \emph{differences in
+between counties}! \\
+We can also compare these results across different elections. The
+coefficient for the unemployment variable in 2020 is over twice the size
+of the same coefficient in 2016! So it looks like actually unemployment
+and republican voteshare are \emph{negatively} related, contrary to
+popular belief. \\
+But is this the whole story? \\
+Below, i've isolated West Virginia, one of the states with the highest
+unemployment rates in America. Instead of drawing a new regression line
+every year, i've drawn a new regression line for each county over the
+six elections. \\
+::: \{.cell\} \\
+Within a given county, an increase in the unemployment rate is
+associated with an \textbf{increase} in republican voteshare! This is
+where the second question comes in (variation within counties). \\
+We got away with doing a series of cross-sectional analyses (a new
+regression for each election) because we have over 3000 counties, so
+\(n>3000\) for each of those regressions (though even so, we're still
+splitting our data up and it would be better to leverage the full
+dataset of \textgreater18000 observations in one regression). It also
+provides relatively useful information about the importance of
+unemployment across the country for each election. We can't really apply
+the same thinking to this situation, since we only have six time
+periods. If we ran a separate regression for each county, we would only
+have six observations per regression-- nowhere near enough to satisfy
+the central limit theorem (at least n\textgreater30). The insights would
+also be of limited utility; we would get over 3000 unique estimates for
+the realtionship between county-level employment and election results.
+Imagine trying to fit \emph{that} into one table. \\
+Luckily, there's a way of modeling this relationship that allows us to
+account for differences in between counties, while also capturing the
+variation within counties. This is called a \textbf{Fixed Effect
+regression} \\
+\textgreater{} \textbf{Fixed Effects Models}: In experimental research,
+unmeasured differences between subjects are often controlled for via
+random assignment to treatment and control groups. Hence, even if a
+variable like Socio-Economic Status is not explicitly measured, because
+of random assignment, we can be reasonably confident that the effects of
+SES are approximately equal for all groups. Of course, random assignment
+is usually not possible with most survey research. If we want to control
+for the effect of a variable, we must explicitly measure it. If we don't
+measure it, we can't control for it. In practice, there will almost
+certainly be some variables we have failed to measure (or have measured
+poorly), so our models will likely suffer from some degree of omitted
+variable bias. \textgreater When we have panel data (the same
+people/states/counties. etc. measured at two or more points in time)
+another alternative presents itself: we can use the subjects as their
+own controls. With panel data we can control for stable characteristics
+(i.e.~characteristics that do not change across time) whether they are
+measured or not. These include such things as sex, race, and ethnicity
+for individuals, or urban/rural, topography, economic structure for
+geographic areas. The idea is that, whatever effect these variables have
+at one point in time, they will have the same effect at a different
+point in time because the values of such variables do not change. \\
+A fixed effect regression takes the following form: \\
+\(\huge Y_{it}=\alpha_i+\beta X_{it}+\epsilon_{it}\) \\
+Where: * \(X_{it}\) are the independent variables (e.g.~population and
+unemployment) whose values vary over time. * \(\beta\) is the slope
+coefficient for variable \(x\) (e.g.~unemployment). The model assumes
+that these effects are time-invariant, e.g.~the effect of \(x\) is the
+same at same 1 as it is at time 4 (although the value of \(x\) can be
+different at different time periods). * \(\alpha_i\) and
+\(\epsilon_{it}\) are both error terms. \(\epsilon_{it}\) is different
+for each individual at each point in time. \(\alpha_i\) only varies
+across individuals but not across time. We can think of \(\alpha_i\) as
+representing the effects of all the time invariant/stable variables that
+have NOT been included in the model. So, given that we have 6 time
+periods for each county then the six records for county 1 would all have
+the same value for \(\alpha_1\), the six records for county 2 would all
+have the same value for \(\alpha_2\), etc. But, \(\epsilon_{it}\) is
+free to be different for every case at every time period. \\
+A fixed effect regression allows us to account for \(\alpha_i\) through
+a technique called \textbf{demeaning} \\
+\textgreater{}\textbf{Demeaning}: After demeaning, all variables for all
+cases have a mean of 0. That means that all the between-subject
+variability has been eliminated. All that is left is the within-subject
+variability. So, with a fixed effects model, we are analyzing what
+causes individual's values to change across time. Variables whose values
+do not change (like race or gender) cannot cause changes across time
+(unless their effects change across time as well). However, whatever
+effect they have at one time is the same effect that they have at other
+times, so the effects of such stable characteristics are controlled. \\
+In essence, you can picture this as allowing you to draw a separate
+regression line through each set of observations from the same group in
+your data (in this case, one county over time); however, while the
+\emph{intercept} of these lines can vary (their absolute position), they
+will all have the same \emph{slope} and will therefore be parallel. This
+is important, as we want to find one slope-- one common effect of x--
+that fits \emph{all} groups. \\
+Run the command below to install the library. \\
+::: \{.cell\} \\
+::: \{.cell\} ``` \{.python .cell-code\} from linearmodels import
+PanelOLS from linearmodels import RandomEffects import
+statsmodels.formula.api as smf from linearmodels.panel import compare \\
+df\_c=df\_c.set\_index({[}`county\_fips',`year'{]}) \# set the index to
+the county fips code and the year panel =
+PanelOLS.from\_formula(`r\_votes \textasciitilde{} 1 + population +
+unemployment + EntityEffects',df\_c).fit() \# run a fixed effects model
+print(compare(\{`Fixed Effects': panel,\}, stars=True)) \# print the
+model formatted as a regression table ``` ::: \\
+When accounting for time-invariant differences between counties, the
+effect of population remains negative. This suggests that counties in
+which the population is \emph{decreasing} tend to experience an increase
+in republican voteshare. More specifically, for every 1000 people that
+leave a county, republican voteshare increases by 0.06\%. \\
+The really interesting part of this regression table, however, is the
+coefficient on the unemployment variable, which is now positive. This
+suggests that-- once we account for the differences between counties--
+an increase in the unemployment rate \emph{within} a county is
+\emph{positively} associated with republican voteshare. Indeed, a 1\%
+increase in the unemployment rate leads to a 0.28\% increase in
+republican voteshare. \\
+This regression output even gives us three separate \(R^2\) values-- one
+for between-variation, another for within, and one overall. \\
+\end{longtable}
+
+\hypertarget{difference-in-differences-1}{%
+\section{2. Difference in
+Differences}\label{difference-in-differences-1}}
+
+One of the reasons that we observe a signficant relationship between
+unemployment and voting behaviour in last week's workshop is that the
+Republican and Democratic parties have opposing views on what to do
+about unemployment. Democratic lawmakers have historically been in
+favour of increasing the minimum wage to benefit low-income workers,
+while Republicans have generally opposed this on the basis that it would
+hurt these very workers by increase unemployment. Indeed, classical
+economic theory holds that an increase in wages would lead to a
+reduction in employment; A business that makes \$100k in revenue per
+year and spends all of it on employing 20 people can't suddenly start
+paying their workers double their salaries-- unless it fires half of its
+workers. This is obviously a simplified model though-- minimum wage laws
+typically don't double wages, and businesses don't operate at-cost, they
+turn a profit which they could use to pay their workers more. In the
+rest of this workshop, we're going to be investigating this question
+empirically:
+
+\hypertarget{do-minimum-wage-laws-increase-unemployment}{%
+\subsection{Do minimum wage laws increase
+unemployment?}\label{do-minimum-wage-laws-increase-unemployment}}
+
+Note that this is a \emph{causal} question; i'm not asking if they're
+correlated-- i'm asking if one causes the other. The burden of proof
+here is much higher than observing correlations, and we have to think
+seriously about \textbf{endogeneity}. In partiuclar, we need to account
+for the influence of omitted variables (e.g.~a recession, or the
+economic composition of a state), the potential for reverse causality
+(states implementing minimum wage laws in response to unemployment
+crises), and selection bias.
+
+In a lab, you can conduct causal inference by running an experiment. You
+can randomly select individuals, split them into a control group and a
+treatment group, measure their values in an outcome variable prior to a
+treatment, administer a treatment, and measure their respective values
+after the treatment. If you observe a change in the outcome variable in
+the treatment group after having administered the treatment, you can
+interpert that as the causal effect of treatment. This is because we're
+able to make a plausible argument that the \textbf{control group can act
+as a counterfactual (a stand-in) for the treatment group in the absence
+of treatment}. Both groups had the same values before the treatment,
+then the only thing that changed between them was the treatment, so if
+we observe a change in the outcome variable, it must be due to
+treatment.
+
+In the real world, we rarely get to run expermients of this kind.
+Instead, we have to hunt for \textbf{natural experiments}: situations in
+which there is a \textbf{treatment} which we're interested in measuring
+the effect of, and two groups that can plausibly act as a treatment and
+control group.
+
+\begin{quote}
+\textbf{\href{https://www.publichealth.columbia.edu/research/population-health-methods/difference-difference-estimation\#:~:text=DID\%20relies\%20on\%20a\%20less,individual\%20level\%20is\%20not\%20possible.}{Difference
+in Difference}} is a quasi-experimental design that makes use of
+longitudinal data from treatment and control groups to obtain an
+appropriate counterfactual to estimate a causal effect. DID is typically
+used to estimate the effect of a specific intervention or treatment
+(such as a passage of law, enactment of policy, or large-scale program
+implementation) by comparing the changes in outcomes over time between a
+population that is enrolled in a program (the intervention group) and a
+population that is not (the control group).
+\end{quote}
+
+The Difference in Difference model can be estimated as a simple
+regression model of the following form:
+
+\[\huge Y_{it} = \beta_0 + \beta_1 Treatment_i + \beta_2 Post_t + \beta_3 (Treatment_i \times Post_t) + \varepsilon_{it}\]
+
+\begin{itemize}
+\tightlist
+\item
+  \(Treatment_i\) is 0 for the control group and 1 for the treatment
+  group
+\item
+  \(Post_t\) is 0 for before and 1 for after
+\end{itemize}
+
+we can insert the values of \(Treatment\) and \(Post\) using the table
+below and see that coefficient (\(\beta_3\)) of the interaction of
+\(Treatment\) and \(Post\) is the Difference in Differences (DID)
+estimator:
+
+\href{https://davidcard.berkeley.edu/papers/njmin-aer.pdf}{Card and
+Krueger (1994)} found one such natural experiment, allowing them to
+estimate the causal effect of an increase in the state minimum wage on
+unemployment using a DiD model; In 1992, New Jersey raised the state
+minimum wage from \$4.25 to \$5.05 while the minimum wage in
+neighbouring Pennsylvania stayed the same at \$4.25.
+
+\begin{itemize}
+\tightlist
+\item
+  Treatmeng Group: New Jersey
+\item
+  Control Group: Pennsylvania
+\item
+  Pre-Treatment Period: before 1992
+\item
+  Post-Treatment Period: after 1992
+\end{itemize}
+
+They conducted a survey of 384 fast-food restaurants across both states,
+right before and right after the law came into effect in New Jersey,
+asking them how many people they employed. They ran a
+Difference-in-Differences model, and found that the coefficient
+\(\beta_3\) was positive but not statistically significant. In other
+words, the average total employees per restaurant \emph{increased} after
+the minimum wage increased, but this could have been due to random
+chance.
+
+That was a long time ago. Things have changed since then, including the
+fact that we have access to a lot more data and computational power.
+Let's see if we can replicate Card and Krueger's results with more
+recent data. I've downloaded data on unemployment, minimum wage levels,
+and Gross Domestic Product at the state level going back to 1976. Let's
+have a look at minimum wages in New Jersey and Pennsylvania over time:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_s}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}https://storage.googleapis.com/qm2/wk10/state\_data.csv\textquotesingle{}}\NormalTok{, parse\_dates}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]) }\CommentTok{\# read in the state{-}level data}
+\NormalTok{did}\OperatorTok{=}\NormalTok{df\_s[df\_s[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}pennsylvania\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{])] }\CommentTok{\# subset the data to only include pennsylvania and new jersey}
+
+\NormalTok{px.line(did, x}\OperatorTok{=}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}minwage\textquotesingle{}}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{, title}\OperatorTok{=}\StringTok{"Minimum Wages in New Jersey and Pennsylvania"}\NormalTok{) }\CommentTok{\# plot the minimum wage over time}
+\end{Highlighting}
+\end{Shaded}
+
+The plot above sort of looks like a set of descending staircases; this
+is for two reasons. The plateaus exist because each row in the dataframe
+\texttt{df\_s} is the value of a state in a given \emph{month}, but we
+only have minimum wage data for every \emph{year}. So we get 12
+consecutive values of minimum wage every year. The reason that the
+staircases are descending is because these minimum wages are adjusted
+for inflation. No matter where you're from, you've probably heard a
+grandparent say something along the lines of ``My parents would send me
+to the shops with 25 cents to buy groceries for the week'', but now it
+costs £9 for a bag of chips. That's inflation-- every year things tend
+to get slightly more expensive, so if the same \emph{absolute} minimum
+wage actually diminishes in ``real'' terms, which is what the variable
+\texttt{minwage} measures. Incidentally, this is one of the main reasons
+University staff have been on
+\href{https://www.ucu.org.uk/article/11830/University-staff-pay-cut-by-20-new-figures-show}{strike}.
+Anyway. Back to minimum wages.
+
+This plot shows that for the past fifty years, New Jersey and
+Pennsylvania have had largely similar minimum wage policies. There have
+been a couple moments of divergence, including in the 1990s when the
+Card and Krueger study was conducted. However, the biggest divergence
+actually started taking place in 2014 when New Jersey seems to have
+begun taking a wildly different approach. While Pennsylvania has had the
+same minimum wage since 2008 (and therefore seen a decline in
+inflation-adjusted wages), New Jersey has raised the minimum wage
+significantly twice. In 2020, New Jersey's minimum wage was around 50\%
+higher than Pennsylvania's. We can exploit the fact that these two
+states have historically had similar minimum wage laws but have recently
+experienced a big divergence to see if that change in minimum wages has
+resulted in a change in employment levels.
+
+Our Difference-in-Differences setup is as follows:
+
+\[\large Unemployment_{state, year} = \beta_0 + \beta_1 Treatment_{state} + \beta_2 Post_{year} + \beta_3 (Treatment_{state} \times Post_{year}) + \beta_4 GDP_{state,year} + \varepsilon_{it}\]
+
+\begin{itemize}
+\tightlist
+\item
+  New Jersey is the \textbf{treatment group}
+\item
+  Pennsylvania is the \textbf{control group}
+\item
+  Years before 2014 is the \textbf{pre-treatment period}
+\item
+  Years after 2014 is the \textbf{post-treatment period}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a variable that is 1 if the date is after the minimum wage increase and 0 otherwise}
+\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a variable that is 1 if the state is new jersey (i.e., the treatment group) and 0 for pennsylvania (the control group)}
+\NormalTok{did[}\StringTok{\textquotesingle{}post\_treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{*}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{] }\CommentTok{\# create a variable that is 1 if the date is after the minimum wage increase and the state is new jersey and 0 otherwise}
+\end{Highlighting}
+\end{Shaded}
+
+Before we proceed with the analysis, though, we need to satisfy two
+assumptions that will allow us to argue that Pennsylvania can act as a
+valid control group for New Jersey:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  No simultaneous treatments:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    If, for example, New Jersey suddenly entered a massive recession in
+    2014 as well, we couldn't really argue that resulting effects on
+    employment are due solely to the minimum wage law. To account for
+    this, we'll be including state-level GDP as an additional
+    independent variable in our DiD model.
+  \end{itemize}
+\item
+  Parallel Trends:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Both states have to have been experiencing similar trends in the
+    \textbf{dependent variable} (unemployment) prior to the treatment
+    (minimum wage law). If they were trending in opposite directions for
+    unobserved reasons, ensuing differences in unemployment may be due
+    to those unobserved reasons rather than the treatment.
+  \item
+    We can check this by plotting the dependent variable for both groups
+    over time, and indicating the timing of the treatment.
+  \end{itemize}
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{did}\OperatorTok{=}\NormalTok{did[(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2008{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}=}\StringTok{\textquotesingle{}2020{-}01{-}01\textquotesingle{}}\NormalTok{)]}
+\NormalTok{sns.lineplot(data}\OperatorTok{=}\NormalTok{did,x}\OperatorTok{=}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{,y}\OperatorTok{=}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{,hue}\OperatorTok{=}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.axvline(pd.to\_datetime(}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{),color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{,linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}NJ Minimum Wage Increase\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Unemployment in Pennsylvania and New Jersey\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.legend()}
+\end{Highlighting}
+\end{Shaded}
+
+This plot shows a big spike in unemployment occurring for both
+Pennsylvania and New Jersey as a result of the 2008 financial crisis.
+New jersey had a higher unemployment rate than Pennsylvania, but their
+trends are largely parallel and decreasing after 2012. In the years
+following the minimum wage law, New Jersey's unemployment rate actually
+dips below Pennsylvania's for the first time in years. Let's look at
+this in the form of boxplots:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{did[}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{str}\NormalTok{)}\OperatorTok{+}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{str}\NormalTok{) }\CommentTok{\# this variable is just for the plot below}
+\NormalTok{sns.boxplot(x}\OperatorTok{=}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{, hue}\OperatorTok{=}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{, data}\OperatorTok{=}\NormalTok{did).set\_xticklabels([}\StringTok{"Pre x Treatment"}\NormalTok{, }\StringTok{"Pre x Control"}\NormalTok{,}\StringTok{\textquotesingle{}Post x Treatment\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Post x Control\textquotesingle{}}\NormalTok{]) }
+\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{\textquotesingle{}Unemployment Rates by Treatment and Post Treatment\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+This plot is fascinating in and of itself. The two box plots on the left
+show the unemployment values of the counties prior to the minimum wage
+law in 2014, while the two on the right show their values after the
+minimum wage increases. Pennsylvania (the ``control'' group) is colored
+in blue, and New Jersey (the ``treatment'' group) is colored orange.
+Prior to the minimum wage increase in 2014, Pennsylvania (blue) has a
+lower unemployment rate than New Jersey (orange). In the years following
+New Jersey's passage of the minimum wage law, New Jersey actually has a
+\emph{lower} unemployment rate than Pennsylvania! This is the only
+boxplot where the ``treatment'' (a minimum wage law) is being applied,
+and it has the lowest unemployment rate.
+
+Let's see if this difference is statistically signfiicant, and calculate
+a treatment effect:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{did\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{}  post + treatment + post\_treatment\textquotesingle{}}\NormalTok{, did).fit()}
+\BuiltInTok{print}\NormalTok{(did\_model.summary())}
+\end{Highlighting}
+\end{Shaded}
+
+There are some really interesting results from this model-- let's
+interpret the coefficients one by one.
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{gdp}: GDP is inversely related to unemployment. This makes
+  sense: GDP basically measures the total amount of economic activity,
+  so more economic activity = more employment.
+\item
+  \texttt{post}: this coefficient is negative, but statistically
+  insignificant at the 0.05 level; it indicates that unemployment
+  \emph{generally} decreased for both groups, but that this could be due
+  to random chance.
+\item
+  \texttt{treatment}: again negative but insignficant, meaning that
+  there is no significant difference in unemployment levels between NJ
+  and PA over the entire period.
+\item
+  \texttt{post\_treatment}: this is our difference-in-differences
+  estimator, and reflects the causal effect of treatment. It is negative
+  and statistically significant. If we believe that the asusmptions of
+  our model are satisfied, we can claim that:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{The introduction of a minimum wage in New Jersey led to a
+    1.95\% decrease in unemployment relative to Pennsylvania}
+  \end{itemize}
+\end{itemize}
+
+This is a bold claim. We should do our best to back it up. Notice that
+i've sort of arbitrarily chosen a window of dates around the minimum
+wage law-- maybe this result is a fluke, due to the timespan ive chosen.
+
+To address this concern, I'll run the same model 10 times, starting with
+a really small time window-- just one year on either side of the law--
+and progressively expand it.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{models}\OperatorTok{=}\NormalTok{[] }\CommentTok{\# create empty list to store the models}
+\NormalTok{names}\OperatorTok{=}\NormalTok{[] }\CommentTok{\# create empty list to store the names of the models}
+
+\ControlFlowTok{for}\NormalTok{ window }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{): }\CommentTok{\# loop through years from 2000 to 2020 in increments of 4}
+\NormalTok{    did}\OperatorTok{=}\NormalTok{df\_s[(df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\BuiltInTok{str}\NormalTok{(}\DecValTok{2014}\OperatorTok{{-}}\NormalTok{window)}\OperatorTok{+}\StringTok{\textquotesingle{}{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}=}\BuiltInTok{str}\NormalTok{(}\DecValTok{2014}\OperatorTok{+}\NormalTok{window)}\OperatorTok{+}\StringTok{\textquotesingle{}{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ df\_s[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}pennsylvania\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{])] }\CommentTok{\# subset the data within the window of interest around 2014}
+\NormalTok{    did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a dummy variable indicating the period after the minimum wage increase}
+\NormalTok{    did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a dummy variable for treatment}
+\NormalTok{    did[}\StringTok{\textquotesingle{}post\_treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{*}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{] }\CommentTok{\# create an interaction term between the post and treatment variables}
+\NormalTok{    did\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{} gdp+ post + treatment + post\_treatment\textquotesingle{}}\NormalTok{, did).fit() }\CommentTok{\# run the difference in difference model}
+
+\NormalTok{    models.append(did\_model) }\CommentTok{\# append the model to the list of models}
+\NormalTok{    names.append(}\StringTok{\textquotesingle{}± \textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(window)}\OperatorTok{+}\StringTok{\textquotesingle{} Year\textquotesingle{}}\NormalTok{) }\CommentTok{\# append the name of the model to the list of names}
+
+\NormalTok{table}\OperatorTok{=}\NormalTok{summary\_col( }\CommentTok{\# create a regression table }
+\NormalTok{    models, }\CommentTok{\# pass the models to the summary\_col function}
+\NormalTok{    stars}\OperatorTok{=}\VariableTok{True}\NormalTok{, }\CommentTok{\# add stars denoting the p{-}values of the coefficient to the table; * p\textless{}0.05, ** p\textless{}0.01, *** p\textless{}0.001}
+\NormalTok{    float\_format}\OperatorTok{=}\StringTok{\textquotesingle{}}\SpecialCharTok{\%0.3f}\StringTok{\textquotesingle{}}\NormalTok{, }\CommentTok{\# set the decimal places to 3}
+\NormalTok{    model\_names}\OperatorTok{=}\NormalTok{names, }\CommentTok{\# set the names of the model}
+\NormalTok{    info\_dict }\OperatorTok{=}\NormalTok{ \{}\StringTok{"N"}\NormalTok{:}\KeywordTok{lambda}\NormalTok{ x: }\StringTok{"}\SpecialCharTok{\{0:d\}}\StringTok{"}\NormalTok{.}\BuiltInTok{format}\NormalTok{(}\BuiltInTok{int}\NormalTok{(x.nobs))\}) }\CommentTok{\# add the number of observations to the table}
+
+\BuiltInTok{print}\NormalTok{(table) }\CommentTok{\# print the table}
+\end{Highlighting}
+\end{Shaded}
+
+The row we're mainly interested in is the \texttt{post\_treatment}
+coefficient, the treatment effect. It remains significant and negative
+in all time periods smaller than 8 years, after which point it becomes
+insignificant;
+
+How do you think this affects our conclusion?
+
+\bookmarksetup{startatroot}
+
+\hypertarget{assessed-question-7}{%
+\chapter{Assessed Question}\label{assessed-question-7}}
+
+Now we've got evidence that minimum wage laws may actually
+\emph{decrease} unemployment in the case of New Jersey and Pennsylvania.
+But we've got quite a bit of data, and minimum wages change frequently.
+Let's find another example where we may be able to run a difference in
+differences regression to see if this trend holds in a different
+context.
+
+Below, I've picked out Arizona and Louisiana; they had nearly the exact
+same minimum wage for seven years, but in 2007 Arizona nearly tripled
+its minimum wage while Louisiana kept it the same (\ldots by not having
+one).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{did2}\OperatorTok{=}\NormalTok{df\_s[(df\_s[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}arizona\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}louisiana\textquotesingle{}}\NormalTok{]))}\OperatorTok{\&}\NormalTok{(df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2000\textquotesingle{}}\NormalTok{)}\OperatorTok{\&}\NormalTok{ (df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\StringTok{\textquotesingle{}2010\textquotesingle{}}\NormalTok{)] }
+\NormalTok{px.line(did2, x}\OperatorTok{=}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}minwage\textquotesingle{}}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{, title}\OperatorTok{=}\StringTok{"Minimum Wages in Kansas and Ohio"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Run a difference in differences regression to measure the effect of this
+minimum wage increase on unemployment. Define three variables (post,
+treatment, post\_treatment), and include just these three variables in
+the model.
+
+\begin{itemize}
+\tightlist
+\item
+  Part A: What is the effect of the minimum wage increase on
+  unemployment in the case of Arizona and Louisiana?
+\item
+  Part B: Difference in Differences designs have two assumptions:
+  parallel trends, and no simultaneous treatment. Can you think of any
+  events that ocurred in 2008 that might violate the ``no simultaneous
+  treatment'' assumption?
+\end{itemize}
 
 
 
