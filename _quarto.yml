@@ -17,11 +17,7 @@ book:
     - ./notebooks/RW. Merging and Joining.ipynb
     - ./notebooks/W06. Hypothesis Testing.ipynb
     - ./notebooks/W07. Linear Regression.ipynb
-<<<<<<< HEAD
     - ./notebooks/W08. Diff-in-Diff.ipynb
-=======
-    - ./notebooks/W08. Difference-in-Differences.ipynb
->>>>>>> 58a0f66f1426d670b4b670029a7c08abf59b4a8c
     # - ./notebooks/W09. Regression Discontinuity.ipynb
     # - ./notebooks/W10. Machine Learning.ipynb
 
