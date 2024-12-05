@@ -195,11 +195,7 @@
 
 \begin{document}
 \maketitle
-<<<<<<< HEAD
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, enhanced, sharp corners, breakable, interior hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
-=======
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, sharp corners, breakable, interior hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, enhanced]}{\end{tcolorbox}}\fi
->>>>>>> 58a0f66f1426d670b4b670029a7c08abf59b4a8c
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}, frame hidden, breakable, enhanced, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -7735,7 +7731,6 @@ extraction and installation. Compared to those who are covered by a
 union but not themselves members, what is the difference in log hourly
 earnings for union members? Is this difference statistically
 significant?
-<<<<<<< HEAD
 
 \bookmarksetup{startatroot}
 
@@ -7776,298 +7771,16 @@ As always we'll start by importing the libraries I need
 \end{Shaded}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{0.3194}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{0.3889}}@{}}
 \toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\#\# Panel Regression
+\end{minipage} \\
+\midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-\#\# Panel Regression \\
-\href{https://www.pewresearch.org/politics/2012/04/17/with-voters-focused-on-economy-obama-lead-narrows/}{Surveys}
-indicate that ``jobs'' are consistently one of the most important issues
-among voters in U.S. presidential elections, and that Republicans are
-\href{https://thehill.com/homenews/campaign/3700047-republicans-hold-14-point-advantage-on-which-party-would-do-better-job-on-economy-poll/}{typically
-perceived} as better in handling the economy than Democrats. An
-\href{https://www.nbcnews.com/news/us-news/where-did-trump-make-election-gains-unemployment-data-tells-surprising-n1247935}{article}
-in NBC claims that ``analysis of unemployment and voting data found that
-the president's share of the vote held steady or increased in each of
-the 20 counties with the highest rise in unemployment from September
-2019 to September 2020. And his vote share improved by 1 percentage
-point or more in 70 of the 100 hardest-hit counties.'' Let's look into
-this. \\
-\#\#\# Data Collection \\
-There are only 50 states in the U.S. but there are over 3000 counties--
-this allows us to increase our sample size and perform a more
-fine-grained analysis. This is particularly important if we're
-interested in investigating the relationship between unemployment and
-voting behaviour, because of the urban-rural divide. For example, with
-in the state of New York there are probably vast differences in social
-and economic factors relevant to voting behaviour between Manhattan and
-very rural areas; this variation is lost when we look at aggregate
-state-level resutls, but visible when we look at the county-level. As
-such, in addition to the datasets we've just imported, we're going to be
-downloading county-level unemployment data straight from the BLS using
-the loop below. \\
-::: \{.cell\} \\
-Part of the cleaning process in the cell above involves the creation of
-a column called ``county\_fips''-- this stands for
-\href{https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt\#:~:text=FIPS\%20codes\%20are\%20numbers\%20which,to\%20which\%20the\%20county\%20belongs.}{Federal
-Information Processing System}. This is a code that uniquely identifies
-states and counties in the U.S. A two digit FIPS code identifies states
-(e.g.~01: Alabama, 02: Alaska, etc.) and a five digit fips code
-identifies counties (e.g.~010001: Atauga County, Alabama; 02068: Denali
-Borough, Alaska). Notice, the first two digits of the five-digit county
-FIPS code indicates the state. Boring, yes, but these codes are
-imperative in allowing us to join county- and state- level datasets from
-different sources quicky and easily. Imagine what a nightmare it would
-be to try to join them using the names of the counties, having to deal
-with capitalizations, punctuation, etc. Yikes. \\
-\#\#\# Maps \\
-Great-- we've now got clean, county-level unemployment and population
-data spanning from 1990-2022 on an annual basis. Lets make a map to
-explore the spatial distribution of unemployment across time in the U.S.
-In order to do that, we're going to need a spatial file that tells us
-the shapes of the counties; I've imported it as a variable called
-\texttt{county\_polygons}. We're then going to create an map using the
-\href{https://plotly.com/python/}{Plotly} library, which is great for
-making pretty, interactive maps and plots. It will have a slider on the
-bottom that lets us view unemployment in different years. It's doing
-quite a bit under the hood so it will take some time to plot. Be
-patient. \\
-::: \{.cell\} ``` \{.python .cell-code\} import json !mkdir data !mkdir
-data/wk10/ !curl
-https://storage.googleapis.com/qm2/wk10/geojson-counties-fips.json -o
-data/wk10/geojson-counties-fips.json \\
-county\_polygons =
-json.load(open(``data/wk10/geojson-counties-fips.json'')) ``` ::: \\
-::: \{.cell\} ``` \{.python .cell-code\}
-plot\_sample=counties{[}counties{[}`year'{]}\textgreater2007{]} \#
-subset the data to only include years after 2007 -- it would take too
-long to plot all of the data \\
-px.choropleth( \# plot a choropleth map using the plotly express (px)
-library plot\_sample, \# load the dataframe locations=`county\_fips', \#
-set the location column to the state code geojson=county\_polygons, \#
-set the location mode to USA states (you could add your own custom
-geojson/spatial file here) scope=`usa', \# set the scope to the USA, so
-that it only plots the states color=``unemployment'', \# set the color
-of the states to correspond to the unemployment rate
-animation\_frame=plot\_sample{[}``year''{]}.astype(str), \# set the
-animation frame to the date, creating a slider at the bottom of the map
-color\_continuous\_scale=px.colors.sequential.Viridis, \# set the color
-scale to Viridis, a commonly used color scale range\_color={[}0, 10{]},
-\# set the range of the color scale to 0-10 height=1000) \# set the
-height of the map to 1000 pixels ``` ::: \\
-This map is interactive-- meaning you can zoom in, pan around, and hover
-over it to get further information on the unemployment level in each
-county. You can also use the slider at the bottom to toggle between
-different years; if you move the slider from 2008 to 2009, you'll see
-lots of yellow suddenly appearing. A similar thing happens between 2019
-and 2020. What's going on? Play around with this map for a second, and
-make note of spatial and temporal trends in unemployment. \\
-Now we're going to do the same thing for the elections data, which I've
-taken the liberty of cleaning. Let's load it up as a dataframe called
-\texttt{elections}, and make another map in which we plot vote shares in
-various elections such that red shows republican support, and blue shows
-democratic support. \\
-::: \{.cell\} \\
-Explore the map above. What do you notice about republican vote share,
-particularly as it relates to the previous map of unemployment? \\
-Now we've got two datasets-- one on unemployment and another on election
-results. We want to merge them but CAREFUL: each row corresponds to the
-value of a variable \(x\) in county \(i\) and time \(t\) (so,
-\(x_{it}\)); for example, the value in the first row of our dataset
-under the unemployment column would be \(unemployment_{01001, 2000}\);
-i.e., the unemployment rate in Atauga County, Alabama (FIPS code 01001),
-in the year 2000. When our data has this structure (\(x_{it}\)), we call
-it \textbf{panel data}. It must be handled differently from
-\textbf{cross sectional data} (\(x_i\)), from merging to estimation. \\
-We can't just merge on \(i\) or \(t\), we need to merge on both. We can
-do so as follows: \\
-::: \{.cell\} \\
-\#\#\# Exercise \\
-OK. Our data is clean and ready for analysis. Because we're going to be
-investigating the relationship between unempoyment rates and republican
-voteshare via a regression model, we're going to need to follow the four
-steps of regression modeling from
-\href{https://oballinger.github.io/QM2/notebooks/W09.\%20Linear\%20Regression.html}{last
-week}. \\
-First, formulate a research question (complete with null and alternative
-hypothesis), and then follow these steps for our dataset, \texttt{df\_c}
-(bonus points if you account for the influence of population). \\
-1. Summary Statistics * Table of Summary Statistics 2. Visualisation *
-Exploratory Plots 3. Assumptions * A. Independence * B.
-Heteroscedasticity: Regression plots + Q-Q plot * C. Multicollinearity:
-VIF + Correlation Matrix 4. Regression * Regression Table \\
-For the moment, when you run the regression, ignore the fact that we
-have panel data and just run a regular regression of the form
-\(\huge Y= \beta_0 + \beta_1X+\epsilon \) \\
-\#\#\# Accounting for Space and Time \\
-If you've done things correctly, you'll notice two things. First, the
-appears to be a generally negative relationship between unemployment and
-republican voteshare; in other words, places with higher unemployment
-tend to vote \emph{against} republicans. Second, we've egregiously
-violated the independence assumption. We have repeat observations of the
-same individuals (counties) over time. As such, this result may be
-biased unless we account for space and time. \\
-As we saw in the lecture, panel data actually contains \emph{two}
-sources of variation: differences \emph{between} individuals (in this
-case, counties), and \emph{within} individuials. So, a simple research
-question such as ``Does unemployment increase republican voteshare'' is
-actually two different questions: \\
-1. Does a higher level of unemployment lead to higher republican vote
-shares \textbf{between counties}? 2. Does an \emph{increase} in the
-unemployment rate over time lead to an \emph{increase} in republican
-vote shares \textbf{within counties}? \\
-Neither is more important than the other, but we must be careful not to
-conflate them as they are very different questions. A straighforward way
-of answering the first question would be to get rid of the time
-dimension in our data by running a separate regression for each year: \\
-::: \{.cell\} ``` \{.python .cell-code\} models={[}{]} \# create empty
-list to store the models names={[}{]} \# create empty list to store the
-names of the models years=df\_c{[}`year'{]}.unique() \\
-for year in years: \# loop through years from 2000 to 2020 in increments
-of 4 election=df\_c{[}df\_c{[}`year'{]}==year{]} \# subset the data to
-only include the year of interest model= ols(`r\_votes \textasciitilde{}
-unemployment + population', data=election).fit() \# run a regression of
-the republican vote share on the unemployment rate models.append(model)
-\# append the model to the list of models names.append(str(year)) \#
-append the name of the model to the list of names \\
-table=summary\_col( \# create a regression table models, \# pass the
-models to the summary\_col function stars=True, \# add stars denoting
-the p-values of the coefficient to the table; * p\textless0.05, **
-p\textless0.01, *** p\textless0.001 float\_format=`\%0.3f', \# set the
-decimal places to 3 model\_names=names, \# set the names of the model
-info\_dict = \{``N'':lambda x: ``\{0:d\}''.format(int(x.nobs))\}) \# add
-the number of observations to the table \\
-print(table) \# print the table ``` ::: \\
-This table is pretty informative. Using what we learned from last week,
-we can say that for the 2020 election, \\
-* A 1\% increase in the unemployment rate was associated with a 2.3\%
-\emph{decrease} in republican voteshare. * A 1000-person increase in
-population was associated with 0.029\% decrease in republican voteshare.
-* both of these results are statistically signifiant at the 0.01 level.
-* 23\% of the variation in republican voteshare can be explained by
-unemployment and population. \\
-Crucially, ``increase'' in this context pertains to \emph{differences in
-between counties}! \\
-We can also compare these results across different elections. The
-coefficient for the unemployment variable in 2020 is over twice the size
-of the same coefficient in 2016! So it looks like actually unemployment
-and republican voteshare are \emph{negatively} related, contrary to
-popular belief. \\
-But is this the whole story? \\
-Below, i've isolated West Virginia, one of the states with the highest
-unemployment rates in America. Instead of drawing a new regression line
-every year, i've drawn a new regression line for each county over the
-six elections. \\
-::: \{.cell\} \\
-Within a given county, an increase in the unemployment rate is
-associated with an \textbf{increase} in republican voteshare! This is
-where the second question comes in (variation within counties). \\
-We got away with doing a series of cross-sectional analyses (a new
-regression for each election) because we have over 3000 counties, so
-\(n>3000\) for each of those regressions (though even so, we're still
-splitting our data up and it would be better to leverage the full
-dataset of \textgreater18000 observations in one regression). It also
-provides relatively useful information about the importance of
-unemployment across the country for each election. We can't really apply
-the same thinking to this situation, since we only have six time
-periods. If we ran a separate regression for each county, we would only
-have six observations per regression-- nowhere near enough to satisfy
-the central limit theorem (at least n\textgreater30). The insights would
-also be of limited utility; we would get over 3000 unique estimates for
-the realtionship between county-level employment and election results.
-Imagine trying to fit \emph{that} into one table. \\
-Luckily, there's a way of modeling this relationship that allows us to
-account for differences in between counties, while also capturing the
-variation within counties. This is called a \textbf{Fixed Effect
-regression} \\
-\textgreater{} \textbf{Fixed Effects Models}: In experimental research,
-unmeasured differences between subjects are often controlled for via
-random assignment to treatment and control groups. Hence, even if a
-variable like Socio-Economic Status is not explicitly measured, because
-of random assignment, we can be reasonably confident that the effects of
-SES are approximately equal for all groups. Of course, random assignment
-is usually not possible with most survey research. If we want to control
-for the effect of a variable, we must explicitly measure it. If we don't
-measure it, we can't control for it. In practice, there will almost
-certainly be some variables we have failed to measure (or have measured
-poorly), so our models will likely suffer from some degree of omitted
-variable bias. \textgreater When we have panel data (the same
-people/states/counties. etc. measured at two or more points in time)
-another alternative presents itself: we can use the subjects as their
-own controls. With panel data we can control for stable characteristics
-(i.e.~characteristics that do not change across time) whether they are
-measured or not. These include such things as sex, race, and ethnicity
-for individuals, or urban/rural, topography, economic structure for
-geographic areas. The idea is that, whatever effect these variables have
-at one point in time, they will have the same effect at a different
-point in time because the values of such variables do not change. \\
-A fixed effect regression takes the following form: \\
-\(\huge Y_{it}=\alpha_i+\beta X_{it}+\epsilon_{it}\) \\
-Where: * \(X_{it}\) are the independent variables (e.g.~population and
-unemployment) whose values vary over time. * \(\beta\) is the slope
-coefficient for variable \(x\) (e.g.~unemployment). The model assumes
-that these effects are time-invariant, e.g.~the effect of \(x\) is the
-same at same 1 as it is at time 4 (although the value of \(x\) can be
-different at different time periods). * \(\alpha_i\) and
-\(\epsilon_{it}\) are both error terms. \(\epsilon_{it}\) is different
-for each individual at each point in time. \(\alpha_i\) only varies
-across individuals but not across time. We can think of \(\alpha_i\) as
-representing the effects of all the time invariant/stable variables that
-have NOT been included in the model. So, given that we have 6 time
-periods for each county then the six records for county 1 would all have
-the same value for \(\alpha_1\), the six records for county 2 would all
-have the same value for \(\alpha_2\), etc. But, \(\epsilon_{it}\) is
-free to be different for every case at every time period. \\
-A fixed effect regression allows us to account for \(\alpha_i\) through
-a technique called \textbf{demeaning} \\
-\textgreater{}\textbf{Demeaning}: After demeaning, all variables for all
-cases have a mean of 0. That means that all the between-subject
-variability has been eliminated. All that is left is the within-subject
-variability. So, with a fixed effects model, we are analyzing what
-causes individual's values to change across time. Variables whose values
-do not change (like race or gender) cannot cause changes across time
-(unless their effects change across time as well). However, whatever
-effect they have at one time is the same effect that they have at other
-times, so the effects of such stable characteristics are controlled. \\
-In essence, you can picture this as allowing you to draw a separate
-regression line through each set of observations from the same group in
-your data (in this case, one county over time); however, while the
-\emph{intercept} of these lines can vary (their absolute position), they
-will all have the same \emph{slope} and will therefore be parallel. This
-is important, as we want to find one slope-- one common effect of x--
-that fits \emph{all} groups. \\
-Run the command below to install the library. \\
-::: \{.cell\} \\
-::: \{.cell\} ``` \{.python .cell-code\} from linearmodels import
-PanelOLS from linearmodels import RandomEffects import
-statsmodels.formula.api as smf from linearmodels.panel import compare \\
-df\_c=df\_c.set\_index({[}`county\_fips',`year'{]}) \# set the index to
-the county fips code and the year panel =
-PanelOLS.from\_formula(`r\_votes \textasciitilde{} 1 + population +
-unemployment + EntityEffects',df\_c).fit() \# run a fixed effects model
-print(compare(\{`Fixed Effects': panel,\}, stars=True)) \# print the
-model formatted as a regression table ``` ::: \\
-When accounting for time-invariant differences between counties, the
-effect of population remains negative. This suggests that counties in
-which the population is \emph{decreasing} tend to experience an increase
-in republican voteshare. More specifically, for every 1000 people that
-leave a county, republican voteshare increases by 0.06\%. \\
-The really interesting part of this regression table, however, is the
-coefficient on the unemployment variable, which is now positive. This
-suggests that-- once we account for the differences between counties--
-an increase in the unemployment rate \emph{within} a county is
-\emph{positively} associated with republican voteshare. Indeed, a 1\%
-increase in the unemployment rate leads to a 0.28\% increase in
-republican voteshare. \\
-This regression output even gives us three separate \(R^2\) values-- one
-for between-variation, another for within, and one overall. \\
-\end{longtable}
-
-\hypertarget{difference-in-differences-1}{%
-\section{2. Difference in
-Differences}\label{difference-in-differences-1}}
-
+\#\# 2. Difference in Differences \\
 One of the reasons that we observe a signficant relationship between
 unemployment and voting behaviour in last week's workshop is that the
 Republican and Democratic parties have opposing views on what to do
@@ -8083,12 +7796,8 @@ workers. This is obviously a simplified model though-- minimum wage laws
 typically don't double wages, and businesses don't operate at-cost, they
 turn a profit which they could use to pay their workers more. In the
 rest of this workshop, we're going to be investigating this question
-empirically:
-
-\hypertarget{do-minimum-wage-laws-increase-unemployment}{%
-\subsection{Do minimum wage laws increase
-unemployment?}\label{do-minimum-wage-laws-increase-unemployment}}
-
+empirically: \\
+\#\#\# Do minimum wage laws increase unemployment? \\
 Note that this is a \emph{causal} question; i'm not asking if they're
 correlated-- i'm asking if one causes the other. The burden of proof
 here is much higher than observing correlations, and we have to think
@@ -8096,8 +7805,7 @@ seriously about \textbf{endogeneity}. In partiuclar, we need to account
 for the influence of omitted variables (e.g.~a recession, or the
 economic composition of a state), the potential for reverse causality
 (states implementing minimum wage laws in response to unemployment
-crises), and selection bias.
-
+crises), and selection bias. \\
 In a lab, you can conduct causal inference by running an experiment. You
 can randomly select individuals, split them into a control group and a
 treatment group, measure their values in an outcome variable prior to a
@@ -8110,15 +7818,13 @@ as a counterfactual (a stand-in) for the treatment group in the absence
 of treatment}. Both groups had the same values before the treatment,
 then the only thing that changed between them was the treatment, so if
 we observe a change in the outcome variable, it must be due to
-treatment.
-
+treatment. \\
 In the real world, we rarely get to run expermients of this kind.
 Instead, we have to hunt for \textbf{natural experiments}: situations in
 which there is a \textbf{treatment} which we're interested in measuring
 the effect of, and two groups that can plausibly act as a treatment and
-control group.
-
-\begin{quote}
+control group. \\
+\textgreater{}
 \textbf{\href{https://www.publichealth.columbia.edu/research/population-health-methods/difference-difference-estimation\#:~:text=DID\%20relies\%20on\%20a\%20less,individual\%20level\%20is\%20not\%20possible.}{Difference
 in Difference}} is a quasi-experimental design that makes use of
 longitudinal data from treatment and control groups to obtain an
@@ -8127,47 +7833,24 @@ used to estimate the effect of a specific intervention or treatment
 (such as a passage of law, enactment of policy, or large-scale program
 implementation) by comparing the changes in outcomes over time between a
 population that is enrolled in a program (the intervention group) and a
-population that is not (the control group).
-\end{quote}
-
+population that is not (the control group). \\
 The Difference in Difference model can be estimated as a simple
-regression model of the following form:
-
-\[\huge Y_{it} = \beta_0 + \beta_1 Treatment_i + \beta_2 Post_t + \beta_3 (Treatment_i \times Post_t) + \varepsilon_{it}\]
-
-\begin{itemize}
-\tightlist
-\item
-  \(Treatment_i\) is 0 for the control group and 1 for the treatment
-  group
-\item
-  \(Post_t\) is 0 for before and 1 for after
-\end{itemize}
-
+regression model of the following form: \\
+\(\huge Y_{it} = \beta_0 + \beta_1 Treatment_i + \beta_2 Post_t + \beta_3 (Treatment_i \times Post_t) + \varepsilon_{it}\) \\
+- \(Treatment_i\) is 0 for the control group and 1 for the treatment
+group - \(Post_t\) is 0 for before and 1 for after \\
 we can insert the values of \(Treatment\) and \(Post\) using the table
 below and see that coefficient (\(\beta_3\)) of the interaction of
 \(Treatment\) and \(Post\) is the Difference in Differences (DID)
-estimator:
-
+estimator: \\
 \href{https://davidcard.berkeley.edu/papers/njmin-aer.pdf}{Card and
 Krueger (1994)} found one such natural experiment, allowing them to
 estimate the causal effect of an increase in the state minimum wage on
 unemployment using a DiD model; In 1992, New Jersey raised the state
 minimum wage from \$4.25 to \$5.05 while the minimum wage in
-neighbouring Pennsylvania stayed the same at \$4.25.
-
-\begin{itemize}
-\tightlist
-\item
-  Treatmeng Group: New Jersey
-\item
-  Control Group: Pennsylvania
-\item
-  Pre-Treatment Period: before 1992
-\item
-  Post-Treatment Period: after 1992
-\end{itemize}
-
+neighbouring Pennsylvania stayed the same at \$4.25. \\
+* Treatmeng Group: New Jersey * Control Group: Pennsylvania *
+Pre-Treatment Period: before 1992 * Post-Treatment Period: after 1992 \\
 They conducted a survey of 384 fast-food restaurants across both states,
 right before and right after the law came into effect in New Jersey,
 asking them how many people they employed. They ran a
@@ -8175,24 +7858,23 @@ Difference-in-Differences model, and found that the coefficient
 \(\beta_3\) was positive but not statistically significant. In other
 words, the average total employees per restaurant \emph{increased} after
 the minimum wage increased, but this could have been due to random
-chance.
-
+chance. \\
 That was a long time ago. Things have changed since then, including the
 fact that we have access to a lot more data and computational power.
 Let's see if we can replicate Card and Krueger's results with more
 recent data. I've downloaded data on unemployment, minimum wage levels,
 and Gross Domestic Product at the state level going back to 1976. Let's
-have a look at minimum wages in New Jersey and Pennsylvania over time:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df\_s}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}https://storage.googleapis.com/qm2/wk10/state\_data.csv\textquotesingle{}}\NormalTok{, parse\_dates}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]) }\CommentTok{\# read in the state{-}level data}
-\NormalTok{did}\OperatorTok{=}\NormalTok{df\_s[df\_s[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}pennsylvania\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{])] }\CommentTok{\# subset the data to only include pennsylvania and new jersey}
-
-\NormalTok{px.line(did, x}\OperatorTok{=}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}minwage\textquotesingle{}}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{, title}\OperatorTok{=}\StringTok{"Minimum Wages in New Jersey and Pennsylvania"}\NormalTok{) }\CommentTok{\# plot the minimum wage over time}
-\end{Highlighting}
-\end{Shaded}
-
+have a look at minimum wages in New Jersey and Pennsylvania over
+time: \\
+::: \{.cell\} ``` \{.python .cell-code\}
+df\_s=pd.read\_csv(`https://storage.googleapis.com/qm2/wk10/state\_data.csv',
+parse\_dates={[}`date'{]}) \# read in the state-level data
+did=df\_s{[}df\_s{[}`state'{]}.isin({[}`pennsylvania', `new
+jersey'{]}){]} \# subset the data to only include pennsylvania and new
+jersey \\
+px.line(did, x=`date', y=`minwage', color=`state', title=``Minimum Wages
+in New Jersey and Pennsylvania'') \# plot the minimum wage over time ```
+::: \\
 The plot above sort of looks like a set of descending staircases; this
 is for two reasons. The plateaus exist because each row in the dataframe
 \texttt{df\_s} is the value of a state in a given \emph{month}, but we
@@ -8208,8 +7890,7 @@ wage actually diminishes in ``real'' terms, which is what the variable
 \texttt{minwage} measures. Incidentally, this is one of the main reasons
 University staff have been on
 \href{https://www.ucu.org.uk/article/11830/University-staff-pay-cut-by-20-new-figures-show}{strike}.
-Anyway. Back to minimum wages.
-
+Anyway. Back to minimum wages. \\
 This plot shows that for the past fifty years, New Jersey and
 Pennsylvania have had largely similar minimum wage policies. There have
 been a couple moments of divergence, including in the 1990s when the
@@ -8222,96 +7903,37 @@ significantly twice. In 2020, New Jersey's minimum wage was around 50\%
 higher than Pennsylvania's. We can exploit the fact that these two
 states have historically had similar minimum wage laws but have recently
 experienced a big divergence to see if that change in minimum wages has
-resulted in a change in employment levels.
-
-Our Difference-in-Differences setup is as follows:
-
-\[\large Unemployment_{state, year} = \beta_0 + \beta_1 Treatment_{state} + \beta_2 Post_{year} + \beta_3 (Treatment_{state} \times Post_{year}) + \beta_4 GDP_{state,year} + \varepsilon_{it}\]
-
-\begin{itemize}
-\tightlist
-\item
-  New Jersey is the \textbf{treatment group}
-\item
-  Pennsylvania is the \textbf{control group}
-\item
-  Years before 2014 is the \textbf{pre-treatment period}
-\item
-  Years after 2014 is the \textbf{post-treatment period}
-\end{itemize}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a variable that is 1 if the date is after the minimum wage increase and 0 otherwise}
-\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a variable that is 1 if the state is new jersey (i.e., the treatment group) and 0 for pennsylvania (the control group)}
-\NormalTok{did[}\StringTok{\textquotesingle{}post\_treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{*}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{] }\CommentTok{\# create a variable that is 1 if the date is after the minimum wage increase and the state is new jersey and 0 otherwise}
-\end{Highlighting}
-\end{Shaded}
-
+resulted in a change in employment levels. \\
+Our Difference-in-Differences setup is as follows: \\
+\(\large Unemployment_{state, year} = \beta_0 + \beta_1 Treatment_{state} + \beta_2 Post_{year} + \beta_3 (Treatment_{state} \times Post_{year}) + \beta_4 GDP_{state,year} + \varepsilon_{it}\) \\
+* New Jersey is the \textbf{treatment group} * Pennsylvania is the
+\textbf{control group} * Years before 2014 is the \textbf{pre-treatment
+period} * Years after 2014 is the \textbf{post-treatment period} \\
+::: \{.cell\} \\
 Before we proceed with the analysis, though, we need to satisfy two
 assumptions that will allow us to argue that Pennsylvania can act as a
-valid control group for New Jersey:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  No simultaneous treatments:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    If, for example, New Jersey suddenly entered a massive recession in
-    2014 as well, we couldn't really argue that resulting effects on
-    employment are due solely to the minimum wage law. To account for
-    this, we'll be including state-level GDP as an additional
-    independent variable in our DiD model.
-  \end{itemize}
-\item
-  Parallel Trends:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Both states have to have been experiencing similar trends in the
-    \textbf{dependent variable} (unemployment) prior to the treatment
-    (minimum wage law). If they were trending in opposite directions for
-    unobserved reasons, ensuing differences in unemployment may be due
-    to those unobserved reasons rather than the treatment.
-  \item
-    We can check this by plotting the dependent variable for both groups
-    over time, and indicating the timing of the treatment.
-  \end{itemize}
-\end{enumerate}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{did}\OperatorTok{=}\NormalTok{did[(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2008{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}=}\StringTok{\textquotesingle{}2020{-}01{-}01\textquotesingle{}}\NormalTok{)]}
-\NormalTok{sns.lineplot(data}\OperatorTok{=}\NormalTok{did,x}\OperatorTok{=}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{,y}\OperatorTok{=}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{,hue}\OperatorTok{=}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.axvline(pd.to\_datetime(}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{),color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{,linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}NJ Minimum Wage Increase\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}Unemployment in Pennsylvania and New Jersey\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.legend()}
-\end{Highlighting}
-\end{Shaded}
-
+valid control group for New Jersey: \\
+1. No simultaneous treatments: * If, for example, New Jersey suddenly
+entered a massive recession in 2014 as well, we couldn't really argue
+that resulting effects on employment are due solely to the minimum wage
+law. To account for this, we'll be including state-level GDP as an
+additional independent variable in our DiD model. 2. Parallel Trends: *
+Both states have to have been experiencing similar trends in the
+\textbf{dependent variable} (unemployment) prior to the treatment
+(minimum wage law). If they were trending in opposite directions for
+unobserved reasons, ensuing differences in unemployment may be due to
+those unobserved reasons rather than the treatment. * We can check this
+by plotting the dependent variable for both groups over time, and
+indicating the timing of the treatment. \\
+::: \{.cell\} \\
 This plot shows a big spike in unemployment occurring for both
 Pennsylvania and New Jersey as a result of the 2008 financial crisis.
 New jersey had a higher unemployment rate than Pennsylvania, but their
 trends are largely parallel and decreasing after 2012. In the years
 following the minimum wage law, New Jersey's unemployment rate actually
 dips below Pennsylvania's for the first time in years. Let's look at
-this in the form of boxplots:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{did[}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{str}\NormalTok{)}\OperatorTok{+}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{].astype(}\BuiltInTok{str}\NormalTok{) }\CommentTok{\# this variable is just for the plot below}
-\NormalTok{sns.boxplot(x}\OperatorTok{=}\StringTok{\textquotesingle{}category\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}unemployment\textquotesingle{}}\NormalTok{, hue}\OperatorTok{=}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{, data}\OperatorTok{=}\NormalTok{did).set\_xticklabels([}\StringTok{"Pre x Treatment"}\NormalTok{, }\StringTok{"Pre x Control"}\NormalTok{,}\StringTok{\textquotesingle{}Post x Treatment\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Post x Control\textquotesingle{}}\NormalTok{]) }
-\NormalTok{plt.xlabel(}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}Unemployment Rates by Treatment and Post Treatment\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.show()}
-\end{Highlighting}
-\end{Shaded}
-
+this in the form of boxplots: \\
+::: \{.cell\} \\
 This plot is fascinating in and of itself. The two box plots on the left
 show the unemployment values of the counties prior to the minimum wage
 law in 2014, while the two on the right show their values after the
@@ -8322,133 +7944,983 @@ lower unemployment rate than New Jersey (orange). In the years following
 New Jersey's passage of the minimum wage law, New Jersey actually has a
 \emph{lower} unemployment rate than Pennsylvania! This is the only
 boxplot where the ``treatment'' (a minimum wage law) is being applied,
-and it has the lowest unemployment rate.
-
+and it has the lowest unemployment rate. \\
 Let's see if this difference is statistically signfiicant, and calculate
-a treatment effect:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{did\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{}  post + treatment + post\_treatment\textquotesingle{}}\NormalTok{, did).fit()}
-\BuiltInTok{print}\NormalTok{(did\_model.summary())}
-\end{Highlighting}
-\end{Shaded}
-
+a treatment effect: \\
+::: \{.cell\} \\
 There are some really interesting results from this model-- let's
-interpret the coefficients one by one.
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{gdp}: GDP is inversely related to unemployment. This makes
-  sense: GDP basically measures the total amount of economic activity,
-  so more economic activity = more employment.
-\item
-  \texttt{post}: this coefficient is negative, but statistically
-  insignificant at the 0.05 level; it indicates that unemployment
-  \emph{generally} decreased for both groups, but that this could be due
-  to random chance.
-\item
-  \texttt{treatment}: again negative but insignficant, meaning that
-  there is no significant difference in unemployment levels between NJ
-  and PA over the entire period.
-\item
-  \texttt{post\_treatment}: this is our difference-in-differences
-  estimator, and reflects the causal effect of treatment. It is negative
-  and statistically significant. If we believe that the asusmptions of
-  our model are satisfied, we can claim that:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \textbf{The introduction of a minimum wage in New Jersey led to a
-    1.95\% decrease in unemployment relative to Pennsylvania}
-  \end{itemize}
-\end{itemize}
-
+interpret the coefficients one by one. \\
+* \texttt{gdp}: GDP is inversely related to unemployment. This makes
+sense: GDP basically measures the total amount of economic activity, so
+more economic activity = more employment. * \texttt{post}: this
+coefficient is negative, but statistically insignificant at the 0.05
+level; it indicates that unemployment \emph{generally} decreased for
+both groups, but that this could be due to random chance. *
+\texttt{treatment}: again negative but insignficant, meaning that there
+is no significant difference in unemployment levels between NJ and PA
+over the entire period. * \texttt{post\_treatment}: this is our
+difference-in-differences estimator, and reflects the causal effect of
+treatment. It is negative and statistically significant. If we believe
+that the asusmptions of our model are satisfied, we can claim that: *
+\textbf{The introduction of a minimum wage in New Jersey led to a 1.95\%
+decrease in unemployment relative to Pennsylvania} \\
 This is a bold claim. We should do our best to back it up. Notice that
 i've sort of arbitrarily chosen a window of dates around the minimum
-wage law-- maybe this result is a fluke, due to the timespan ive chosen.
-
+wage law-- maybe this result is a fluke, due to the timespan ive
+chosen. \\
 To address this concern, I'll run the same model 10 times, starting with
 a really small time window-- just one year on either side of the law--
-and progressively expand it.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{models}\OperatorTok{=}\NormalTok{[] }\CommentTok{\# create empty list to store the models}
-\NormalTok{names}\OperatorTok{=}\NormalTok{[] }\CommentTok{\# create empty list to store the names of the models}
-
-\ControlFlowTok{for}\NormalTok{ window }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{): }\CommentTok{\# loop through years from 2000 to 2020 in increments of 4}
-\NormalTok{    did}\OperatorTok{=}\NormalTok{df\_s[(df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\BuiltInTok{str}\NormalTok{(}\DecValTok{2014}\OperatorTok{{-}}\NormalTok{window)}\OperatorTok{+}\StringTok{\textquotesingle{}{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ (df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}=}\BuiltInTok{str}\NormalTok{(}\DecValTok{2014}\OperatorTok{+}\NormalTok{window)}\OperatorTok{+}\StringTok{\textquotesingle{}{-}01{-}01\textquotesingle{}}\NormalTok{) }\OperatorTok{\&}\NormalTok{ df\_s[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}pennsylvania\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{])] }\CommentTok{\# subset the data within the window of interest around 2014}
-\NormalTok{    did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2014{-}01{-}01\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a dummy variable indicating the period after the minimum wage increase}
-\NormalTok{    did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(did[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\StringTok{\textquotesingle{}new jersey\textquotesingle{}}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a dummy variable for treatment}
-\NormalTok{    did[}\StringTok{\textquotesingle{}post\_treatment\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{did[}\StringTok{\textquotesingle{}post\textquotesingle{}}\NormalTok{]}\OperatorTok{*}\NormalTok{did[}\StringTok{\textquotesingle{}treatment\textquotesingle{}}\NormalTok{] }\CommentTok{\# create an interaction term between the post and treatment variables}
-\NormalTok{    did\_model }\OperatorTok{=}\NormalTok{ ols(}\StringTok{\textquotesingle{}unemployment \textasciitilde{} gdp+ post + treatment + post\_treatment\textquotesingle{}}\NormalTok{, did).fit() }\CommentTok{\# run the difference in difference model}
-
-\NormalTok{    models.append(did\_model) }\CommentTok{\# append the model to the list of models}
-\NormalTok{    names.append(}\StringTok{\textquotesingle{}± \textquotesingle{}}\OperatorTok{+}\BuiltInTok{str}\NormalTok{(window)}\OperatorTok{+}\StringTok{\textquotesingle{} Year\textquotesingle{}}\NormalTok{) }\CommentTok{\# append the name of the model to the list of names}
-
-\NormalTok{table}\OperatorTok{=}\NormalTok{summary\_col( }\CommentTok{\# create a regression table }
-\NormalTok{    models, }\CommentTok{\# pass the models to the summary\_col function}
-\NormalTok{    stars}\OperatorTok{=}\VariableTok{True}\NormalTok{, }\CommentTok{\# add stars denoting the p{-}values of the coefficient to the table; * p\textless{}0.05, ** p\textless{}0.01, *** p\textless{}0.001}
-\NormalTok{    float\_format}\OperatorTok{=}\StringTok{\textquotesingle{}}\SpecialCharTok{\%0.3f}\StringTok{\textquotesingle{}}\NormalTok{, }\CommentTok{\# set the decimal places to 3}
-\NormalTok{    model\_names}\OperatorTok{=}\NormalTok{names, }\CommentTok{\# set the names of the model}
-\NormalTok{    info\_dict }\OperatorTok{=}\NormalTok{ \{}\StringTok{"N"}\NormalTok{:}\KeywordTok{lambda}\NormalTok{ x: }\StringTok{"}\SpecialCharTok{\{0:d\}}\StringTok{"}\NormalTok{.}\BuiltInTok{format}\NormalTok{(}\BuiltInTok{int}\NormalTok{(x.nobs))\}) }\CommentTok{\# add the number of observations to the table}
-
-\BuiltInTok{print}\NormalTok{(table) }\CommentTok{\# print the table}
-\end{Highlighting}
-\end{Shaded}
-
+and progressively expand it. \\
+::: \{.cell\} ``` \{.python .cell-code\} models={[}{]} \# create empty
+list to store the models names={[}{]} \# create empty list to store the
+names of the models \\
+for window in range(1,10): \# loop through years from 2000 to 2020 in
+increments of 4
+did=df\_s{[}(df\_s{[}`date'{]}\textgreater=str(2014-window)+`-01-01') \&
+(df\_s{[}`date'{]}\textless=str(2014+window)+`-01-01') \&
+df\_s{[}`state'{]}.isin({[}`pennsylvania', `new jersey'{]}){]} \# subset
+the data within the window of interest around 2014
+did{[}`post'{]}=np.where(did{[}`date'{]}\textgreater=`2014-01-01',1,0)
+\# create a dummy variable indicating the period after the minimum wage
+increase did{[}`treatment'{]}=np.where(did{[}`state'{]}==`new
+jersey',1,0) \# create a dummy variable for treatment
+did{[}`post\_treatment'{]}=did{[}`post'{]}*did{[}`treatment'{]} \#
+create an interaction term between the post and treatment variables
+did\_model = ols(`unemployment \textasciitilde{} gdp+ post + treatment +
+post\_treatment', did).fit() \# run the difference in difference
+model \\
+models.append(did\_model) \# append the model to the list of models
+names.append(`±'+str(window)+' Year') \# append the name of the model to
+the list of names \\
+table=summary\_col( \# create a regression table models, \# pass the
+models to the summary\_col function stars=True, \# add stars denoting
+the p-values of the coefficient to the table; * p\textless0.05, **
+p\textless0.01, *** p\textless0.001 float\_format=`\%0.3f', \# set the
+decimal places to 3 model\_names=names, \# set the names of the model
+info\_dict = \{``N'':lambda x: ``\{0:d\}''.format(int(x.nobs))\}) \# add
+the number of observations to the table \\
+print(table) \# print the table \\
+``` ::: \\
 The row we're mainly interested in is the \texttt{post\_treatment}
 coefficient, the treatment effect. It remains significant and negative
 in all time periods smaller than 8 years, after which point it becomes
-insignificant;
+insignificant; \\
+How do you think this affects our conclusion? \\
+\# Assessed Question \\
+Now we've got evidence that minimum wage laws may actually
+\emph{decrease} unemployment in the case of New Jersey and Pennsylvania.
+But we've got quite a bit of data, and minimum wages change frequently.
+Let's find another example where we may be able to run a difference in
+differences regression to see if this trend holds in a different
+context. \\
+Below, I've picked out Arizona and Louisiana; they had nearly the exact
+same minimum wage for seven years, but in 2007 Arizona nearly tripled
+its minimum wage while Louisiana kept it the same (\ldots by not having
+one). \\
+::: \{.cell\} \\
+Run a difference in differences regression to measure the effect of this
+minimum wage increase on unemployment. Define three variables (post,
+treatment, post\_treatment), and include just these three variables in
+the model. \\
+* Part A: What is the effect of the minimum wage increase on
+unemployment in the case of Arizona and Louisiana? * Part B: Difference
+in Differences designs have two assumptions: parallel trends, and no
+simultaneous treatment. Can you think of any events that ocurred in 2008
+that might violate the ``no simultaneous treatment'' assumption? \\
+ \\
+\texttt{\{=html\}\ \textless{}!-\/-\ quarto-file-metadata:\ eyJyZXNvdXJjZURpciI6Im5vdGVib29rcyIsImJvb2tJdGVtVHlwZSI6ImNoYXB0ZXIiLCJib29rSXRlbU51bWJlciI6MTAsImJvb2tJdGVtRmlsZSI6Ii4vbm90ZWJvb2tzL1cwOS4gUmVncmVzc2lvbiBEaXNjb250aW51aXR5LmlweW5iIiwiYm9va0l0ZW1EZXB0aCI6MH0=\ -\/-\textgreater{}} \\
+\# Regression Discontinuity \\
+\#\# \emph{Workshop 09}
+\href{https://colab.research.google.com/github/oballinger/QM2/blob/main/notebooks/W09.\%20Regression\%20Discontinuity.ipynb}{\includegraphics{index_files/mediabag/colab-badge.png}} \\
+In this final week, we're going to look at Regression Discontinuity
+Designs (RDD). We'll look into discontinuities in two types of
+variables: \\
+1. Spatial discontinuities 2. Temporal discontinuities \\
+::: \{.cell\} \\
+::: \{.cell-output .cell-output-stdout\} \\
+::: \{.cell tags=`{[}``hide-input''{]}' execution\_count=2\} ```
+\{.python .cell-code\} import warnings
+warnings.filterwarnings(`ignore') \\
+import pandas as pd import numpy as np from matplotlib import style from
+matplotlib import pyplot as plt import seaborn as sns import
+statsmodels.formula.api as smf import geopandas as gpd from
+statsmodels.formula.api import ols \\
+\%matplotlib inline \\
+style.use(``fivethirtyeight'') ``` ::: \\
+\# Spatial Discontinuities \\
+Last week, we set up a difference model and made causal claims about the
+effect of minimum wage laws on unemployment. We did this by treating
+Pennsylvania as a control group for New Jersey on the basis that they
+had similar trends in unemployment before the minimum wage law, and
+diverging trends after, and no other shock coincided with this
+policy. \\
+We could still poke some holes in that-- NJ seems to have fared worse
+than PA after the 2008 crisis; maybe more people work in finance in NJ.
+Indeed, Jersey City is across the water from Manhattan, America's
+financial centre. Bankers would be hard hit by a financial crisis, but
+are probably not that affected by minimum wage laws. Conversely,
+Pennsylvania is the 3rd largest coal-producing state in the U.S.-- coal
+miners are probably less affected by financial crises, but more likely
+to be earning minimum wage. As such, increasing the minimum wage in a
+place where most people are bankers probably has less of an effect on
+unemployment compared to an area where everyone is a coal miner. \\
+Running a state-level analysis is subject to this sort of selection
+bias, since by looking at state averages we're effectively comparing
+places like Jersey City to places like
+\href{https://en.wikipedia.org/wiki/Centralia,_Pennsylvania}{Centralia},
+a coal-mining town in central Pennsylvania which saw its population
+decline from 1000 in 1980 to just five residents in 2020. So the next
+step in our analysis might be to try to compare apples to apples. There
+are a number of ways of doing this-- we could look at the unemployment
+rate by industry, for example. But what if we didn't want to rely on
+pre-trends, or if we didn't even have data prior to the treatment? This
+is often the case \\
+To build a more valid counterfactual, we can drill even deeper to find
+even more similar comparison groups using a \textbf{Regression
+Discontinuity Design (RDD)} using county (rather than state) level
+data. \\
+\textgreater{}
+\textbf{\href{https://www.princeton.edu/~davidlee/wp/RDDEconomics.pdf}{Regression
+Discontinuity Designs}} are a method of estimating treatment effects in
+a nonexperimental setting where treatment is determined by whether an
+observed ``assignment'' variable exceeds a known cutoff point. If the
+cutoff is exogenous to the treatment, observations in the vicinity of
+this cutoff are likely to be very similar, and assignment to the
+treatment or control group can be considered as good as random. \\
+RDD models generally take the following form: \\
+\(\huge Y_{i} = \beta_0 + \beta_1 R_i + \beta_2 T_i + \varepsilon_{i}\) \\
+\(\large T_i=    \begin{cases}
+1 & R_i>c\\
+0 & R_i<c\\
+\end{cases} \) \\
+Where R is the ``running variable'', T is the treatment variable, and c
+is a cutoff in the running variable assigning observations to the
+``treatment'' or ``control'' groups. \\
+In our case, the treatment is the minimum wage law passed in NJ in 2014.
+We want to be looking at the period after this to pick up on any changes
+in employment. The \textbf{assignment variable} in this case could be
+the distance of a county to the border between the two states, and the
+sharp cutoff would be the border itself. Counties on the border counties
+are probably much more similar to each other than other, farther away
+counties: this would exclude both Jersey City (in the far east of NJ)
+and Centralia (in the centre of PA). \\
+Indeed, several cities are divided by the border between these states
+including Philladelphia, the capital city of Pennsylvania: \\
+::: \{.cell execution\_count=3\} \\
+::: \{.cell-output .cell-output-display\} \\
+On the left side of the river is Philladelphia, PA, while on the right
+side is Camden, NJ. The code below uses the county shapefile we used
+before to isolate the counties in NJ and PA that are on the border. \\
+::: \{.cell\} ``` \{.python .cell-code\}
+counties=pd.read\_csv(`https://storage.googleapis.com/qm2/wk10/county\_labor.csv',
+dtype=\{`county\_fips':str\}) \# read in the county labor data shp =
+gpd.read\_file(`data/geojson-counties-fips.json') \# read in the
+counties shapefile \\
+subset=shp{[}shp{[}`STATE'{]}.isin({[}`34',`42'{]}){]} \# new jersey =
+34, pennsylvania = 42, new york = 36 \\
+subset{[}`neighbors'{]}= 0 \# create a new column called neighbors \\
+for index, row in subset.iterrows(): \# iterate through each row in the
+counties shapefile buffered= row{[}`geometry'{]}.buffer(0.1) \# create a
+buffer around the county so that it overlaps with its neighbors
+neighbors =
+list(set(subset{[}subset.geometry.overlaps(buffered){]}.STATE.tolist()).difference({[}row.STATE{]}))
+\# check which counties overlap with the buffer, grab the state code,
+and remove the current county's state code subset.at{[}index,
+``neighbors''{]} = ``,''.join(neighbors) \# add the list of neighbors to
+the neighbors column \\
+subset{[}`border'{]}=np.where(subset{[}`neighbors'{]}=='\,',0,1) \#
+create a new column called border that is 1 if the county is on the
+border and 0 if it is not \\
+subset{[}`viscol'{]}=subset{[}`STATE'{]}.astype(int)+subset{[}`border'{]}
+\# create a new column that combines the state code and the border
+column subset.plot(column=`viscol',legend=False, figsize=(20,10),
+cmap=`RdYlGn') \# plot the counties and color them by the border column
+plt.title(`Border Counties in New Jersey and Pennsylvania', fontsize=20)
+\# add a title ``` \\
+::: \{.cell-output .cell-output-display execution\_count=23\} \\
+::: \{.cell-output .cell-output-display\}
+\includegraphics{notebooks/W09. Regression Discontinuity_files/figure-pdf/cell-5-output-2.png}
+::: ::: \\
+We can now restrict our sample to only include counties within a set
+distance the border, and set up a regression discontinuity design in
+which: \\
+* unemployment is the dependent variable. * state (NJ/PA) is the
+treatment variable. * distance from the border is the running
+variable. \\
+::: \{.cell execution\_count=27\} ``` \{.python .cell-code\}
+border\_counties=subset{[}subset{[}`border'{]}==1{]}{[}`id'{]}.tolist()
+\# create a list of the border counties
+rdd=counties{[}(counties{[}`year'{]}\textgreater2007)\&(counties{[}`county\_fips'{]}.isin(border\_counties)){]}
+\# subset the counties data to only include border counties and years
+after 2007 rdd\_model = ols(`unemployment \textasciitilde{} C(state)',
+rdd{[}rdd{[}`year'{]}\textgreater2014{]}).fit() \\
+print(rdd\_model.summary()) ``` \\
+::: \{.cell-output .cell-output-stdout\} ``` OLS Regression Results
+==============================================================================
+Dep. Variable: unemployment R-squared: 0.032 Model: OLS Adj. R-squared:
+0.023 Method: Least Squares F-statistic: 3.394 Date: Fri, 01 Dec 2023
+Prob (F-statistic): 0.0683 Time: 12:53:28 Log-Likelihood: -211.58
+No.~Observations: 105 AIC: 427.2 Df Residuals: 103 BIC: 432.5 Df Model:
+1 Covariance Type: nonrobust
+==================================================================================
+coef std err t P\textgreater\textbar t\textbar{} {[}0.025 0.975{]} \\
+\end{longtable}
 
-How do you think this affects our conclusion?
+Intercept 5.2518 0.245 21.446 0.000 4.766 5.737 C(state){[}T.42{]}
+0.6605 0.358 1.842 0.068 -0.051 1.371
+==============================================================================
+Omnibus: 21.953 Durbin-Watson: 0.637 Prob(Omnibus): 0.000 Jarque-Bera
+(JB): 27.712 Skew: 1.141 Prob(JB): 9.60e-07 Kurtosis: 4.061 Cond.
+No.~2.55
+==============================================================================
+
+Notes: \href{http://www.literateprogramming.com/lpquotes.html}{1}
+Standard Errors assume that the covariance matrix of the errors is
+correctly specified.
+
+\begin{verbatim}
+:::
+:::
+
+
+
+This gives us a much better idea of the impact of the minimum wage law by discarding counties that are very far away from eachother and thus dissimilar. We can see that border counties in Pennsylvania saw a 0.66% *increase* in unemployment relative to border counties in New Jersey, in the years following the latter's implementation of the minimum wage increase. This difference, however, is not statistically significant. 
+
+This example captures the basic intuition behind regression discontinuity, but we might worry that the minimum wage law isn't the only thing that changes as the discontinutiy (i.e., isn't the only thing that changes between NJ and PA). 
+
+It is quite common to use distance as a running variable in RDD, and if you're interested in a review of the literature on spatial RDD models check out [this article](https://www.jstor.org/stable/24572845). 
+
+To get a firm grasp of the intuition and mechanics behind RDD, we'll use a more straightforward example. 
+
+## Is Alcohol Killing You?
+
+A very relevant public policy question is what should be the minimal drinking age. Most countries, Brazil included, set it to be 18 year, but in the US (most states) it is currently 21. So, is it the case that the US is being overly prudent and that they should lower their minimal drinking age? Or is it the case that other countries should make their legal drinking age higher? 
+
+One way to look at this question is from a [mortality rate perspective (Carpenter and Dobkin, 2009)](https://www.aeaweb.org/articles?id=10.1257/app.1.1.164). From the public policy standpoint, one could argue that we should lower the mortality rate as much as possible. If alcohol consumption increases the mortality rate by a lot, we should avoid lowering the minimum drinking age. This would be consistent with the objective of lowering deaths caused by alcohol consumption.
+
+To estimate the impacts of alcohol on death, we could use the fact that legal drinking age imposes a discontinuity on nature. In the US, those just under 21 years don't drink (or drink much less) while those just older than 21 do drink. This means that the probability of drinking jumps at 21 years and that is something we can explore with an RDD.
+
+To do so we can grab some mortality data aggregated by age. Each row is the average age of a group of people and the average mortality by all causes (`all`), by moving vehicle accident (`mva`) and by suicide (`suicide`). 
+
+::: {.cell}
+``` {.python .cell-code}
+drinking = pd.read_csv("https://storage.googleapis.com/qm2/rdd/drinking.csv")
+drinking.head()[["agecell", "all", "mva", "suicide"]]
+\end{verbatim}
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule\noalign{}
+& agecell & all & mva & suicide \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 19.068493 & 92.825400 & 35.829327 & 11.203714 \\
+1 & 19.150684 & 95.100740 & 35.639256 & 12.193368 \\
+2 & 19.232876 & 92.144295 & 34.205650 & 11.715812 \\
+3 & 19.315070 & 88.427760 & 32.278957 & 11.275010 \\
+4 & 19.397260 & 88.704940 & 32.650967 & 10.984314 \\
+\end{longtable}
+
+:::
+
+Just to aid visibility (and for another important reason we will see
+later) we will centralize the running variable \texttt{agecell} at the
+threshold 21.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{drinking[}\StringTok{"agecell"}\NormalTok{] }\OperatorTok{{-}=} \DecValTok{21}
+\end{Highlighting}
+\end{Shaded}
+
+If we plot the multiple outcome variables (\texttt{all}, \texttt{mva},
+\texttt{suicide}) with the runing variable on the x axis, we get some
+visual cue about some sort of jump in mortality as we cross the legal
+drinking age.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plt.figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{8}\NormalTok{,}\DecValTok{8}\NormalTok{))}
+\NormalTok{ax }\OperatorTok{=}\NormalTok{ plt.subplot(}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{)}
+\NormalTok{drinking.plot.scatter(x}\OperatorTok{=}\StringTok{"agecell"}\NormalTok{, y}\OperatorTok{=}\StringTok{"all"}\NormalTok{, ax}\OperatorTok{=}\NormalTok{ax)}
+\NormalTok{plt.title(}\StringTok{"Death Cause by Age (Centered at 0)"}\NormalTok{)}
+
+\NormalTok{ax }\OperatorTok{=}\NormalTok{ plt.subplot(}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{, sharex}\OperatorTok{=}\NormalTok{ax)}
+\NormalTok{drinking.plot.scatter(x}\OperatorTok{=}\StringTok{"agecell"}\NormalTok{, y}\OperatorTok{=}\StringTok{"mva"}\NormalTok{, ax}\OperatorTok{=}\NormalTok{ax)}
+
+\NormalTok{ax }\OperatorTok{=}\NormalTok{ plt.subplot(}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{, sharex}\OperatorTok{=}\NormalTok{ax)}
+\NormalTok{drinking.plot.scatter(x}\OperatorTok{=}\StringTok{"agecell"}\NormalTok{, y}\OperatorTok{=}\StringTok{"suicide"}\NormalTok{, ax}\OperatorTok{=}\NormalTok{ax)}\OperatorTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W09. Regression Discontinuity_files/figure-pdf/cell-9-output-1.png}
+
+}
+
+\end{figure}
+
+There are some cues, but we need more than that. What exactly is the
+effect of drinking on mortality at the threshold? And what is the
+standard error on that estimate?
+
+\hypertarget{rdd-estimation}{%
+\section{RDD Estimation}\label{rdd-estimation}}
+
+The key assumption that RDD relies on is the smoothness of the potential
+outcome at the threshold. We can think of RDD as a local randomized
+trial. For those at the threshold, the treatment could have gone either
+way and, by chance, some people fell below the threshold, and some
+people fell above. In our example, at the same point in time, some
+people are just above 21 years and some people are just below 21. What
+determines this is if someone was born some days later or not, which is
+pretty random. For this reason, RDD provides a very compelling causal
+story. It is not the golden standard of RCT, but it is close.
+
+Now, to estimate the treatment effect at the threshold, all we need to
+do is estimate both of the limits in the formula above and compare them.
+The simplest way to do that is by running a linear regression
+
+To make it work, we interact a dummy for being above the threshold with
+the running variable
+
+\$ y\_i = \beta\_0 + \beta\_1 r\_i + \beta\_2
+\mathcal{1}\{r\_i\textgreater c\} + \beta\_3
+\mathcal{1}\{r\_i\textgreater c\} r\_i \$
+
+Essentially, this is the same as fitting a linear regression above the
+threshold and another below it. The parameter \(\beta_0\) is the
+intercept of the regression below the threshold and \(\beta_0+\beta_2\)
+is the intercept for the regression above the threshold.
+
+Here is where the trick of centering the running variable at the
+threshold comes into play. After this pre-processing step, the threshold
+becomes zero. This causes the intercept \(\beta_0\) to be the predicted
+value at the threshold, for the regression below it. By the same
+reasoning, \(\beta_0+\beta_2\) is the limit of the outcome from above.
+
+Here is what this looks like in code for the case where we want to
+estimate the effect of alcohol consumption on death by all causes at 21
+years.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rdd\_df }\OperatorTok{=}\NormalTok{ drinking.assign(threshold}\OperatorTok{=}\NormalTok{(drinking[}\StringTok{"agecell"}\NormalTok{] }\OperatorTok{\textgreater{}} \DecValTok{0}\NormalTok{).astype(}\BuiltInTok{int}\NormalTok{))}
+\NormalTok{model }\OperatorTok{=}\NormalTok{ smf.wls(}\StringTok{"all\textasciitilde{} agecell * threshold "}\NormalTok{, rdd\_df).fit()}
+\BuiltInTok{print}\NormalTok{(model.summary())}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+                            WLS Regression Results                            
+==============================================================================
+Dep. Variable:                    all   R-squared:                       0.668
+Model:                            WLS   Adj. R-squared:                  0.645
+Method:                 Least Squares   F-statistic:                     29.47
+Date:                Fri, 10 Mar 2023   Prob (F-statistic):           1.33e-10
+Time:                        11:18:58   Log-Likelihood:                -105.64
+No. Observations:                  48   AIC:                             219.3
+Df Residuals:                      44   BIC:                             226.8
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+=====================================================================================
+                        coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+Intercept            93.6184      0.932    100.399      0.000      91.739      95.498
+agecell               0.8270      0.819      1.010      0.318      -0.823       2.477
+threshold             7.6627      1.319      5.811      0.000       5.005      10.320
+agecell:threshold    -3.6034      1.158     -3.111      0.003      -5.937      -1.269
+==============================================================================
+Omnibus:                        0.294   Durbin-Watson:                   1.965
+Prob(Omnibus):                  0.863   Jarque-Bera (JB):                0.411
+Skew:                           0.167   Prob(JB):                        0.814
+Kurtosis:                       2.693   Cond. No.                         7.75
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+\end{verbatim}
+
+This model is telling us that mortality increases by 7.6627 points with
+the consumption of alcohol. Another way of putting this is that alcohol
+increases the chance of death by all causes by 8\%
+\((100*((7.6627+93.6184)/93.6184 - 1))\). Notice that this also gives us
+standard errors for our causal effect estimate. In this case, the effect
+is statistically significant, since the p-value is below 0.01. We can
+calculate the treatment effect programattically as follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ate\_pct }\OperatorTok{=} \DecValTok{100}\OperatorTok{*}\NormalTok{((model.params[}\StringTok{"threshold"}\NormalTok{] }\OperatorTok{+}\NormalTok{ model.params[}\StringTok{"Intercept"}\NormalTok{])}\OperatorTok{/}\NormalTok{model.params[}\StringTok{"Intercept"}\NormalTok{] }\OperatorTok{{-}} \DecValTok{1}\NormalTok{)}
+
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Alcohol increases the chance of death by all causes by }\SpecialCharTok{\{\}}\StringTok{\%"}\NormalTok{.}\BuiltInTok{format}\NormalTok{(np.}\BuiltInTok{round}\NormalTok{(ate\_pct,}\DecValTok{2}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Alcohol increases the chance of death by all causes by 8.19%
+\end{verbatim}
+
+If we want to verify this model visually, we can show the predicted
+values on the data that we have. You can see that it is as though we had
+2 regression models: one for those above the threshold and one for below
+it.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ax }\OperatorTok{=}\NormalTok{ drinking.plot.scatter(x}\OperatorTok{=}\StringTok{"agecell"}\NormalTok{, y}\OperatorTok{=}\StringTok{"all"}\NormalTok{, color}\OperatorTok{=}\StringTok{"C0"}\NormalTok{)}
+\NormalTok{drinking.assign(predictions}\OperatorTok{=}\NormalTok{model.fittedvalues).plot(x}\OperatorTok{=}\StringTok{"agecell"}\NormalTok{, y}\OperatorTok{=}\StringTok{"predictions"}\NormalTok{, ax}\OperatorTok{=}\NormalTok{ax, color}\OperatorTok{=}\StringTok{"C1"}\NormalTok{)}
+\NormalTok{plt.title(}\SpecialStringTok{f"Impact of Alcohol on Death: }\SpecialCharTok{\{}\NormalTok{np}\SpecialCharTok{.}\BuiltInTok{round}\NormalTok{(ate\_pct, }\DecValTok{2}\NormalTok{)}\SpecialCharTok{\}}\SpecialStringTok{\% }\CharTok{\textbackslash{}n}\SpecialStringTok{ p=}\SpecialCharTok{\{}\NormalTok{np}\SpecialCharTok{.}\BuiltInTok{round}\NormalTok{(model.pvalues[}\StringTok{\textquotesingle{}threshold\textquotesingle{}}\NormalTok{], }\DecValTok{3}\NormalTok{)}\SpecialCharTok{\}}\SpecialStringTok{, R2=}\SpecialCharTok{\{}\NormalTok{np}\SpecialCharTok{.}\BuiltInTok{round}\NormalTok{(model.rsquared, }\DecValTok{3}\NormalTok{)}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W09. Regression Discontinuity_files/figure-pdf/cell-12-output-1.png}
+
+}
+
+\end{figure}
 
 \bookmarksetup{startatroot}
 
 \hypertarget{assessed-question-7}{%
 \chapter{Assessed Question}\label{assessed-question-7}}
 
-Now we've got evidence that minimum wage laws may actually
-\emph{decrease} unemployment in the case of New Jersey and Pennsylvania.
-But we've got quite a bit of data, and minimum wages change frequently.
-Let's find another example where we may be able to run a difference in
-differences regression to see if this trend holds in a different
-context.
+You'll remember from the lecture slides that the model we've fit above
+is a linear, different slopes design. Try fitting the following models:
 
-Below, I've picked out Arizona and Louisiana; they had nearly the exact
-same minimum wage for seven years, but in 2007 Arizona nearly tripled
-its minimum wage while Louisiana kept it the same (\ldots by not having
-one).
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Linear, Same Slopes
+\item
+  Quadratic, Same Slopes
+\item
+  Quadratic, Different Slopes
+\end{enumerate}
+
+Pay attention to the treatment effect. Is it consistent across models?
+Which model has the highest treatment effect? Which model fits the best?
+
+\hypertarget{kernel-weighting}{%
+\subsection{Kernel Weighting}\label{kernel-weighting}}
+
+Regression Discontinuity relies heavily on the extrapolations properties
+of linear regression. Since we are looking at the values at the
+beginning and end of 2 regression lines, we better get those limits
+right. What can happen is that regression might focus too much on
+fitting the other data points at the cost of a poor fit at the
+threshold. If this happens, we might get the wrong measure of the
+treatment effect.
+
+One way to solve this is to give higher weights for the points that are
+closer to the threshold. There are many ways to do this, but a popular
+one is to reweight the samples with the \textbf{triangular kernel}
+
+\$ K(R, c, h) = \mathcal{1}\{\textbar R-c\textbar{} \leq h\} *
+\bigg(1-\frac{|R-c|}{h}\bigg) \$
+
+The first part of this kernel is an indicator function to whether we are
+close to the threshold. How close? This is determined by a bandwidth
+parameter \(h\). The second part of this kernel is a weighting function.
+As we move away from the threshold, the weights get smaller and smaller.
+These weights are divided by the bandwidth. If the bandwidth is large,
+the weights get smaller at a slower rate. If the bandwidth is small, the
+weights quickly go to zero.
+
+To make it easier to understand, here is what the weights look like for
+this kernel applied to our problem. I've set the bandwidth to be 1 here,
+meaning we will only consider data from people that are no older than 22
+years and no younger than 20 years.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{did2}\OperatorTok{=}\NormalTok{df\_s[(df\_s[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}arizona\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}louisiana\textquotesingle{}}\NormalTok{]))}\OperatorTok{\&}\NormalTok{(df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2000\textquotesingle{}}\NormalTok{)}\OperatorTok{\&}\NormalTok{ (df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\StringTok{\textquotesingle{}2010\textquotesingle{}}\NormalTok{)] }
-\NormalTok{px.line(did2, x}\OperatorTok{=}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}minwage\textquotesingle{}}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{, title}\OperatorTok{=}\StringTok{"Minimum Wages in Kansas and Ohio"}\NormalTok{)}
+\KeywordTok{def}\NormalTok{ kernel(R, c, h):}
+\NormalTok{    indicator }\OperatorTok{=}\NormalTok{ (np.}\BuiltInTok{abs}\NormalTok{(R}\OperatorTok{{-}}\NormalTok{c) }\OperatorTok{\textless{}=}\NormalTok{ h).astype(}\BuiltInTok{float}\NormalTok{)}
+    \ControlFlowTok{return}\NormalTok{ indicator }\OperatorTok{*}\NormalTok{ (}\DecValTok{1} \OperatorTok{{-}}\NormalTok{ np.}\BuiltInTok{abs}\NormalTok{(R}\OperatorTok{{-}}\NormalTok{c)}\OperatorTok{/}\NormalTok{h)}
 \end{Highlighting}
 \end{Shaded}
 
-Run a difference in differences regression to measure the effect of this
-minimum wage increase on unemployment. Define three variables (post,
-treatment, post\_treatment), and include just these three variables in
-the model.
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plt.plot(drinking[}\StringTok{"agecell"}\NormalTok{], kernel(drinking[}\StringTok{"agecell"}\NormalTok{], c}\OperatorTok{=}\DecValTok{0}\NormalTok{, h}\OperatorTok{=}\DecValTok{1}\NormalTok{))}
+\NormalTok{plt.xlabel(}\StringTok{"agecell"}\NormalTok{)}
+\NormalTok{plt.ylabel(}\StringTok{"Weight"}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{"Kernel Weight by Age"}\NormalTok{)}\OperatorTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W09. Regression Discontinuity_files/figure-pdf/cell-15-output-1.png}
+
+}
+
+\end{figure}
+
+If we apply these weights to our original problem, the impact of alcohol
+gets bigger, at least for all causes. It jumps from 7.6627 to 9.7004.
+The result remains very significant. Also, notice that I'm using
+\texttt{wls} instead of \texttt{ols}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model }\OperatorTok{=}\NormalTok{ smf.wls(}\StringTok{"all\textasciitilde{}agecell*threshold"}\NormalTok{, rdd\_df,}
+\NormalTok{                weights}\OperatorTok{=}\NormalTok{kernel(drinking[}\StringTok{"agecell"}\NormalTok{], c}\OperatorTok{=}\DecValTok{0}\NormalTok{, h}\OperatorTok{=}\DecValTok{1}\NormalTok{)).fit()}
+
+\NormalTok{model.summary().tables[}\DecValTok{1}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllll@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& coef & std err & t & P\textgreater\textbar t\textbar{} & {[}0.025 &
+0.975{]} \\
+Intercept & 93.2002 & 0.731 & 127.429 & 0.000 & 91.726 & 94.674 \\
+agecell & 0.4109 & 1.789 & 0.230 & 0.819 & -3.196 & 4.017 \\
+threshold & 9.7004 & 1.034 & 9.378 & 0.000 & 7.616 & 11.785 \\
+agecell:threshold & -7.1759 & 2.531 & -2.835 & 0.007 & -12.276 &
+-2.075 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ax }\OperatorTok{=}\NormalTok{ drinking.plot.scatter(x}\OperatorTok{=}\StringTok{"agecell"}\NormalTok{, y}\OperatorTok{=}\StringTok{"all"}\NormalTok{, color}\OperatorTok{=}\StringTok{"C0"}\NormalTok{)}
+\NormalTok{drinking.assign(predictions}\OperatorTok{=}\NormalTok{model.fittedvalues).plot(x}\OperatorTok{=}\StringTok{"agecell"}\NormalTok{, y}\OperatorTok{=}\StringTok{"predictions"}\NormalTok{, ax}\OperatorTok{=}\NormalTok{ax, color}\OperatorTok{=}\StringTok{"C1"}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{"Regression Discontinuity (Local Regression)"}\NormalTok{)}\OperatorTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W09. Regression Discontinuity_files/figure-pdf/cell-17-output-1.png}
+
+}
+
+\end{figure}
+
+And here is what it looks like for the other causes of death. Notice how
+the regression on the right is more negatively sloped since it
+disconsiders the right most points.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plt.figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{8}\NormalTok{,}\DecValTok{8}\NormalTok{))}
+\NormalTok{weights }\OperatorTok{=}\NormalTok{ kernel(drinking[}\StringTok{"agecell"}\NormalTok{], c}\OperatorTok{=}\DecValTok{0}\NormalTok{, h}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+
+\ControlFlowTok{for}\NormalTok{ p, cause }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{([}\StringTok{"all"}\NormalTok{, }\StringTok{"mva"}\NormalTok{, }\StringTok{"suicide"}\NormalTok{], }\DecValTok{1}\NormalTok{):}
+\NormalTok{    ax }\OperatorTok{=}\NormalTok{ plt.subplot(}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{,p)}
+\NormalTok{    drinking.plot.scatter(x}\OperatorTok{=}\StringTok{"agecell"}\NormalTok{, y}\OperatorTok{=}\NormalTok{cause, ax}\OperatorTok{=}\NormalTok{ax)}
+\NormalTok{    m }\OperatorTok{=}\NormalTok{ smf.wls(}\SpecialStringTok{f"}\SpecialCharTok{\{}\NormalTok{cause}\SpecialCharTok{\}}\SpecialStringTok{\textasciitilde{}agecell*threshold"}\NormalTok{, rdd\_df, weights}\OperatorTok{=}\NormalTok{weights).fit()}
+\NormalTok{    ate\_pct }\OperatorTok{=} \DecValTok{100}\OperatorTok{*}\NormalTok{((m.params[}\StringTok{"threshold"}\NormalTok{] }\OperatorTok{+}\NormalTok{ m.params[}\StringTok{"Intercept"}\NormalTok{])}\OperatorTok{/}\NormalTok{m.params[}\StringTok{"Intercept"}\NormalTok{] }\OperatorTok{{-}} \DecValTok{1}\NormalTok{)}
+\NormalTok{    drinking.assign(predictions}\OperatorTok{=}\NormalTok{m.fittedvalues).plot(x}\OperatorTok{=}\StringTok{"agecell"}\NormalTok{, y}\OperatorTok{=}\StringTok{"predictions"}\NormalTok{, ax}\OperatorTok{=}\NormalTok{ax, color}\OperatorTok{=}\StringTok{"C1"}\NormalTok{)}
+\NormalTok{    plt.title(}\SpecialStringTok{f"Impact of Alcohol on Death: }\SpecialCharTok{\{}\NormalTok{np}\SpecialCharTok{.}\BuiltInTok{round}\NormalTok{(ate\_pct, }\DecValTok{2}\NormalTok{)}\SpecialCharTok{\}}\SpecialStringTok{\%"}\NormalTok{)}
+
+\NormalTok{plt.tight\_layout()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W09. Regression Discontinuity_files/figure-pdf/cell-18-output-1.png}
+
+}
+
+\end{figure}
+
+With the exception of suicide, it looks like adding the kernel weight
+made the negative impact on alcohol bigger. Once again, if we want to
+minimize the death rate, we should NOT recommend lowering the legal
+drinking age, since there is a clear impact of alcohol on the death
+rates.
+
+This simple case covers what happens when regression discontinuity
+design works perfectly. Next, we will see some diagnostics that we
+should run in order to check how much we can trust RDD and talk about a
+topic that is very dear to our heart: the effect of education on
+earnings.
+
+\hypertarget{sheepskin-effect-and-fuzzy-rdd}{%
+\section{Sheepskin Effect and Fuzzy
+RDD}\label{sheepskin-effect-and-fuzzy-rdd}}
+
+When it comes to the effect of education on earnings, there are two
+major views in economics. The first one is the widely known argument
+that education increases human capital, increasing productivity and
+thus, earnings. In this view, education actually changes you for the
+better. Another view is that education is simply a signaling mechanism.
+It just puts you through all these hard tests and academic tasks. If you
+can make it, it signals to the market that you are a good employee. In
+this way, education doesn't make you more productive. It only tells the
+market how productive you have always been. What matters here is the
+diploma. If you have it, you will be paid more. We refer to this as the
+\textbf{sheepskin effect}, since diplomas were printed in sheepskin in
+the past.
+
+To test this hypothesis,
+\href{https://faculty.smu.edu/millimet/classes/eco7321/papers/clark\%20martorell\%202014.pdf}{Clark
+and Martorell} used regression discontinuity to measure the effect of
+graduating 12th grade on earnings. In order to do that, they had to
+think about some running variable where students that fall above it
+graduate and those who fall below it, don't. They found such data in the
+Texas education system.
+
+In order to graduate in Texas, one has to pass an exam. Testing starts
+at 10th grade and students can do it multiple times, but eventually,
+they face a last chance exam at the end of 12th grade. The idea was to
+get data from students who took those last chance exams and compare
+those that had barely failed it to those that barely passed it. These
+students will have very similar human capital, but different signaling
+credentials. Namely, those that barely passed it, will receive a
+diploma.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sheepskin }\OperatorTok{=}\NormalTok{ pd.read\_csv(}\StringTok{"https://storage.googleapis.com/qm2/rdd/sheepskin.csv"}\NormalTok{)[[}\StringTok{"avgearnings"}\NormalTok{, }\StringTok{"minscore"}\NormalTok{, }\StringTok{"receivehsd"}\NormalTok{, }\StringTok{"n"}\NormalTok{]]}
+\NormalTok{sheepskin.head()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule\noalign{}
+& avgearnings & minscore & receivehsd & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 11845.086 & -30.0 & 0.416667 & 12 \\
+1 & 9205.679 & -29.0 & 0.387097 & 31 \\
+2 & 8407.745 & -28.0 & 0.318182 & 44 \\
+3 & 11114.087 & -27.0 & 0.377778 & 45 \\
+4 & 10814.624 & -26.0 & 0.306667 & 75 \\
+\end{longtable}
+
+Once again, this data is grouped by the running variable. It contains
+not only the running variable (minscore, already centered at zero) and
+the outcome (avgearnings), but it also has the probability of receiving
+a diploma in that score cell and the size of the call (n). So, for
+example, out of the 12 students in the cell -30 below the score
+threshold, only 5 were able to get the diploma (12 * 0,416).
+
+This means that there is some slippage in the treatment assignment. Some
+students that are below the passing threshold managed to get the diploma
+anyway. Here, the regression discontinuity is \textbf{fuzzy}, rather
+than sharp. Notice how the probability of getting the diploma doesn't
+jump from zero to one at the threshold. But it does jump from something
+like 50\% to 90\%.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sheepskin.plot.scatter(x}\OperatorTok{=}\StringTok{"minscore"}\NormalTok{, y}\OperatorTok{=}\StringTok{"receivehsd"}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{5}\NormalTok{))}
+\NormalTok{plt.xlabel(}\StringTok{"Test Scores Relative to Cut off"}\NormalTok{)}
+\NormalTok{plt.ylabel(}\StringTok{"Fraction Receiving Diplomas"}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{"Last{-}chance Exams"}\NormalTok{)}\OperatorTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W09. Regression Discontinuity_files/figure-pdf/cell-20-output-1.png}
+
+}
+
+\end{figure}
+
+We can think of fuzzy RD as a sort of non compliance. Passing the
+threshold should make everyone receive the diploma, but some students,
+the never takers, don't get it. Likewise, being below the threshold
+should prevent you from getting a diploma, but some students, the always
+takers, manage to get it anyway.
+
+Just like when we have the potential outcome, we have the potential
+treatment status in this situation. \(T_1\) is the treatment everyone
+would have received had they been above the threshold. \(T_0\) is the
+treatment everyone would have received had they been below the
+threshold. As you've might have noticed, we can think of the
+\textbf{threshold as an Instrumental Variable}. Just as in IV, if we
+naively estimate the treatment effect, it will be biased towards zero.
+
+\begin{figure}
+
+{\centering \includegraphics{index_files/mediabag/rdd.png}
+
+}
+
+\caption{img}
+
+\end{figure}
+
+The probability of treatment being less than one, even above the
+threshold, makes the outcome we observe less than the true potential
+outcome \(Y_1\). By the same token, the outcome we observe below the
+threshold is higher than the true potential outcome \(Y_0\). This makes
+it look like the treatment effect at the threshold is smaller than it
+actually is and we will have to use IV techniques to correct for that.
+
+But first, let's talk about a sanity check we need to run to make sure
+we can trust our RDD estimates.
+
+\hypertarget{the-mccrary-test}{%
+\subsection{The McCrary Test}\label{the-mccrary-test}}
+
+One thing that could break our RDD argument is if people can manipulate
+where they stand at the threshold. In the sheepskin example this could
+happen if students just below the threshold found a way around the
+system to increase their test score by just a bit. Another example is
+when you need to be below a certain income level to get a government
+benefit. Some families might lower their income on purpose, just to be
+just eligible for the program.
+
+In these sorts of situations, we tend to see a phenomenon called
+bunching on the density of the running variable. This means that we will
+have a lot of entities just above or just below the threshold. To check
+for that, we can plot the density function of the running variable and
+see if there are any spikes around the threshold. For our case, the
+density is given by the \texttt{n} column in our data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plt.figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{8}\NormalTok{,}\DecValTok{8}\NormalTok{))}
+
+\NormalTok{ax }\OperatorTok{=}\NormalTok{ plt.subplot(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{)}
+\NormalTok{sheepskin.plot.bar(x}\OperatorTok{=}\StringTok{"minscore"}\NormalTok{, y}\OperatorTok{=}\StringTok{"n"}\NormalTok{, ax}\OperatorTok{=}\NormalTok{ax)}
+\NormalTok{plt.title(}\StringTok{"McCrary Test"}\NormalTok{)}
+\NormalTok{plt.ylabel(}\StringTok{"Smoothness at the Threshold"}\NormalTok{)}
+
+\NormalTok{ax }\OperatorTok{=}\NormalTok{ plt.subplot(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{, sharex}\OperatorTok{=}\NormalTok{ax)}
+\NormalTok{sheepskin.replace(\{}\DecValTok{1877}\NormalTok{:}\DecValTok{1977}\NormalTok{, }\DecValTok{1874}\NormalTok{:}\DecValTok{2277}\NormalTok{\}).plot.bar(x}\OperatorTok{=}\StringTok{"minscore"}\NormalTok{, y}\OperatorTok{=}\StringTok{"n"}\NormalTok{, ax}\OperatorTok{=}\NormalTok{ax)}
+\NormalTok{plt.xlabel(}\StringTok{"Test Scores Relative to Cut off"}\NormalTok{)}
+\NormalTok{plt.ylabel(}\StringTok{"Spike at the Threshold"}\NormalTok{)}\OperatorTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W09. Regression Discontinuity_files/figure-pdf/cell-21-output-1.png}
+
+}
+
+\end{figure}
+
+The first plot shows how our data density looks like. As we can see,
+there are no spikes around the threshold, meaning there is no bunching.
+Students are not manipulating where they fall on the threshold. Just for
+illustrative purposes, the second plot shows what bunching would look
+like if students could manipulate where they fall on the threshold. We
+would see a spike in the density for the cells just above the threshold,
+since many students would be on that cell, barely passing the exam.
+
+Getting this out of the way, we can go back to estimate the sheepskin
+effect. As I've said before, the numerator of the Wald estimator can be
+estimated just like we did in the Sharp RD. Here, we will use as weight
+the kernel with a bandwidth of 15. Since we also have the cell size, we
+will multiply the kernel by the sample size to get a final weight for
+the cell.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sheepsking\_rdd }\OperatorTok{=}\NormalTok{ sheepskin.assign(threshold}\OperatorTok{=}\NormalTok{(sheepskin[}\StringTok{"minscore"}\NormalTok{]}\OperatorTok{\textgreater{}}\DecValTok{0}\NormalTok{).astype(}\BuiltInTok{int}\NormalTok{))}
+\NormalTok{model }\OperatorTok{=}\NormalTok{ smf.wls(}\StringTok{"avgearnings\textasciitilde{}minscore*threshold"}\NormalTok{,}
+\NormalTok{                sheepsking\_rdd,}
+\NormalTok{                weights}\OperatorTok{=}\NormalTok{kernel(sheepsking\_rdd[}\StringTok{"minscore"}\NormalTok{], c}\OperatorTok{=}\DecValTok{0}\NormalTok{, h}\OperatorTok{=}\DecValTok{15}\NormalTok{)}\OperatorTok{*}\NormalTok{sheepsking\_rdd[}\StringTok{"n"}\NormalTok{]).fit()}
+
+\NormalTok{model.summary().tables[}\DecValTok{1}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllllll@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& coef & std err & t & P\textgreater\textbar t\textbar{} & {[}0.025 &
+0.975{]} \\
+Intercept & 1.399e+04 & 83.678 & 167.181 & 0.000 & 1.38e+04 &
+1.42e+04 \\
+minscore & 181.6636 & 16.389 & 11.084 & 0.000 & 148.588 & 214.739 \\
+threshold & -97.7571 & 145.723 & -0.671 & 0.506 & -391.839 & 196.325 \\
+minscore:threshold & 18.1955 & 30.311 & 0.600 & 0.552 & -42.975 &
+79.366 \\
+\end{longtable}
+
+This is telling us that the effect of a diploma is -97.7571, but this is
+not statistically significant (P-value of 0.5). If we plot these
+results, we get a very continuous line at the threshold. More educated
+people indeed make more money, but there isn't a jump at the point where
+they receive the 12th grade diploma. This is an argument in favor of the
+view that says that education increases earnings by making people more
+productive, rather than being just a signal to the marker. In other
+words, there is no sheepskin effect.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ax }\OperatorTok{=}\NormalTok{ sheepskin.plot.scatter(x}\OperatorTok{=}\StringTok{"minscore"}\NormalTok{, y}\OperatorTok{=}\StringTok{"avgearnings"}\NormalTok{, color}\OperatorTok{=}\StringTok{"C0"}\NormalTok{)}
+\NormalTok{sheepskin.assign(predictions}\OperatorTok{=}\NormalTok{model.fittedvalues).plot(x}\OperatorTok{=}\StringTok{"minscore"}\NormalTok{, y}\OperatorTok{=}\StringTok{"predictions"}\NormalTok{, ax}\OperatorTok{=}\NormalTok{ax, color}\OperatorTok{=}\StringTok{"C1"}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{8}\NormalTok{,}\DecValTok{5}\NormalTok{))}
+\NormalTok{plt.xlabel(}\StringTok{"Test Scores Relative to Cutoff"}\NormalTok{)}
+\NormalTok{plt.ylabel(}\StringTok{"Average Earnings"}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{"Last{-}chance Exams"}\NormalTok{)}\OperatorTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W09. Regression Discontinuity_files/figure-pdf/cell-23-output-1.png}
+
+}
+
+\end{figure}
+
+However, as we know from the way non compliance bias works, this result
+is biased towards zero. To correct for that, we need to scale it by the
+first stage and get the Wald estimator. Unfortunately, there isn't a
+good Python implementation for this, so we will have to do it manually
+and use bootstrap to get the standard errors.
+
+The code below runs the numerator of the Wald estimator just like we did
+before and also constructs the denominator by replacing the target
+variable with the treatment variable \texttt{receivehsd}. The final step
+just divides the numerator by the denominator.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ wald\_rdd(data):}
+\NormalTok{    weights}\OperatorTok{=}\NormalTok{kernel(data[}\StringTok{"minscore"}\NormalTok{], c}\OperatorTok{=}\DecValTok{0}\NormalTok{, h}\OperatorTok{=}\DecValTok{15}\NormalTok{)}\OperatorTok{*}\NormalTok{data[}\StringTok{"n"}\NormalTok{]}
+\NormalTok{    denominator }\OperatorTok{=}\NormalTok{ smf.wls(}\StringTok{"receivehsd\textasciitilde{}minscore*threshold"}\NormalTok{, data, weights}\OperatorTok{=}\NormalTok{weights).fit()}
+\NormalTok{    numerator }\OperatorTok{=}\NormalTok{ smf.wls(}\StringTok{"avgearnings\textasciitilde{}minscore*threshold"}\NormalTok{, data, weights}\OperatorTok{=}\NormalTok{weights).fit()}
+    \ControlFlowTok{return}\NormalTok{ numerator.params[}\StringTok{"threshold"}\NormalTok{]}\OperatorTok{/}\NormalTok{denominator.params[}\StringTok{"threshold"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ joblib }\ImportTok{import}\NormalTok{ Parallel, delayed }
+
+\NormalTok{np.random.seed(}\DecValTok{45}\NormalTok{)}
+\NormalTok{bootstrap\_sample }\OperatorTok{=} \DecValTok{1000}
+\NormalTok{ates }\OperatorTok{=}\NormalTok{ Parallel(n\_jobs}\OperatorTok{=}\DecValTok{4}\NormalTok{)(delayed(wald\_rdd)(sheepsking\_rdd.sample(frac}\OperatorTok{=}\DecValTok{1}\NormalTok{, replace}\OperatorTok{=}\VariableTok{True}\NormalTok{))}
+                          \ControlFlowTok{for}\NormalTok{ \_ }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(bootstrap\_sample))}
+\NormalTok{ates }\OperatorTok{=}\NormalTok{ np.array(ates)}
+\end{Highlighting}
+\end{Shaded}
+
+With the bootstrap samples, we can plot the distribution of ATEs and see
+where the 95\% confidence interval is.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sns.distplot(ates, kde}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\NormalTok{plt.vlines(np.percentile(ates, }\FloatTok{2.5}\NormalTok{), }\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{, linestyles}\OperatorTok{=}\StringTok{"dotted"}\NormalTok{)}
+\NormalTok{plt.vlines(np.percentile(ates, }\FloatTok{97.5}\NormalTok{), }\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{, linestyles}\OperatorTok{=}\StringTok{"dotted"}\NormalTok{, label}\OperatorTok{=}\StringTok{"95\% CI"}\NormalTok{)}
+\NormalTok{plt.title(}\StringTok{"ATE Bootstrap Distribution"}\NormalTok{)}
+\NormalTok{plt.xlim([}\OperatorTok{{-}}\DecValTok{10000}\NormalTok{, }\DecValTok{10000}\NormalTok{])}
+\NormalTok{plt.legend()}\OperatorTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{notebooks/W09. Regression Discontinuity_files/figure-pdf/cell-26-output-1.png}
+
+}
+
+\end{figure}
+
+As you can see, even when we scale the effect by the first stage, it is
+still not statistically different from zero. This means that education
+doesn't increase earnings by a simple sheepskin effect, but rather by
+increasing one's productivity.
+
+\hypertarget{key-ideas}{%
+\section{Key Ideas}\label{key-ideas}}
+
+We learned how to take advantage of artificial discontinuities to
+estimate causal effects. The idea is that we will have some artificial
+threshold that makes the probability of treatment jump. One example that
+we saw was how age makes the probability of drinking jump at 21 years.
+We could use that to estimate the impact of drinking on mortality rate.
+We use the fact that very close to the threshold, we have something
+close to a randomized trial. Entities very close to the threshold could
+have gone either way and what determines where they've landed is
+essentially random. With this, we can compare those just above and just
+below to get the treatment effect. We saw how we could do that with
+weighted linear regression using a kernel and how this even gave us, for
+free, standard errors for our ATE.
+
+Then, we look at what would happen in the fuzzy RD design, where we have
+non compliance. We saw how we could approach the situation much like we
+did with IV.
+
+\hypertarget{references}{%
+\section{References}\label{references}}
+
+This workshop is a modification of Chapter 16 of the handbook
+\href{https://github.com/matheusfacure/python-causality-handbook}{Causal
+Inference for the Brave and True}.
+
+I like to think of this entire book as a tribute to Joshua Angrist,
+Alberto Abadie and Christopher Walters for their amazing Econometrics
+class. Most of the ideas here are taken from their classes at the
+American Economic Association. Watching them is what is keeping me sane
+during this tough year of 2020. *
+\href{https://www.aeaweb.org/conference/cont-ed/2017-webcasts}{Cross-Section
+Econometrics} *
+\href{https://www.aeaweb.org/conference/cont-ed/2020-webcasts}{Mastering
+Mostly Harmless Econometrics}
+
+I'll also like to reference the amazing books from Angrist. They have
+shown me that Econometrics, or 'Metrics as they call it, is not only
+extremely useful but also profoundly fun.
 
 \begin{itemize}
 \tightlist
 \item
-  Part A: What is the effect of the minimum wage increase on
-  unemployment in the case of Arizona and Louisiana?
+  \href{https://www.mostlyharmlesseconometrics.com/}{Mostly Harmless
+  Econometrics}
 \item
-  Part B: Difference in Differences designs have two assumptions:
-  parallel trends, and no simultaneous treatment. Can you think of any
-  events that ocurred in 2008 that might violate the ``no simultaneous
-  treatment'' assumption?
+  \href{https://www.masteringmetrics.com/}{Mastering 'Metrics}
 \end{itemize}
-=======
->>>>>>> 58a0f66f1426d670b4b670029a7c08abf59b4a8c
+
+Other important reference is Miguel Hernan and Jamie Robins' book. It
+has been my trustworthy companion in the most thorny causal questions I
+had to answer.
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}{Causal
+  Inference Book}
+\end{itemize}
+
+\hypertarget{contribute}{%
+\section{Contribute}\label{contribute}}
+
+Causal Inference for the Brave and True is an open-source material on
+causal inference, the statistics of science. It uses only free software,
+based in Python. Its goal is to be accessible monetarily and
+intellectually. If you found this book valuable and you want to support
+it, please go to
+\href{https://www.patreon.com/causal_inference_for_the_brave_and_true}{Patreon}.
+If you are not ready to contribute financially, you can also help by
+fixing typos, suggesting edits or giving feedback on passages you didn't
+understand. Just go to the book's repository and
+\href{https://github.com/matheusfacure/python-causality-handbook/issues}{open
+an issue}. Finally, if you liked this content, please share it with
+others who might find it useful and give it a
+\href{https://github.com/matheusfacure/python-causality-handbook/stargazers}{star
+on GitHub}.
+
+\bookmarksetup{startatroot}
+
+\hypertarget{assessed-question-8}{%
+\chapter{Assessed Question}\label{assessed-question-8}}
 
 
 
