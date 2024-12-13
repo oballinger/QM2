@@ -19,7 +19,7 @@ book:
     - ./notebooks/W07. Linear Regression.ipynb
     - ./notebooks/W08. Diff-in-Diff.ipynb
     - ./notebooks/W09. Regression Discontinuity.ipynb
-    # - ./notebooks/W10. Machine Learning.ipynb
+    - ./notebooks/W10. Machine Learning.ipynb
 
   repo-url: https://github.com/oballinger/QM2/
   repo-actions: [edit]
