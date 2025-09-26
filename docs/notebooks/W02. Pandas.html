@@ -229,32 +229,38 @@ ga('send', {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W06. Merging and Joining.html" class="sidebar-item-text sidebar-link">
+  <a href="../notebooks/RW. Merging and Joining.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Merging and Joining</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W07. Hypothesis Testing.html" class="sidebar-item-text sidebar-link">
+  <a href="../notebooks/W06. Hypothesis Testing.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Hypothesis Testing</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W08. Linear Regression.html" class="sidebar-item-text sidebar-link">
+  <a href="../notebooks/W07. Linear Regression.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W09. Difference-in-Differences.html" class="sidebar-item-text sidebar-link">
+  <a href="../notebooks/W08. Diff-in-Diff.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Difference in Differences</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notebooks/W10. Regression Discontinuity.html" class="sidebar-item-text sidebar-link">
+  <a href="../notebooks/W09. Regression Discontinuity.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Regression Discontinuity</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/W10. Machine Learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Machine Learning</span></span></a>
   </div>
 </li>
     </ul>
@@ -1236,6 +1242,27 @@ Name: Net equivalised household income in 2010-11, week, dtype: float64</code></
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>top10</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And there we have it; a nicely formatted dataframe ready for analysis, straight from a website.</p>
+<<<<<<< HEAD
+=======
+</section>
+<section id="assessed-question" class="level1">
+<h1>Assessed Question</h1>
+<p>Using the following URL https://en.wikipedia.org/wiki/List_of_Nobel_laureates_in_Chemistry create a plot of the top 10 countries in terms of nobel laureates. First, follow the steps below:</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># scrape the table of Nobel Laureates in Chemistry using read_html. remember, this gives us a LIST of dataframes! lets call this list chem_tables</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># select the first dataframe from this list and call it chem</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I’ll help you out with this next bit. We’ll be using the <code>groupby</code> function in pandas to group our dataframe such that each row is a country (rather than a person, as it currently is). We do this by using <code>&lt;dataframe&gt;.groupby('&lt;column name&gt;')</code>. Since we’re aggregating, we need to tell python how we want it to aggregate our values. In this case, we just want to count the number of rows for each country; we can do this using <code>.size()</code>. You can use many different aggregation functions, e.g.&nbsp;<code>.mean()</code> if you wanted to calculate the average of a specific column.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a new dataframe called 'country' in which each row is a country, and the values represent the number of nobel laureates. </span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># now sort it in descending order</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># finally, plot the top 10 countries </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><em>QUESTION: What country has the sixth most nobel prizes in chemistry?</em></p>
+>>>>>>> 3c1a08f306ca952c5fc525d83cf6416a7ea0260a
 
 
 </section>

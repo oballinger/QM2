@@ -5,7 +5,7 @@ project:
 book:
   title: "Quantitative Methods 2"
   author: "Ollie Ballinger"
-  date: "10/10/2023"
+  date: "10/10/2024"
   google-analytics: UA-154866877-2
   chapters:
     - index.qmd
@@ -14,11 +14,13 @@ book:
     - ./notebooks/W03. Spatial Data.ipynb
     - ./notebooks/W04. Natural Language Processing.ipynb
     - ./notebooks/W05. Distributions and Basic Statistics.ipynb
-    - ./notebooks/W06. Merging and Joining.ipynb
-    - ./notebooks/W07. Hypothesis Testing.ipynb
-    - ./notebooks/W08. Linear Regression.ipynb
-    - ./notebooks/W09. Difference-in-Differences.ipynb
-    - ./notebooks/W10. Regression Discontinuity.ipynb
+    - ./notebooks/RW. Merging and Joining.ipynb
+    - ./notebooks/W06. Hypothesis Testing.ipynb
+    - ./notebooks/W07. Linear Regression.ipynb
+    - ./notebooks/W08. Diff-in-Diff.ipynb
+    - ./notebooks/W09. Regression Discontinuity.ipynb
+    - ./notebooks/W10. Machine Learning.ipynb
+
   repo-url: https://github.com/oballinger/QM2/
   repo-actions: [edit]
   downloads: [pdf, epub]
