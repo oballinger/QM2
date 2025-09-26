@@ -285,7 +285,6 @@ ga('send', {
   <li><a href="#make-a-decision" id="toc-make-a-decision" class="nav-link" data-scroll-target="#make-a-decision">4. Make a Decision</a></li>
   <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
   </ul></li>
-  <li><a href="#assessed-question" id="toc-assessed-question" class="nav-link" data-scroll-target="#assessed-question">Assessed Question</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W07. Hypothesis Testing.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -734,55 +733,9 @@ The t-statistic is 9.364</code></pre>
 <li>Some of this variation may be due to occupation. Compare income disparities between men and women within different occupations. Which occupation has the largest pay gap? which has the smallest?</li>
 <li><a href="https://journals.sagepub.com/doi/abs/10.1177/0730888401028004005">Research suggests</a> that within occupational groups, collective bargaining through union membership reduces pay gaps. Read the abstract of this article, and try to replicate the analysis using our dataset.</li>
 </ol>
-</section>
-</section>
-<section id="assessed-question" class="level2">
-<h2 class="anchored" data-anchor-id="assessed-question">Assessed Question</h2>
-<p>When Elon musk bought Twitter, he promisted to restore “free speech” to the platform. He heralded this new era with a tweet on 28/10/2022, which read “the bird is freed”. A tidal wave of hate speech ensued instead.</p>
-<p>Using twitter’s API, I downloaded tweets containing a racial slur. Using the groupby function and regex, I counted the number of mentions of this word per hour on the platform for about a month before the takeover, and a few days thereafter. I’ve saved these counts (but not the tweets themselves) as a csv file called “elon_tweets.csv”.</p>
-<p>The code below downloads this csv file, and plots the number of slur-containing tweets over time.</p>
-<div class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>storage.googleapis.com<span class="op">/</span>qm2<span class="op">/</span>wk7<span class="op">/</span>elon_twitter.csv <span class="op">-</span>o data<span class="op">/</span>wk7<span class="op">/</span>elon_twitter.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  4380  100  4380    0     0  24551      0 --:--:-- --:--:-- --:--:-- 24886</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.pyplot <span class="im">import</span> figure</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.dates <span class="im">as</span> mdates</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>tweets<span class="op">=</span>pd.read_csv(<span class="st">'data/wk7/elon_twitter.csv'</span>) <span class="co"># read in the data</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>), dpi<span class="op">=</span><span class="dv">200</span>)</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>tweets[<span class="st">'hour'</span>]<span class="op">=</span>pd.to_datetime(tweets[<span class="st">'hour'</span>])</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>tweet<span class="op">=</span>datetime.datetime(<span class="dv">2022</span>, <span class="dv">10</span>, <span class="dv">28</span>)</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>pre_mean<span class="op">=</span>tweets[tweets[<span class="st">'hour'</span>]<span class="op">&lt;</span>tweet][<span class="st">'count'</span>].mean()</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>post_mean<span class="op">=</span>tweets[tweets[<span class="st">'hour'</span>]<span class="op">&gt;</span>tweet][<span class="st">'count'</span>].mean()</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>pct_change<span class="op">=</span> <span class="bu">int</span>(((post_mean<span class="op">-</span>pre_mean)<span class="op">/</span>pre_mean)<span class="op">*</span><span class="dv">100</span>)</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Hourly Slur Tweets'</span>)</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>plt.plot_date(tweets[<span class="st">'hour'</span>], tweets[<span class="st">'count'</span>], <span class="st">'b'</span>, color<span class="op">=</span><span class="st">'red'</span>)</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>plt.axvline(tweet, color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'dashed'</span>, label<span class="op">=</span><span class="st">'"the bird is freed"'</span>)</span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Elon Musk tweets "The bird is freed"; Tweets containing racial slurs increase </span><span class="sc">{}</span><span class="st">%'</span>.<span class="bu">format</span>(pct_change))</span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>plt.gca().xaxis.set_major_locator(mdates.DayLocator())</span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>plt.gca().xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'</span><span class="sc">%d</span><span class="st">/%m'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/6q/jt4x0r8n1rs0kbrrqrbj61fr0000gn/T/ipykernel_97088/4258694155.py:17: UserWarning: color is redundantly defined by the 'color' keyword argument and the fmt string "b" (-&gt; color=(0.2980392156862745, 0.4470588235294118, 0.6901960784313725, 1)). The keyword argument will take precedence.
-  plt.plot_date(tweets['hour'], tweets['count'], 'b', color='red')</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="W07. Hypothesis Testing_files/figure-html/cell-16-output-2.png" class="img-fluid"></p>
-</div>
-</div>
-<p>This plot definitely shows an uptick in the number of tweets containing a racial slur following Musk’s tweet. But is this increase statistically significant? Using a t-test and the full hypothesis testing procedure, investigate wheter there was a statistically significant increase in hate speech following Elon Musk’s tweet.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

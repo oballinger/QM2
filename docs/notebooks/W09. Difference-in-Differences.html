@@ -271,7 +271,6 @@ ga('send', {
   <ul class="collapse">
   <li><a href="#aims" id="toc-aims" class="nav-link" data-scroll-target="#aims">Aims:</a></li>
   </ul></li>
-  <li><a href="#assessed-question" id="toc-assessed-question" class="nav-link" data-scroll-target="#assessed-question">Assessed Question</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W09. Difference-in-Differences.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -604,26 +603,9 @@ Standard errors in parentheses.
 </div>
 <p>The row we’re mainly interested in is the <code>post_treatment</code> coefficient, the treatment effect. It remains significant and negative in all time periods smaller than 8 years, after which point it becomes insignificant;</p>
 <p>How do you think this affects our conclusion?</p>
-</section>
-</section>
-<section id="assessed-question" class="level1">
-<h1>Assessed Question</h1>
-<p>Now we’ve got evidence that minimum wage laws may actually <em>decrease</em> unemployment in the case of New Jersey and Pennsylvania. But we’ve got quite a bit of data, and minimum wages change frequently. Let’s find another example where we may be able to run a difference in differences regression to see if this trend holds in a different context.</p>
-<p>Below, I’ve picked out Kansas and Ohio; they had nearly the exact same minimum wage for seven years, but in 2007 Ohio nearly tripled its minimum wage while kansas kept it the same.</p>
-<div class="cell" data-execution_count="64">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>did2<span class="op">=</span>df_s[(df_s[<span class="st">'state'</span>].isin([<span class="st">'kansas'</span>, <span class="st">'ohio'</span>]))<span class="op">&amp;</span>(df_s[<span class="st">'date'</span>]<span class="op">&gt;=</span><span class="st">'2000'</span>)<span class="op">&amp;</span> (df_s[<span class="st">'date'</span>]<span class="op">&lt;</span><span class="st">'2010'</span>)] </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>px.line(did2, x<span class="op">=</span><span class="st">'date'</span>, y<span class="op">=</span><span class="st">'minwage'</span>, color<span class="op">=</span><span class="st">'state'</span>, title<span class="op">=</span><span class="st">"Minimum Wages in Kansas and Ohio"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<pre><code>Unable to display output for mime type(s): application/vnd.plotly.v1+json</code></pre>
-</div>
-</div>
-<p>Run a difference in differences regression to measure the effect of this minimum wage increase on unemployment. Define three variables (post, treatment, post_treatment), and include just these three variables in the model.</p>
-<ul>
-<li>Part A: What is the effect of the minimum wage increase on unemployment in the case of Kansas and Ohio?</li>
-<li>Part B: Difference in Differences designs have two assumptions: parallel trends, and no simultaneous treatment. Can you think of any events that ocurred in 2008 that might violate the “no simultaneous treatment” assumption?</li>
-</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, enhanced, sharp corners, frame hidden, boxrule=0pt, breakable, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, interior hidden, frame hidden, sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -683,24 +683,6 @@ learning data science, so making an account may not be a bad idea!
 
 \hypertarget{assessed-question}{%
 \chapter{Assessed Question}\label{assessed-question}}
-
-The URL below contains a dataset of the most streamed songs on spotify
-in 2023: https://storage.googleapis.com/qm2/wk1/spotify-2023.csv
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Download the dataset and save it in the \texttt{./data/wk1/}
-  directory. (hint: curl)
-\item
-  Load the dataset as a pandas dataframe. (hint: pandas.read\_csv)
-\item
-  Sort the dataframe in descending order of streams. (hint:
-  sort\_values)
-\end{enumerate}
-
-QUESTION: what song has the highest number of streams in this dataset?
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1562,50 +1544,6 @@ can select it with \texttt{top10.columns{[}1{]}}
 
 And there we have it; a nicely formatted dataframe ready for analysis,
 straight from a website.
-
-\bookmarksetup{startatroot}
-
-\hypertarget{assessed-question-1}{%
-\chapter{Assessed Question}\label{assessed-question-1}}
-
-Using the following URL
-https://en.wikipedia.org/wiki/List\_of\_Nobel\_laureates\_in\_Chemistry
-create a plot of the top 10 countries in terms of nobel laureates.
-First, follow the steps below:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# scrape the table of Nobel Laureates in Chemistry using read\_html. remember, this gives us a LIST of dataframes! lets call this list chem\_tables}
-
-\CommentTok{\# select the first dataframe from this list and call it chem}
-\end{Highlighting}
-\end{Shaded}
-
-I'll help you out with this next bit. We'll be using the
-\texttt{groupby} function in pandas to group our dataframe such that
-each row is a country (rather than a person, as it currently is). We do
-this by using
-\texttt{\textless{}dataframe\textgreater{}.groupby(\textquotesingle{}\textless{}column\ name\textgreater{}\textquotesingle{})}.
-Since we're aggregating, we need to tell python how we want it to
-aggregate our values. In this case, we just want to count the number of
-rows for each country; we can do this using \texttt{.size()}. You can
-use many different aggregation functions, e.g.~\texttt{.mean()} if you
-wanted to calculate the average of a specific column.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# here, we\textquotesingle{}re creating a new dataframe called \textquotesingle{}country\textquotesingle{} in which each row is a country, and the values represent the number of nobel laureates. }
-\NormalTok{countries}\OperatorTok{=}\NormalTok{chem.groupby(}\StringTok{\textquotesingle{}Country[B]\textquotesingle{}}\NormalTok{).size()}
-
-\CommentTok{\#now let\textquotesingle{}s sort it in descending order}
-\NormalTok{countries.sort\_values(ascending}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
-
-\CommentTok{\# finally, plot the top 10 countries }
-\end{Highlighting}
-\end{Shaded}
-
-\emph{QUESTION: What country has the fourth most nobel prizes in
-chemistry?}
 
 \bookmarksetup{startatroot}
 
@@ -2527,32 +2465,6 @@ happens!
 
 \bookmarksetup{startatroot}
 
-\hypertarget{assessed-question-2}{%
-\chapter{Assessed Question}\label{assessed-question-2}}
-
-Earlier, we created a dataframe called \texttt{daily} in which we
-calculated the average daily AQI across the state for every day of the
-year. (hint: try re-generating this dataframe using the \texttt{Date}
-column rather than the \texttt{Day} column in the \texttt{.groupby()}
-function)
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Sort that dataframe to figure out which day had the worst AQI.
-\item
-  Plug that date into the \texttt{satellite\_plot()} function to
-  visualize the corresponding satellite image. If you've done things
-  correctly so far, you should see a big plume of smoke emanating from
-  the central region of california spreading northwards.
-\item
-  Clicking on a sensor will reveal its name-- three sensors just north
-  of the fire are caught under the plume. What are their names?
-\end{enumerate}
-
-\bookmarksetup{startatroot}
-
 \hypertarget{natural-language-processing}{%
 \chapter{Natural Language
 Processing}\label{natural-language-processing}}
@@ -2672,6 +2584,16 @@ mkdir: data/wk4: File exists
 \NormalTok{nlp.add\_pipe(}\StringTok{\textquotesingle{}spacytextblob\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+TypeError: Descriptors cannot not be created directly.
+If this call came from a _pb2.py file, your generated code is out of date and must be regenerated with protoc >= 3.19.0.
+If you cannot immediately regenerate your protos, some other possible workarounds are:
+ 1. Downgrade the protobuf package to 3.20.x or lower.
+ 2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).
+
+More information: https://developers.google.com/protocol-buffers/docs/news/2022-05-06#python-updates
+\end{verbatim}
 
 \hypertarget{downloading-and-reading-one-earnings-call}{%
 \section{Downloading and reading one earnings
@@ -3602,58 +3524,6 @@ person is saying ``stop saying \#Tillerson is good on climate''-- this
 is expressing negative sentiment!
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\hypertarget{assessed-question-3}{%
-\subsection{Assessed Question}\label{assessed-question-3}}
-
-In this assessed question, we want to use NLP and spatial analysis to
-map out where the people who are most angry about Exxon are located.
-
-In the code cell below:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  create a dataframe called ``sample'' which contains the first 1000
-  tweets from the ``tweets'' dataframe.
-\item
-  Using a lambda function,
-  \texttt{.apply(lambda\ x:\ nlp(x).\_.blob.polarity)}, create a column
-  in the sample dataframe that contains the polarity of each tweet.
-\item
-  Create a column that contains the subjectivity score for each tweet.
-\item
-  Filter the dataframe to discard tweets that are not subjective
-  (subjectivity score \textless{} 0.5) \emph{and} tweets that have
-  negative sentiment (polarity score \textless{} 0).
-\item
-  Modify the code below to plot the distribution of the \#ExxonKnew
-  campaign. Color the points according to sentiment polarity. Only a
-  handful of the tweets have location information, so don't worry if you
-  don't see loads of points.
-\end{enumerate}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
-\ImportTok{from}\NormalTok{ mpl\_toolkits.basemap }\ImportTok{import}\NormalTok{ Basemap}
-
-\BuiltInTok{map} \OperatorTok{=}\NormalTok{ Basemap(projection}\OperatorTok{=}\StringTok{\textquotesingle{}mill\textquotesingle{}}\NormalTok{)}
-
-\BuiltInTok{map}\NormalTok{.drawcountries()}
-\BuiltInTok{map}\NormalTok{.drawcoastlines()}
-
-\BuiltInTok{map}\NormalTok{.scatter(}
-\NormalTok{      x}\OperatorTok{=}\NormalTok{, }
-\NormalTok{      y}\OperatorTok{=}\NormalTok{, }
-\NormalTok{      color}\OperatorTok{=}\NormalTok{,}
-\NormalTok{      latlon}\OperatorTok{=}\VariableTok{True}\NormalTok{, }
-\NormalTok{      vmin}\OperatorTok{={-}}\DecValTok{1}\NormalTok{, }
-\NormalTok{      vmax}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\emph{Question:} What country are these tweets located in?
 
 \bookmarksetup{startatroot}
 
@@ -4645,85 +4515,6 @@ women do not overlap at all tells us that the probability of this
 variation in incomes being due to random chance is extremely, extremely
 small. Thus, we can say that the observed difference in income between
 men and women is \textbf{statistically significant}.
-
-\bookmarksetup{startatroot}
-
-\hypertarget{assessed-question-4}{%
-\chapter{Assessed Question}\label{assessed-question-4}}
-
-Given that we've used functions to create these plots, we can make plots
-with different data relatively easily. As a reminder, here are the
-values for the sex, race, and schooling variable in our dataframe:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
-\tightlist
-\item
-  \emph{sex}: the person's sex
-
-  \begin{itemize}
-  \tightlist
-  \item
-    1=male
-  \item
-    2=female
-  \end{itemize}
-\item
-  \emph{race}: the person's race
-
-  \begin{itemize}
-  \tightlist
-  \item
-    White non hispanic=1
-  \item
-    Black non hispanic=2
-  \item
-    Hispanic=3
-  \item
-    Other non hispanic=4)
-  \end{itemize}
-\item
-  \emph{sch}: Educational attainment
-
-  \begin{itemize}
-  \tightlist
-  \item
-    None = 0,
-  \item
-    Grades 1-12 = 1-12
-  \item
-    Some University = 13,
-  \item
-    Associate's degree = 14,
-  \item
-    BA = 16
-  \item
-    Advanced Degree = 18
-  \end{itemize}
-\end{enumerate}
-
-Intersectionality is an important consideration when thinking about
-inequality. The code below allows you to create a subset of income for
-white men who have completed highschool:
-
-\texttt{white\_highschool\_men=df{[}(df{[}\textquotesingle{}sex\textquotesingle{}{]}==1)\&(df{[}\textquotesingle{}race\textquotesingle{}{]}==1)\&(df{[}\textquotesingle{}sch\textquotesingle{}{]}==12){]}{[}\textquotesingle{}income\textquotesingle{}{]}}
-
-Re-use this code to create a subset of income for Hispanic women who
-have completed a BA degree. Use the \texttt{two\_hist()} function we
-defined to plot the income of this group against the income of white men
-who have completed highschool.
-
-Which group has higher income?
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{white\_highschool\_men}\OperatorTok{=}\NormalTok{df[(df[}\StringTok{\textquotesingle{}sex\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{\&}\NormalTok{(df[}\StringTok{\textquotesingle{}race\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{1}\NormalTok{)}\OperatorTok{\&}\NormalTok{(df[}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{]}\OperatorTok{==}\DecValTok{12}\NormalTok{)][}\StringTok{\textquotesingle{}income\textquotesingle{}}\NormalTok{]}
-\NormalTok{hispanic\_BA\_women}\OperatorTok{=}
-
-\NormalTok{two\_hist()}
-\end{Highlighting}
-\end{Shaded}
 
 \bookmarksetup{startatroot}
 
@@ -6304,81 +6095,6 @@ no difference in mean income between men and women?
   article, and try to replicate the analysis using our dataset.
 \end{enumerate}
 
-\hypertarget{assessed-question-5}{%
-\section{Assessed Question}\label{assessed-question-5}}
-
-When Elon musk bought Twitter, he promisted to restore ``free speech''
-to the platform. He heralded this new era with a tweet on 28/10/2022,
-which read ``the bird is freed''. A tidal wave of hate speech ensued
-instead.
-
-Using twitter's API, I downloaded tweets containing a racial slur. Using
-the groupby function and regex, I counted the number of mentions of this
-word per hour on the platform for about a month before the takeover, and
-a few days thereafter. I've saved these counts (but not the tweets
-themselves) as a csv file called ``elon\_tweets.csv''.
-
-The code below downloads this csv file, and plots the number of
-slur-containing tweets over time.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\OperatorTok{!}\NormalTok{curl https:}\OperatorTok{//}\NormalTok{storage.googleapis.com}\OperatorTok{/}\NormalTok{qm2}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{elon\_twitter.csv }\OperatorTok{{-}}\NormalTok{o data}\OperatorTok{/}\NormalTok{wk7}\OperatorTok{/}\NormalTok{elon\_twitter.csv}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  4380  100  4380    0     0  24551      0 --:--:-- --:--:-- --:--:-- 24886
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{import}\NormalTok{ datetime}
-\ImportTok{from}\NormalTok{ matplotlib.pyplot }\ImportTok{import}\NormalTok{ figure}
-\ImportTok{import}\NormalTok{ matplotlib.dates }\ImportTok{as}\NormalTok{ mdates}
-
-\NormalTok{tweets}\OperatorTok{=}\NormalTok{pd.read\_csv(}\StringTok{\textquotesingle{}data/wk7/elon\_twitter.csv\textquotesingle{}}\NormalTok{) }\CommentTok{\# read in the data}
-\NormalTok{figure(figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{4}\NormalTok{), dpi}\OperatorTok{=}\DecValTok{200}\NormalTok{)}
-\NormalTok{tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{pd.to\_datetime(tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{])}
-
-\NormalTok{tweet}\OperatorTok{=}\NormalTok{datetime.datetime(}\DecValTok{2022}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{28}\NormalTok{)}
-
-\NormalTok{pre\_mean}\OperatorTok{=}\NormalTok{tweets[tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\NormalTok{tweet][}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{].mean()}
-\NormalTok{post\_mean}\OperatorTok{=}\NormalTok{tweets[tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}}\NormalTok{tweet][}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{].mean()}
-\NormalTok{pct\_change}\OperatorTok{=} \BuiltInTok{int}\NormalTok{(((post\_mean}\OperatorTok{{-}}\NormalTok{pre\_mean)}\OperatorTok{/}\NormalTok{pre\_mean)}\OperatorTok{*}\DecValTok{100}\NormalTok{)}
-
-\NormalTok{plt.ylabel(}\StringTok{\textquotesingle{}Hourly Slur Tweets\textquotesingle{}}\NormalTok{)}
-
-\NormalTok{plt.plot\_date(tweets[}\StringTok{\textquotesingle{}hour\textquotesingle{}}\NormalTok{], tweets[}\StringTok{\textquotesingle{}count\textquotesingle{}}\NormalTok{], }\StringTok{\textquotesingle{}b\textquotesingle{}}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.axvline(tweet, color}\OperatorTok{=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{, linestyle}\OperatorTok{=}\StringTok{\textquotesingle{}dashed\textquotesingle{}}\NormalTok{, label}\OperatorTok{=}\StringTok{\textquotesingle{}"the bird is freed"\textquotesingle{}}\NormalTok{)}
-\NormalTok{plt.legend()}
-\NormalTok{plt.title(}\StringTok{\textquotesingle{}Elon Musk tweets "The bird is freed"; Tweets containing racial slurs increase }\SpecialCharTok{\{\}}\StringTok{\%\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(pct\_change))}
-\NormalTok{plt.gca().xaxis.set\_major\_locator(mdates.DayLocator())}
-\NormalTok{plt.gca().xaxis.set\_major\_formatter(mdates.DateFormatter(}\StringTok{\textquotesingle{}}\SpecialCharTok{\%d}\StringTok{/\%m\textquotesingle{}}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-/var/folders/6q/jt4x0r8n1rs0kbrrqrbj61fr0000gn/T/ipykernel_97088/4258694155.py:17: UserWarning: color is redundantly defined by the 'color' keyword argument and the fmt string "b" (-> color=(0.2980392156862745, 0.4470588235294118, 0.6901960784313725, 1)). The keyword argument will take precedence.
-  plt.plot_date(tweets['hour'], tweets['count'], 'b', color='red')
-\end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{notebooks/W07. Hypothesis Testing_files/figure-pdf/cell-16-output-2.png}
-
-}
-
-\end{figure}
-
-This plot definitely shows an uptick in the number of tweets containing
-a racial slur following Musk's tweet. But is this increase statistically
-significant? Using a t-test and the full hypothesis testing procedure,
-investigate wheter there was a statistically significant increase in
-hate speech following Elon Musk's tweet.
-
 \bookmarksetup{startatroot}
 
 \hypertarget{regression}{%
@@ -7643,50 +7359,6 @@ For every additional year of schooling, log wages increase by 10.04%
 
 \bookmarksetup{startatroot}
 
-\hypertarget{assessed-question-6}{%
-\chapter{Assessed Question}\label{assessed-question-6}}
-
-Let's dive in to our main independent variable, Years of Schooling. Is
-it appropriate to think of this as a continuous variable, linearly
-related to hourly wages? A linear relationship should be consistent
-across the full range of data-- in other words, the increase from 0
-years of schooling to 1 year of schooling should have the same effect on
-wages as the increase from 11 to 12 years of schooling, even though this
-one year determines whether a person has a highschool diploma or not. We
-would probably expect the increase from 11 to 12 years of schooling to
-have a greater effect on wages than the change from 0 to 1 years of
-schooling.
-
-We could conceptualize of years of schooling instead as a categorical or
-ordinal variable. Below, i've used the \texttt{np.where()} function to
-create a new variable called \texttt{degrees} based on years of
-schooling such that it is equal to 1 if the person has 12 or more years
-of schooling (highschool diploma), 2 if they have 16 or more years of
-schooling (university degree), and 0 otherwise.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{reg\_df[}\StringTok{\textquotesingle{}degrees\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(reg\_df[}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\DecValTok{12}\NormalTok{, }\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\CommentTok{\# create a new variable called degrees that is equal to 1 if the person has 12 or more years of schooling and 0 otherwise}
-\NormalTok{reg\_df[}\StringTok{\textquotesingle{}degrees\textquotesingle{}}\NormalTok{]}\OperatorTok{=}\NormalTok{np.where(reg\_df[}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\DecValTok{16}\NormalTok{, }\DecValTok{2}\NormalTok{, reg\_df[}\StringTok{\textquotesingle{}degrees\textquotesingle{}}\NormalTok{]) }\CommentTok{\# if the person has 16 years of schooling, set the degrees variable to 2}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Add a level to the \texttt{degrees} column that denotes having an
-  advanced degree (18 years of schooling).
-\item
-  Run a regression in which hourly wages is the dependent variable and
-  degrees is a \textbf{categorical} independent variable.
-\item
-  Compared to someone with no highschool degree, how much more does
-  someone with an advanced degree earn per hour?
-\end{enumerate}
-
-\bookmarksetup{startatroot}
-
 \hypertarget{difference-in-differences}{%
 \chapter{Difference in Differences}\label{difference-in-differences}}
 
@@ -8215,50 +7887,6 @@ in all time periods smaller than 8 years, after which point it becomes
 insignificant;
 
 How do you think this affects our conclusion?
-
-\bookmarksetup{startatroot}
-
-\hypertarget{assessed-question-7}{%
-\chapter{Assessed Question}\label{assessed-question-7}}
-
-Now we've got evidence that minimum wage laws may actually
-\emph{decrease} unemployment in the case of New Jersey and Pennsylvania.
-But we've got quite a bit of data, and minimum wages change frequently.
-Let's find another example where we may be able to run a difference in
-differences regression to see if this trend holds in a different
-context.
-
-Below, I've picked out Kansas and Ohio; they had nearly the exact same
-minimum wage for seven years, but in 2007 Ohio nearly tripled its
-minimum wage while kansas kept it the same.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{did2}\OperatorTok{=}\NormalTok{df\_s[(df\_s[}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{].isin([}\StringTok{\textquotesingle{}kansas\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}ohio\textquotesingle{}}\NormalTok{]))}\OperatorTok{\&}\NormalTok{(df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textgreater{}=}\StringTok{\textquotesingle{}2000\textquotesingle{}}\NormalTok{)}\OperatorTok{\&}\NormalTok{ (df\_s[}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{]}\OperatorTok{\textless{}}\StringTok{\textquotesingle{}2010\textquotesingle{}}\NormalTok{)] }
-\NormalTok{px.line(did2, x}\OperatorTok{=}\StringTok{\textquotesingle{}date\textquotesingle{}}\NormalTok{, y}\OperatorTok{=}\StringTok{\textquotesingle{}minwage\textquotesingle{}}\NormalTok{, color}\OperatorTok{=}\StringTok{\textquotesingle{}state\textquotesingle{}}\NormalTok{, title}\OperatorTok{=}\StringTok{"Minimum Wages in Kansas and Ohio"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-Unable to display output for mime type(s): application/vnd.plotly.v1+json
-\end{verbatim}
-
-Run a difference in differences regression to measure the effect of this
-minimum wage increase on unemployment. Define three variables (post,
-treatment, post\_treatment), and include just these three variables in
-the model.
-
-\begin{itemize}
-\tightlist
-\item
-  Part A: What is the effect of the minimum wage increase on
-  unemployment in the case of Kansas and Ohio?
-\item
-  Part B: Difference in Differences designs have two assumptions:
-  parallel trends, and no simultaneous treatment. Can you think of any
-  events that ocurred in 2008 that might violate the ``no simultaneous
-  treatment'' assumption?
-\end{itemize}
 
 \bookmarksetup{startatroot}
 

@@ -296,7 +296,6 @@ ga('send', {
   <li><a href="#hourly-wages" id="toc-hourly-wages" class="nav-link" data-scroll-target="#hourly-wages">Hourly Wages</a></li>
   </ul></li>
   <li><a href="#coefficient-interpretation." id="toc-coefficient-interpretation." class="nav-link" data-scroll-target="#coefficient-interpretation.">Coefficient interpretation.</a></li>
-  <li><a href="#assessed-question" id="toc-assessed-question" class="nav-link" data-scroll-target="#assessed-question">Assessed Question</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W08. Linear Regression.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -1143,20 +1142,6 @@ Standard errors in parentheses.
 <pre><code>For every additional year of schooling, log wages increase by 10.04%</code></pre>
 </div>
 </div>
-</section>
-<section id="assessed-question" class="level1">
-<h1>Assessed Question</h1>
-<p>Let’s dive in to our main independent variable, Years of Schooling. Is it appropriate to think of this as a continuous variable, linearly related to hourly wages? A linear relationship should be consistent across the full range of data– in other words, the increase from 0 years of schooling to 1 year of schooling should have the same effect on wages as the increase from 11 to 12 years of schooling, even though this one year determines whether a person has a highschool diploma or not. We would probably expect the increase from 11 to 12 years of schooling to have a greater effect on wages than the change from 0 to 1 years of schooling.</p>
-<p>We could conceptualize of years of schooling instead as a categorical or ordinal variable. Below, i’ve used the <code>np.where()</code> function to create a new variable called <code>degrees</code> based on years of schooling such that it is equal to 1 if the person has 12 or more years of schooling (highschool diploma), 2 if they have 16 or more years of schooling (university degree), and 0 otherwise.</p>
-<div class="cell" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>reg_df[<span class="st">'degrees'</span>]<span class="op">=</span>np.where(reg_df[<span class="st">'sch'</span>]<span class="op">&gt;=</span><span class="dv">12</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="co"># create a new variable called degrees that is equal to 1 if the person has 12 or more years of schooling and 0 otherwise</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>reg_df[<span class="st">'degrees'</span>]<span class="op">=</span>np.where(reg_df[<span class="st">'sch'</span>]<span class="op">&gt;=</span><span class="dv">16</span>, <span class="dv">2</span>, reg_df[<span class="st">'degrees'</span>]) <span class="co"># if the person has 16 years of schooling, set the degrees variable to 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<ol type="1">
-<li>Add a level to the <code>degrees</code> column that denotes having an advanced degree (18 years of schooling).</li>
-<li>Run a regression in which hourly wages is the dependent variable and degrees is a <strong>categorical</strong> independent variable.</li>
-<li>Compared to someone with no highschool degree, how much more does someone with an advanced degree earn per hour?</li>
-</ol>
 
 
 </section>

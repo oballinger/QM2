@@ -292,7 +292,6 @@ ga('send', {
   <li><a href="#exercise-5" id="toc-exercise-5" class="nav-link" data-scroll-target="#exercise-5">Exercise</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#assessed-question" id="toc-assessed-question" class="nav-link" data-scroll-target="#assessed-question">Assessed Question</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W05. Distributions and Basic Statistics.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -1054,47 +1053,10 @@ Standard deviation: 10.576333292267508</code></pre>
 3. We took 10,000 large samples of women and calculated the means of each sample.
 4. We found that over 99.7% of them were smaller than $44,000.</code></pre>
 <p>The fact that the distribution of income sample means between men and women do not overlap at all tells us that the probability of this variation in incomes being due to random chance is extremely, extremely small. Thus, we can say that the observed difference in income between men and women is <strong>statistically significant</strong>.</p>
-</section>
-</section>
-</section>
-<section id="assessed-question" class="level1">
-<h1>Assessed Question</h1>
-<p>Given that we’ve used functions to create these plots, we can make plots with different data relatively easily. As a reminder, here are the values for the sex, race, and schooling variable in our dataframe:</p>
-<ol start="3" type="1">
-<li><em>sex</em>: the person’s sex
-<ul>
-<li>1=male</li>
-<li>2=female</li>
-</ul></li>
-<li><em>race</em>: the person’s race
-<ul>
-<li>White non hispanic=1</li>
-<li>Black non hispanic=2</li>
-<li>Hispanic=3</li>
-<li>Other non hispanic=4)</li>
-</ul></li>
-<li><em>sch</em>: Educational attainment
-<ul>
-<li>None = 0,</li>
-<li>Grades 1-12 = 1-12</li>
-<li>Some University = 13,</li>
-<li>Associate’s degree = 14,</li>
-<li>BA = 16</li>
-<li>Advanced Degree = 18</li>
-</ul></li>
-</ol>
-<p>Intersectionality is an important consideration when thinking about inequality. The code below allows you to create a subset of income for white men who have completed highschool:</p>
-<p><code>white_highschool_men=df[(df['sex']==1)&amp;(df['race']==1)&amp;(df['sch']==12)]['income']</code></p>
-<p>Re-use this code to create a subset of income for Hispanic women who have completed a BA degree. Use the <code>two_hist()</code> function we defined to plot the income of this group against the income of white men who have completed highschool.</p>
-<p>Which group has higher income?</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>white_highschool_men<span class="op">=</span>df[(df[<span class="st">'sex'</span>]<span class="op">==</span><span class="dv">1</span>)<span class="op">&amp;</span>(df[<span class="st">'race'</span>]<span class="op">==</span><span class="dv">1</span>)<span class="op">&amp;</span>(df[<span class="st">'sch'</span>]<span class="op">==</span><span class="dv">12</span>)][<span class="st">'income'</span>]</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>hispanic_BA_women<span class="op">=</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>two_hist()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
