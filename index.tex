@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}, breakable, boxrule=0pt, frame hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, breakable, interior hidden, frame hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -7606,27 +7606,6 @@ coefficient, the treatment effect. It remains significant and negative
 in all time periods smaller than 8 years, after which point it becomes
 insignificant; \\
 How do you think this affects our conclusion? \\
-\# Assessed Question \\
-Now we've got evidence that minimum wage laws may actually
-\emph{decrease} unemployment in the case of New Jersey and Pennsylvania.
-But we've got quite a bit of data, and minimum wages change frequently.
-Let's find another example where we may be able to run a difference in
-differences regression to see if this trend holds in a different
-context. \\
-Below, I've picked out Arizona and Louisiana; they had nearly the exact
-same minimum wage for seven years, but in 2007 Arizona nearly tripled
-its minimum wage while Louisiana kept it the same (\ldots by not having
-one). \\
-::: \{.cell\} \\
-Run a difference in differences regression to measure the effect of this
-minimum wage increase on unemployment. Define three variables (post,
-treatment, post\_treatment), and include just these three variables in
-the model. \\
-* Part A: What is the effect of the minimum wage increase on
-unemployment in the case of Arizona and Louisiana? * Part B: Difference
-in Differences designs have two assumptions: parallel trends, and no
-simultaneous treatment. Can you think of any events that ocurred in 2008
-that might violate the ``no simultaneous treatment'' assumption? \\
  \\
 \texttt{\{=html\}\ \textless{}!-\/-\ quarto-file-metadata:\ eyJyZXNvdXJjZURpciI6Im5vdGVib29rcyIsImJvb2tJdGVtVHlwZSI6ImNoYXB0ZXIiLCJib29rSXRlbU51bWJlciI6MTAsImJvb2tJdGVtRmlsZSI6Ii4vbm90ZWJvb2tzL1cwOS4gUmVncmVzc2lvbiBEaXNjb250aW51aXR5LmlweW5iIiwiYm9va0l0ZW1EZXB0aCI6MH0=\ -\/-\textgreater{}} \\
 \# Regression Discontinuity \\
