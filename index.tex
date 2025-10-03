@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, breakable, interior hidden, frame hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, boxrule=0pt, sharp corners, frame hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, breakable]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -683,6 +683,16 @@ learning data science, so making an account may not be a bad idea!
 
 \hypertarget{assessed-question}{%
 \chapter{Assessed Question}\label{assessed-question}}
+
+The URL below contains a dataset of the most streamed songs on spotify
+in 2023: https://storage.googleapis.com/qm2/wk1/spotify-2023.csv
+
+Note that the file may have been corrupted over the years of running
+BASC0005; some column names might have been switched around, so make
+sure to sense check your results.
+
+QUESTION: How many streams does the most danceable song in the dataset
+have?
 
 \begin{Shaded}
 \begin{Highlighting}[]
