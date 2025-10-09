@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, boxrule=0pt, sharp corners, frame hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, boxrule=0pt, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, frame hidden, sharp corners]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -1554,6 +1554,17 @@ can select it with \texttt{top10.columns{[}1{]}}
 
 And there we have it; a nicely formatted dataframe ready for analysis,
 straight from a website.
+
+\bookmarksetup{startatroot}
+
+\hypertarget{assessed-question-1}{%
+\chapter{Assessed Question}\label{assessed-question-1}}
+
+using this URL,
+\texttt{https://en.wikipedia.org/wiki/List\_of\_countries\_by\_traffic-related\_death\_rate},
+calculate the average road fatalities per 100,000 inhabitants in Asia in
+2019. Your answer should utilize the pandas \texttt{read\_html} and
+\texttt{groupby} functions.
 
 \bookmarksetup{startatroot}
 
@@ -7333,8 +7344,8 @@ For every additional year of schooling, log wages increase by 10.04%
 
 \bookmarksetup{startatroot}
 
-\hypertarget{assessed-question-1}{%
-\chapter{Assessed Question}\label{assessed-question-1}}
+\hypertarget{assessed-question-2}{%
+\chapter{Assessed Question}\label{assessed-question-2}}
 
 Filter the dataframe to only contain people who work in construction,
 extraction and installation. Compared to those who are covered by a
@@ -7976,8 +7987,8 @@ it.
 
 \bookmarksetup{startatroot}
 
-\hypertarget{assessed-question-2}{%
-\chapter{Assessed Question}\label{assessed-question-2}}
+\hypertarget{assessed-question-3}{%
+\chapter{Assessed Question}\label{assessed-question-3}}
 
 You'll remember from the lecture slides that the model we've fit above
 is a linear, different slopes design. Try fitting the following models:
