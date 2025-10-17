@@ -300,6 +300,7 @@ ga('send', {
   </ul></li>
   <li><a href="#combining-sensors-and-satellite-images" id="toc-combining-sensors-and-satellite-images" class="nav-link" data-scroll-target="#combining-sensors-and-satellite-images">Combining sensors and satellite images</a></li>
   <li><a href="#extension" id="toc-extension" class="nav-link" data-scroll-target="#extension">Extension</a></li>
+  <li><a href="#assessed-question" id="toc-assessed-question" class="nav-link" data-scroll-target="#assessed-question">Assessed Question</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W03. Spatial Data.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -1063,6 +1064,17 @@ Name: 249, dtype: object</code></pre>
 </div>
 </div>
 <p>All the AQI sensors are showing green values, indicating generally good air quality. The satellite image shows a few wispy clouds, but no thick yellow smoke. Now change the date to September 15th, and see what happens!</p>
+</section>
+<section id="assessed-question" class="level1">
+<h1>Assessed Question</h1>
+<p>Earlier, we created a dataframe called <code>daily</code> in which we calculated the average daily AQI across the state for every day of the year. (hint: try re-generating this dataframe using the <code>Date</code> column rather than the <code>Day</code> column in the <code>.groupby()</code> function)</p>
+<ol type="1">
+<li>Sort that dataframe to figure out which day had the worst AQI.</li>
+<li>Plug that date into the <code>satellite_plot()</code> function to visualize the corresponding satellite image. for the next steps, you’ll be modifying the <code>satellite_plot()</code> function.</li>
+<li>Change the basemap to show strava running activity rather than satellite imagery. You can find the basemaps <a href="https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/basemaps.html">here</a>.</li>
+<li>Plot the top 5 sensors with the worst air quality on that day. Zoom in and inspect to see whether or not people tend to go for runs in this area.</li>
+</ol>
+<p>QUESTION: how many of these sensors show running activity <em>within</em> the circle?</p>
 
 
 </section>
