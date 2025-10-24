@@ -297,6 +297,7 @@ ga('send', {
   <li><a href="#external-pressure" id="toc-external-pressure" class="nav-link" data-scroll-target="#external-pressure">External pressure</a>
   <ul class="collapse">
   <li><a href="#sentiment-analysis" id="toc-sentiment-analysis" class="nav-link" data-scroll-target="#sentiment-analysis">Sentiment Analysis</a></li>
+  <li><a href="#assessed-question" id="toc-assessed-question" class="nav-link" data-scroll-target="#assessed-question">Assessed Question</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W04. Natural Language Processing.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -416,7 +417,7 @@ WARNING:tika.tika:Failed to see startup log message; retrying...</code></pre>
 </div>
 <p>Now, we have an object called “raw” that contains some useful information. Notice the squiggly brackets; this is a dictionary. It contains several fields, including some useful metadata such as the author</p>
 <div class="cell" data-outputid="e8a77514-a34f-4ed9-d224-909780d11471">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>date<span class="op">=</span>raw[<span class="st">'metadata'</span>][<span class="st">'date'</span>]</span>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>date<span class="op">=</span>raw[<span class="st">'metadata'</span>][<span class="st">'dcterms:created'</span>]</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>title<span class="op">=</span>raw[<span class="st">'metadata'</span>][<span class="st">'dc:title'</span>]</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>raw_text<span class="op">=</span>raw[<span class="st">'content'</span>]</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -9250,6 +9251,20 @@ Assessments:  [(['good'], 0.7, 0.6000000000000001, None), (['worst'], -1.0, 1.0,
 </div>
 <p>We can see that the model has deemed this tweet to be expressing negative sentiment: it has a polarity of -0.15. It also deems this to be a pretty subjective tweet, with a subjectivity score of 0.8. It does indeed appear to be expressing a subjective opinion. Finally, we can see which words are leading to this assessment. The word “good” is leading to a 0.7 increase in the polarity score, and a 0.6 increase in the subjectivity score. The word “worst” is leading to a -1 change polarity, and a +1 change in subjectivity. The overall scores are weighted averages of these values. Though these scores do roughly align with the actual sentiment of this tweet, <strong>ALWAYS</strong> pay attention to whats going on inside of your sentiment analysis pipeline. Even though the overall sentiment score here is negative, it should probably be even more negative; the algorithm picked up on the word “good” in this tweet, and this improved the polarity score by 0.7. But the context in which “good” was uttered in this tweet is actually negative! the person is saying “stop saying #Tillerson is good on climate”– this is expressing negative sentiment!</p>
 <hr>
+</section>
+<section id="assessed-question" class="level3">
+<h3 class="anchored" data-anchor-id="assessed-question">Assessed Question</h3>
+<p>In this assessed question, we will use NLP to find the biggest hater.</p>
+<p>I’ve pulled a sample of 1000 tweets. In the code cell below:</p>
+<ol type="1">
+<li>Using a lambda function, <code>.apply(lambda x: nlp(x)._.blob.polarity)</code>, create a column in the sample dataframe that contains the polarity of each tweet.</li>
+<li>Create a column that contains the subjectivity score for each tweet.</li>
+<li>Filter the dataframe to keep only the tweets that are subjective (subjectivity score &gt; 0.5) <em>and</em> tweets that have negative sentiment (polarity score &lt; 0).</li>
+</ol>
+<p>Which twitter user (author_id) has the lowest total sentiment?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>sample<span class="op">=</span> tweets.sample(<span class="dv">1000</span>, random_state<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>
