@@ -293,6 +293,8 @@ ga('send', {
   <li><a href="#regression" id="toc-regression" class="nav-link" data-scroll-target="#regression">4. Regression</a>
   <ul class="collapse">
   <li><a href="#categorical-variables" id="toc-categorical-variables" class="nav-link" data-scroll-target="#categorical-variables">Categorical Variables</a></li>
+  <li><a href="#what-does-it-mean-to-control-for-age-and-sex" id="toc-what-does-it-mean-to-control-for-age-and-sex" class="nav-link" data-scroll-target="#what-does-it-mean-to-control-for-age-and-sex">What does it mean to “control for” age and sex?</a></li>
+  <li><a href="#interpretation-of-the-schooling-coefficient-with-controls" id="toc-interpretation-of-the-schooling-coefficient-with-controls" class="nav-link" data-scroll-target="#interpretation-of-the-schooling-coefficient-with-controls">Interpretation of the schooling coefficient (with controls)</a></li>
   <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1">Exercise</a></li>
   <li><a href="#creating-a-regression-table" id="toc-creating-a-regression-table" class="nav-link" data-scroll-target="#creating-a-regression-table">Creating a Regression Table</a></li>
   <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2">Exercise</a></li>
@@ -945,15 +947,32 @@ Notes:
 [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</code></pre>
 </div>
 </div>
-<p>We now have 4 coefficients. In general, we don’t always have to interpret the Intercept coefficient. It’s not really that meaningful in this case, since now it denotes the predicted hourly income of someone who is male, has 0 years of schooling, and is 0 years old. It’s good to keep it in mind as a sense check, though. The rest of the coefficients can be interpreted as follows:</p>
+<p>We now have multiple coefficients in our regression model. As before, the Intercept typically isn’t very meaningful here — it would represent the predicted hourly wage for someone who is male, has 0 years of schooling, is 0 years old, and falls in all the baseline categories (e.g., the base race, base state, and base occupation). That’s not a realistic person, but it still provides a useful baseline for the model.</p>
+<p>The key coefficients can be interpreted as follows:</p>
 <ul>
-<li><code>C(sex)[T.2]</code>: On average, women earn $5.2 less per hour than men.
-<ul>
-<li>[T.2] in this line denotes the category in this variable associated with the given coefficient. So this is telling us that what is being shown is the coefficient associated with membership of category 2 in the sex variable; based on the description of the variables above, we know that sex=1 indicates men, and sex=2 indicates women. Naturally, we don’t see a coefficient for <code>C(sex)[T.1]</code>, because this is the <em>base category</em>.</li>
-</ul></li>
-<li><code>sch</code>: Every additional year of schooling is associated with a $2.13 increase in hourly income</li>
-<li><code>age</code>: Every additional year of age is associated with a $0.16 increase in hourly income</li>
+<li><p><strong><code>C(sex)[T.2]</code></strong>: On average, women earn $5.2 less per hour than otherwise similar men.<br>
+<em>Here, <code>[T.2]</code> refers to category 2 of the sex variable — women — while men (category 1) are the reference group. This is why you don’t see a coefficient for <code>C(sex)[T.1]</code>: the base category is absorbed into the Intercept.</em></p></li>
+<li><p><strong><code>sch</code></strong>: Every additional year of schooling is associated with a $2.13 increase in hourly income.</p></li>
+<li><p><strong><code>age</code></strong>: Every additional year of age is associated with a $0.16 increase in hourly income.</p></li>
 </ul>
+</section>
+<section id="what-does-it-mean-to-control-for-age-and-sex" class="level3">
+<h3 class="anchored" data-anchor-id="what-does-it-mean-to-control-for-age-and-sex">What does it mean to “control for” age and sex?</h3>
+<p>When we “control” for a variable in regression, we include it in the model so its influence on wages is accounted for. These factors matter:</p>
+<ul>
+<li><strong>Age</strong> — older workers tend to earn more due to experience<br>
+</li>
+<li><strong>Sex</strong> — different demographic groups may face different wage structures</li>
+</ul>
+<p>If we left these out, the coefficient on schooling might pick up their effects — leading to <strong>omitted variable bias</strong>.</p>
+<p>By including these controls, we are comparing individuals who are <strong>similar</strong> in age and gender — but differ in schooling.</p>
+</section>
+<section id="interpretation-of-the-schooling-coefficient-with-controls" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-of-the-schooling-coefficient-with-controls">Interpretation of the schooling coefficient (with controls)</h3>
+<blockquote class="blockquote">
+<p>The coefficient on schooling tells us how wages are expected to change with one additional year of schooling, <strong>holding age, sex, state, race, and occupation constant</strong>.</p>
+</blockquote>
+<p>This allows us to isolate the relationship between education and earnings, independent of the other factors that also influence wages.</p>
 </section>
 <section id="exercise-1" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-1">Exercise</h3>
@@ -1127,8 +1146,8 @@ Standard errors in parentheses.
 </div>
 </div>
 <p>Interestingly, we can see that we’ve also got a 1% increase in <span class="math inline">\(R^2\)</span> just from logging the dependent variable. While the coefficient for schooling can be interpreted normally for the unlogged model (every additional year of schooling leads to a $2.03 increase in hourly wages), this is not the case for the logged model. We can interpret the coefficeint in the logged model as follows:</p>
-<div class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>b1<span class="op">=</span>log_model.params.sch <span class="co"># get the coefficient for sch</span></span>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>b1<span class="op">=</span>log_model.params[<span class="st">'sch'</span>] <span class="co"># get the coefficient for sch</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>exp_b1<span class="op">=</span>np.exp(b1) <span class="co"># exponentiate the coefficient</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>pct_change<span class="op">=</span>(exp_b1<span class="op">-</span><span class="dv">1</span>)<span class="op">*</span><span class="dv">100</span> <span class="co"># multiply by 100 to get the percentage change</span></span>
@@ -1140,7 +1159,7 @@ Standard errors in parentheses.
 </section>
 <section id="assessed-question" class="level1">
 <h1>Assessed Question</h1>
-<p>Filter the dataframe to only contain people who work in construction, extraction and installation. Compared to those who are covered by a union but not themselves members, what is the difference in log hourly earnings for union members? Is this difference statistically significant?</p>
+<p>What is the percentage difference in log hourly wages for women compared to men, controlling for years of schooling, age, state, race, and occupation? Is this difference statistically significant at the 99% confidence level?</p>
 
 
 </section>

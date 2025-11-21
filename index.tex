@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, interior hidden, breakable, enhanced, borderline west={3pt}{0pt}{shadecolor}, frame hidden, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, interior hidden, frame hidden, sharp corners, borderline west={3pt}{0pt}{shadecolor}, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -7058,37 +7058,65 @@ Notes:
 [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
 \end{verbatim}
 
-We now have 4 coefficients. In general, we don't always have to
-interpret the Intercept coefficient. It's not really that meaningful in
-this case, since now it denotes the predicted hourly income of someone
-who is male, has 0 years of schooling, and is 0 years old. It's good to
-keep it in mind as a sense check, though. The rest of the coefficients
-can be interpreted as follows:
+We now have multiple coefficients in our regression model. As before,
+the Intercept typically isn't very meaningful here --- it would
+represent the predicted hourly wage for someone who is male, has 0 years
+of schooling, is 0 years old, and falls in all the baseline categories
+(e.g., the base race, base state, and base occupation). That's not a
+realistic person, but it still provides a useful baseline for the model.
+
+The key coefficients can be interpreted as follows:
+
+\begin{itemize}
+\item
+  \textbf{\texttt{C(sex){[}T.2{]}}}: On average, women earn \$5.2 less
+  per hour than otherwise similar men.\\
+  \emph{Here, \texttt{{[}T.2{]}} refers to category 2 of the sex
+  variable --- women --- while men (category 1) are the reference group.
+  This is why you don't see a coefficient for \texttt{C(sex){[}T.1{]}}:
+  the base category is absorbed into the Intercept.}
+\item
+  \textbf{\texttt{sch}}: Every additional year of schooling is
+  associated with a \$2.13 increase in hourly income.
+\item
+  \textbf{\texttt{age}}: Every additional year of age is associated with
+  a \$0.16 increase in hourly income.
+\end{itemize}
+
+\hypertarget{what-does-it-mean-to-control-for-age-and-sex}{%
+\subsection{What does it mean to ``control for'' age and
+sex?}\label{what-does-it-mean-to-control-for-age-and-sex}}
+
+When we ``control'' for a variable in regression, we include it in the
+model so its influence on wages is accounted for. These factors matter:
 
 \begin{itemize}
 \tightlist
 \item
-  \texttt{C(sex){[}T.2{]}}: On average, women earn \$5.2 less per hour
-  than men.
-
-  \begin{itemize}
-  \tightlist
-  \item
-    {[}T.2{]} in this line denotes the category in this variable
-    associated with the given coefficient. So this is telling us that
-    what is being shown is the coefficient associated with membership of
-    category 2 in the sex variable; based on the description of the
-    variables above, we know that sex=1 indicates men, and sex=2
-    indicates women. Naturally, we don't see a coefficient for
-    \texttt{C(sex){[}T.1{]}}, because this is the \emph{base category}.
-  \end{itemize}
+  \textbf{Age} --- older workers tend to earn more due to experience\\
 \item
-  \texttt{sch}: Every additional year of schooling is associated with a
-  \$2.13 increase in hourly income
-\item
-  \texttt{age}: Every additional year of age is associated with a \$0.16
-  increase in hourly income
+  \textbf{Sex} --- different demographic groups may face different wage
+  structures
 \end{itemize}
+
+If we left these out, the coefficient on schooling might pick up their
+effects --- leading to \textbf{omitted variable bias}.
+
+By including these controls, we are comparing individuals who are
+\textbf{similar} in age and gender --- but differ in schooling.
+
+\hypertarget{interpretation-of-the-schooling-coefficient-with-controls}{%
+\subsection{Interpretation of the schooling coefficient (with
+controls)}\label{interpretation-of-the-schooling-coefficient-with-controls}}
+
+\begin{quote}
+The coefficient on schooling tells us how wages are expected to change
+with one additional year of schooling, \textbf{holding age, sex, state,
+race, and occupation constant}.
+\end{quote}
+
+This allows us to isolate the relationship between education and
+earnings, independent of the other factors that also influence wages.
 
 \hypertarget{exercise-23}{%
 \subsection{Exercise}\label{exercise-23}}
@@ -7431,7 +7459,7 @@ coefficeint in the logged model as follows:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{b1}\OperatorTok{=}\NormalTok{log\_model.params.sch }\CommentTok{\# get the coefficient for sch}
+\NormalTok{b1}\OperatorTok{=}\NormalTok{log\_model.params[}\StringTok{\textquotesingle{}sch\textquotesingle{}}\NormalTok{] }\CommentTok{\# get the coefficient for sch}
 \NormalTok{exp\_b1}\OperatorTok{=}\NormalTok{np.exp(b1) }\CommentTok{\# exponentiate the coefficient}
 
 \NormalTok{pct\_change}\OperatorTok{=}\NormalTok{(exp\_b1}\OperatorTok{{-}}\DecValTok{1}\NormalTok{)}\OperatorTok{*}\DecValTok{100} \CommentTok{\# multiply by 100 to get the percentage change}
@@ -7448,11 +7476,10 @@ For every additional year of schooling, log wages increase by 10.04%
 \hypertarget{assessed-question-6}{%
 \chapter{Assessed Question}\label{assessed-question-6}}
 
-Filter the dataframe to only contain people who work in construction,
-extraction and installation. Compared to those who are covered by a
-union but not themselves members, what is the difference in log hourly
-earnings for union members? Is this difference statistically
-significant?
+What is the percentage difference in log hourly wages for women compared
+to men, controlling for years of schooling, age, state, race, and
+occupation? Is this difference statistically significant at the 99\%
+confidence level?
 
 \bookmarksetup{startatroot}
 
