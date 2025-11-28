@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, interior hidden, frame hidden, sharp corners, borderline west={3pt}{0pt}{shadecolor}, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, frame hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, interior hidden, breakable, sharp corners]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -7755,6 +7755,14 @@ coefficient, the treatment effect. It remains significant and negative
 in all time periods smaller than 8 years, after which point it becomes
 insignificant; \\
 How do you think this affects our conclusion? \\
+\# Assessed Question \\
+1. Find the state with the largest increase in minimum wage in the
+1990s. This will be our treatment group. 2. Set a 5 year window on
+either side of the treatment date 3. Make a parallel trends plot using
+Alabama as a control group 4. Run a difference in differences model. \\
+What was the percentage change in unemployment that resulted from the
+introduction of a minimum wage in this case? Is the difference
+statistically significant? \\
  \\
 \texttt{\{=html\}\ \textless{}!-\/-\ quarto-file-metadata:\ eyJyZXNvdXJjZURpciI6Im5vdGVib29rcyIsImJvb2tJdGVtVHlwZSI6ImNoYXB0ZXIiLCJib29rSXRlbU51bWJlciI6MTAsImJvb2tJdGVtRmlsZSI6Ii4vbm90ZWJvb2tzL1cwOS4gUmVncmVzc2lvbiBEaXNjb250aW51aXR5LmlweW5iIiwiYm9va0l0ZW1EZXB0aCI6MH0=\ -\/-\textgreater{}} \\
 \# Regression Discontinuity \\

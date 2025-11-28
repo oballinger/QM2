@@ -278,6 +278,7 @@ ga('send', {
   <ul class="collapse">
   <li><a href="#do-minimum-wage-laws-increase-unemployment" id="toc-do-minimum-wage-laws-increase-unemployment" class="nav-link" data-scroll-target="#do-minimum-wage-laws-increase-unemployment">Do minimum wage laws increase unemployment?</a></li>
   </ul></li>
+  <li><a href="#assessed-question" id="toc-assessed-question" class="nav-link" data-scroll-target="#assessed-question">Assessed Question</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/oballinger/QM2/blob/main/notebooks/W08. Diff-in-Diff.ipynb" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -619,9 +620,19 @@ ga('send', {
 </div>
 <p>The row we’re mainly interested in is the <code>post_treatment</code> coefficient, the treatment effect. It remains significant and negative in all time periods smaller than 8 years, after which point it becomes insignificant;</p>
 <p>How do you think this affects our conclusion?</p>
-
-
 </section>
+</section>
+<section id="assessed-question" class="level1">
+<h1>Assessed Question</h1>
+<ol type="1">
+<li>Find the state with the largest increase in minimum wage in the 1990s. This will be our treatment group.</li>
+<li>Set a 5 year window on either side of the treatment date</li>
+<li>Make a parallel trends plot using Alabama as a control group</li>
+<li>Run a difference in differences model.</li>
+</ol>
+<p>What was the percentage change in unemployment that resulted from the introduction of a minimum wage in this case? Is the difference statistically significant?</p>
+
+
 </section>
 
 </main> <!-- /main -->
