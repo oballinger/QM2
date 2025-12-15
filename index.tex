@@ -195,7 +195,7 @@
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, frame hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, interior hidden, breakable, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, borderline west={3pt}{0pt}{shadecolor}, interior hidden, frame hidden, breakable, boxrule=0pt, enhanced]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -8816,6 +8816,14 @@ F1 Score: 78
 
 \end{figure}
 
+\bookmarksetup{startatroot}
+
+\hypertarget{bonus-question}{%
+\chapter{BONUS QUESTION}\label{bonus-question}}
+
+Is a model that uses only age, fare price, and sex more prone to making
+false positive or false negative predictions of survival?
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#feature importance plot }
@@ -8832,7 +8840,7 @@ F1 Score: 78
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-5-output-1.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-6-output-1.png}
 
 }
 
@@ -8899,7 +8907,7 @@ forest}\label{optional-visuialize-the-random-forest}}
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-8-output-1.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-9-output-1.png}
 
 }
 
@@ -8997,7 +9005,7 @@ Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-dataset
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-11-output-1.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-12-output-1.png}
 
 }
 
@@ -9005,7 +9013,7 @@ Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-dataset
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-11-output-2.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-12-output-2.png}
 
 }
 
@@ -9013,7 +9021,7 @@ Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-dataset
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-11-output-3.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-12-output-3.png}
 
 }
 
@@ -9021,7 +9029,7 @@ Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-dataset
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-11-output-4.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-12-output-4.png}
 
 }
 
@@ -9029,7 +9037,7 @@ Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-dataset
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-11-output-5.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-12-output-5.png}
 
 }
 
@@ -9037,7 +9045,7 @@ Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-dataset
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-11-output-6.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-12-output-6.png}
 
 }
 
@@ -9045,7 +9053,7 @@ Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-dataset
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-11-output-7.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-12-output-7.png}
 
 }
 
@@ -9053,7 +9061,7 @@ Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-dataset
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-11-output-8.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-12-output-8.png}
 
 }
 
@@ -9061,7 +9069,7 @@ Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-dataset
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-11-output-9.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-12-output-9.png}
 
 }
 
@@ -9069,7 +9077,7 @@ Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-dataset
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-11-output-10.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-12-output-10.png}
 
 }
 
@@ -9274,7 +9282,7 @@ model, and attach the softmax to it:
 
 \begin{figure}[H]
 
-{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-21-output-3.png}
+{\centering \includegraphics{notebooks/W10. Machine Learning_files/figure-pdf/cell-22-output-3.png}
 
 }
 

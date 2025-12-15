@@ -272,8 +272,11 @@ ga('send', {
   <ul>
   <li><a href="#workshop-10-open-in-colab" id="toc-workshop-10-open-in-colab" class="nav-link active" data-scroll-target="#workshop-10-open-in-colab"><em>Workshop 10</em> <img src="https://github.com/oballinger/QM2/blob/main/colab-badge.png?raw=1" class="img-fluid" alt="Open In Colab"></a></li>
   <li><a href="#titanic" id="toc-titanic" class="nav-link" data-scroll-target="#titanic">Titanic</a></li>
+  <li><a href="#bonus-question" id="toc-bonus-question" class="nav-link" data-scroll-target="#bonus-question">BONUS QUESTION</a>
+  <ul class="collapse">
   <li><a href="#feature-engineering-exercise" id="toc-feature-engineering-exercise" class="nav-link" data-scroll-target="#feature-engineering-exercise">Feature Engineering Exercise</a></li>
   <li><a href="#optional-visuialize-the-random-forest" id="toc-optional-visuialize-the-random-forest" class="nav-link" data-scroll-target="#optional-visuialize-the-random-forest">Optional: visuialize the random forest</a></li>
+  </ul></li>
   <li><a href="#deep-learning" id="toc-deep-learning" class="nav-link" data-scroll-target="#deep-learning">Deep Learning</a>
   <ul class="collapse">
   <li><a href="#set-up-tensorflow" id="toc-set-up-tensorflow" class="nav-link" data-scroll-target="#set-up-tensorflow">Set up TensorFlow</a></li>
@@ -607,6 +610,10 @@ F1 Score: 78</code></pre>
 <p><img src="W10. Machine Learning_files/figure-html/cell-4-output-2.png" class="img-fluid"></p>
 </div>
 </div>
+</section>
+<section id="bonus-question" class="level1">
+<h1>BONUS QUESTION</h1>
+<p>Is a model that uses only age, fare price, and sex more prone to making false positive or false negative predictions of survival?</p>
 <div class="cell" data-execution_count="100">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#feature importance plot </span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>importances <span class="op">=</span> rf.feature_importances_</span>
@@ -618,10 +625,9 @@ F1 Score: 78</code></pre>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>plt.xlim([<span class="op">-</span><span class="dv">1</span>, X_train.shape[<span class="dv">1</span>]])</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-6-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-</section>
 <section id="feature-engineering-exercise" class="level2">
 <h2 class="anchored" data-anchor-id="feature-engineering-exercise">Feature Engineering Exercise</h2>
 <p>we’ve gotten pretty good results using the existing features in the dataset. But we can create new features using the existing ones, and thay may help us improve accuracy.</p>
@@ -661,9 +667,10 @@ Name: Name, dtype: object</code></pre>
 <span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the tree</span></span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>Image(graph.create_png())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="120">
-<p><img src="W10. Machine Learning_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
 </div>
 </div>
+</section>
 </section>
 <section id="deep-learning" class="level1">
 <h1>Deep Learning</h1>
@@ -718,34 +725,34 @@ Name: Name, dtype: object</code></pre>
 <span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">10</span>):</span>
 <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  plot_num(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-11-output-2.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-12-output-2.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-11-output-3.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-12-output-3.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-11-output-4.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-12-output-4.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-11-output-5.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-12-output-5.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-11-output-6.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-12-output-6.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-11-output-7.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-12-output-7.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-11-output-8.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-12-output-8.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-11-output-9.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-12-output-9.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-11-output-10.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-12-output-10.png" class="img-fluid"></p>
 </div>
 </div>
 </section>
@@ -863,7 +870,7 @@ Epoch 10/10
 <pre><code>&lt;matplotlib.image.AxesImage at 0x7fe9409c1ad0&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="W10. Machine Learning_files/figure-html/cell-21-output-3.png" class="img-fluid"></p>
+<p><img src="W10. Machine Learning_files/figure-html/cell-22-output-3.png" class="img-fluid"></p>
 </div>
 </div>
 </section>
